@@ -1,0 +1,9 @@
+*.pyc
+*.rar
+*.gz
+*.patch
+*.o
+*.d
+*.P
+resource
+temp

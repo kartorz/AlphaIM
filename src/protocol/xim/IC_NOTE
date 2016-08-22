@@ -1,0 +1,55 @@
+{major_code = 50, any = {major_code = 50, minor_code = 0, connect_id = 1}, imconnect = {major_code = 50, minor_code = 0, connect_id = 1, byte_order = 0 '\000', major_version = 1, minor_version = 1}, 
+  imdisconnect = {major_code = 50, minor_code = 0, connect_id = 1}, imopen = {major_code = 50, minor_code = 0, connect_id = 1, lang = {length = 2, name = 0x7fffffffb5d0 "g\001"}}, imclose = {major_code = 50, 
+    minor_code = 0, connect_id = 1}, queryext = {major_code = 50, minor_code = 0, connect_id = 1, number = 0, extension = 0x2}, getim = {major_code = 50, minor_code = 0, connect_id = 1, number = 0, 
+    im_attr_list = 0x2}, encodingnego = {major_code = 50, minor_code = 0, connect_id = 1, encoding_number = 0, encoding = 0x2, encoding_info_number = 46544, encodinginfo = 0x7fffffffbfd0, category = 51664, 
+    enc_index = -1}, extsetevent = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, flag = 65537, intercept_event_mask = 2, select_event_mask = 0, forward_event_mask = 4294948304, 
+    sync_event_mask = 32767}, extmove = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, x = 1, y = 1}, setevent = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, flag = 65537, 
+    forward_event_mask = 2, sync_event_mask = 0}, changeic = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, preedit_attr_num = 1, status_attr_num = 1, ic_attr_num = 2, 
+    preedit_attr = 0x7fffffffb5d0, status_attr = 0x7fffffffbfd0, ic_attr = 0x7fffffffc9d0}, destroyic = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0}, resetic = {major_code = 50, minor_code = 0, 
+    connect_id = 1, icid = 0, length = 1, commit_string = 0x2 <error: Cannot access memory at address 0x2>}, changefocus = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0}, commitstring = {
+    major_code = 50, minor_code = 0, connect_id = 1, icid = 0, flag = 1, keysym = 2, commit_string = 0x7fffffffb5d0 "g\001"}, forwardevent = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, 
+    sync_bit = 1, serial_number = 1, event = {type = 2, xany = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0}, xkey = {type = 2, serial = 140737488336336, 
+        send_event = -16432, display = 0x7fffffffc9d0, window = 0, root = 0, subwindow = 0, time = 0, x = 0, y = 0, x_root = 0, y_root = 0, state = 0, keycode = 0, same_screen = 0}, xbutton = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, root = 0, subwindow = 0, time = 0, x = 0, y = 0, x_root = 0, y_root = 0, state = 0, button = 0, same_screen = 0}, 
+      xmotion = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, root = 0, subwindow = 0, time = 0, x = 0, y = 0, x_root = 0, y_root = 0, state = 0, 
+        is_hint = 0 '\000', same_screen = 0}, xcrossing = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, root = 0, subwindow = 0, time = 0, x = 0, y = 0, 
+        x_root = 0, y_root = 0, mode = 0, detail = 0, same_screen = 0, focus = 0, state = 0}, xfocus = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, mode = 0, 
+        detail = 0}, xexpose = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, x = 0, y = 0, width = 0, height = 0, count = 0}, xgraphicsexpose = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, drawable = 0, x = 0, y = 0, width = 0, height = 0, count = 0, major_code = 0, minor_code = 0}, xnoexpose = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, drawable = 0, major_code = 0, minor_code = 0}, xvisibility = {type = 2, serial = 140737488336336, send_event = -16432, 
+        display = 0x7fffffffc9d0, window = 0, state = 0}, xcreatewindow = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, parent = 0, window = 0, x = 0, y = 0, width = 0, 
+        height = 0, border_width = 0, override_redirect = 0}, xdestroywindow = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, event = 0, window = 0}, xunmap = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, event = 0, window = 0, from_configure = 0}, xmap = {type = 2, serial = 140737488336336, send_event = -16432, 
+        display = 0x7fffffffc9d0, event = 0, window = 0, override_redirect = 0}, xmaprequest = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, parent = 0, window = 0}, 
+      xreparent = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, event = 0, window = 0, parent = 0, x = 0, y = 0, override_redirect = 0}, xconfigure = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, event = 0, window = 0, x = 0, y = 0, width = 0, height = 0, border_width = 0, above = 0, override_redirect = 0}, xgravity = {
+        type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, event = 0, window = 0, x = 0, y = 0}, xresizerequest = {type = 2, serial = 140737488336336, send_event = -16432, 
+        display = 0x7fffffffc9d0, window = 0, width = 0, height = 0}, xconfigurerequest = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, parent = 0, window = 0, x = 0, 
+        y = 0, width = 0, height = 0, border_width = 0, above = 0, detail = 0, value_mask = 0}, xcirculate = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, event = 0, 
+        window = 0, place = 0}, xcirculaterequest = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, parent = 0, window = 0, place = 0}, xproperty = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, atom = 0, time = 0, state = 0}, xselectionclear = {type = 2, serial = 140737488336336, send_event = -16432, 
+        display = 0x7fffffffc9d0, window = 0, selection = 0, time = 0}, xselectionrequest = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, owner = 0, requestor = 0, 
+        selection = 0, target = 0, property = 0, time = 0}, xselection = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, requestor = 0, selection = 0, target = 0, 
+        property = 0, time = 0}, xcolormap = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, colormap = 0, c_new = 0, state = 0}, xclient = {type = 2, 
+        serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, message_type = 0, format = 0, data = {b = '\000' <repeats 19 times>, s = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, l = {0, 0, 
+            0, 0, 0}}}, xmapping = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, window = 0, request = 0, first_keycode = 0, count = 0}, xerror = {type = 2, 
+        display = 0x7fffffffb5d0, resourceid = 140737488338896, serial = 140737488341456, error_code = 0 '\000', request_code = 0 '\000', minor_code = 0 '\000'}, xkeymap = {type = 2, serial = 140737488336336, 
+        send_event = -16432, display = 0x7fffffffc9d0, window = 0, key_vector = '\000' <repeats 31 times>}, xgeneric = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, 
+        extension = 0, evtype = 0}, xcookie = {type = 2, serial = 140737488336336, send_event = -16432, display = 0x7fffffffc9d0, extension = 0, evtype = 0, cookie = 0, data = 0x0}, pad = {2, 140737488336336, 
+        140737488338896, 140737488341456, 0 <repeats 20 times>}}}, triggernotify = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, flag = 65537, key_index = 2, event_mask = 0}, preedit_state = {
+    major_code = 50, minor_code = 0, connect_id = 1, icid = 0}, imerror = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, flag = 1, error_code = 1, str_length = 2, error_type = 0, 
+    error_detail = 0x7fffffffb5d0 "g\001"}, geometry_callback = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0}, preedit_callback = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, 
+    todo = {return_value = 2, draw = {caret = 2, chg_first = 0, chg_length = -18992, text = 0x7fffffffbfd0}, caret = {position = 2, direction = XIMForwardChar, style = (unknown: 4294948304)}}}, 
+  status_callback = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, todo = {draw = {type = (unknown: 2), data = {text = 0x7fffffffb5d0, bitmap = 140737488336336}}}}, strconv_callback = {
+    major_code = 50, minor_code = 0, connect_id = 1, icid = 0, strconv = {position = 2, direction = XIMForwardChar, operation = 46544, factor = 65535, text = 0x7fffffffbfd0}}, pad = {50, 281479271677953, 2, 
+    140737488336336, 140737488338896, 140737488341456, 0 <repeats 26 times>}}
+
+
+
+(gdb) print call_data->changeic
+$5 = {major_code = 50, minor_code = 0, connect_id = 1, icid = 0, preedit_attr_num = 1, status_attr_num = 1, ic_attr_num = 2, preedit_attr = 0x7fffffffb5d0, status_attr = 0x7fffffffbfd0, 
+  ic_attr = 0x7fffffffc9d0}
+(gdb) print call_data->changeic.preedit_attr
+$6 = (XICAttribute *) 0x7fffffffb5d0
+(gdb) print *(call_data->changeic.preedit_attr)
+$7 = {attribute_id = 359, name_length = 7, name = 0x42e240 "fontSet", value_length = 179, value = 0x7d5210, type = 13}

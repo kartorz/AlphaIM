@@ -1,0 +1,7203 @@
+joni:1c00074, 0xca6860
+joni:SetXi18nSelectionOwner, @server=aim
+joni debug Xi18nXBegin 1c00074
+WaitXSelectionRequest
+joni:ReturnSelectionNotify
+WaitXSelectionRequest
+joni:ReturnSelectionNotify
+joni debug WaitXConnectMessage
+joni debug _Xi18nMessageHandler
+joni debug _Xi18nMessageHandler
+OpenMessageProc
+aim_Proto_handler 0x1e --> 30
+joni debug _Xi18nMessageHandler
+joni debug _Xi18nMessageHandler
+joni debug _Xi18nMessageHandler
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x32 --> 50
+IC:set inputStyle
+IC:set clientWindow
+set client wind (77594625) --> (4a00001)
+sssssss set pre attr
+***********set xattr:name(fontSet)
+sssssssssss================set status 
+***********set xattr:name(fontSet)
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x38 --> 56
+IC:get filterEvents 
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x38 --> 56
+IC:get filterEvents 
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3a --> 58
+setICFocus 1
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+***********set xattr:name(areaNeeded)
+sssssssssss================set status 
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x38 --> 56
+^^^^^^get: xattr:name(areaNeeded)
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+***********set xattr:name(area)
+sssssssssss================set status 
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+sssssssssss================set status 
+***********set xattr:name(areaNeeded)
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x38 --> 56
+IC:get separatorofNestedList 
+^^^^^^get: xattr:name(areaNeeded)
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+sssssssssss================set status 
+***********set xattr:name(area)
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+***********set xattr:name(areaNeeded)
+sssssssssss================set status 
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x38 --> 56
+^^^^^^get: xattr:name(areaNeeded)
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+***********set xattr:name(area)
+sssssssssss================set status 
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+sssssssssss================set status 
+***********set xattr:name(areaNeeded)
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x38 --> 56
+IC:get separatorofNestedList 
+^^^^^^get: xattr:name(areaNeeded)
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x36 --> 54
+sssssss set pre attr
+sssssssssss================set status 
+***********set xattr:name(area)
+ssssssssss********************done================
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x23 --> 35
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x77
+keysym 0x77
+keysym 0x77
+keysym 0x77
+'w' --> 0x77 is filtered in sampleIM, 237, 57 --> root(0,0)
+lookup1 w, 0, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎@q, 186, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 52, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:0,  length:157
+getPYItems 忘
+preEdit w, 400, 100 , 240 64
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6f
+keysym 0x6f
+keysym 0x6f
+keysym 0x6f
+'o' --> 0x6f is filtered in sampleIM, 237, 57 --> root(0,0)
+lookup1 wo, 0, 8
+getPYITEM all index size 1, hans size 0
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+getPYItems start:0,  length:17
+getPYItems 斡
+preEdit wo, 400, 100 , 240 64
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0xff08
+keysym 0xff08
+keysym 0xff08
+keysym 0xff08
+'�ϼ�' --> 0x8 is filtered in sampleIM, 237, 57 --> root(0,0)
+lookup1 w, 0, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈a, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:0,  length:157
+getPYItems 忘
+preEdit w, 400, 100 , 240 64
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0xffe3
+keysym 0xffe3
+keysym 0xffe3
+keysym 0xffe3
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 8, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈1, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:8,  length:157
+getPYItems 尢
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 16, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴~�, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:16,  length:157
+getPYItems 味
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 24, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:24,  length:157
+getPYItems 危
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 32, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:32,  length:157
+getPYItems 畏
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 40, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈1, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:40,  length:157
+getPYItems 萎
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 48, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈1, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:48,  length:157
+getPYItems 薇
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 56, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈q, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:56,  length:157
+getPYItems 桅
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 64, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎�A, 185, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+push han,   �A, 188
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:64,  length:158
+getPYItems 洧
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 72, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:72,  length:157
+getPYItems 翁
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 80, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈A, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:80,  length:157
+getPYItems 卧
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 88, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈惘, 171, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+push han,   惘, 171
+getPYItems start:88,  length:158
+getPYItems 倭
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 96, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈帷, 171, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+push han,   帷, 171
+getPYItems start:96,  length:158
+getPYItems 物
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 104, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:104,  length:157
+getPYItems 吴
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 112, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 46, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈A, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:112,  length:157
+getPYItems 侮
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 120, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈潍, 171, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+push han,   潍, 171
+getPYItems start:120,  length:158
+getPYItems 坞
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 128, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:128,  length:157
+getPYItems 妩
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 136, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴D�, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍硪@, 49, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+push han,   硪, 48
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈a, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:136,  length:158
+getPYItems 牾
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 144, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌��, 55, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+push han,   ��, 55
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:144,  length:158
+getPYItems 婺
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+push han,   ��, 15
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:158
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+push han,   ��, 11
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:158
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎?, 184, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎�1, 185, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈a, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎�1, 185, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+push han,   �1, 188
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈Q, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:158
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴, 10, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈, 168, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎�, 185, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+push han,   �1, 186
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈鼯, 171, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+push han,   鼯, 171
+getPYItems start:152,  length:159
+getPYItems 鼯
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+push han,   ��, 11
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:158
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈q, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+push han,   ��, 11
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈1, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:158
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴�, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴7�, 11, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈1, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈a, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈!, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈A, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈a, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈A, 169, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+getPYItems start:152,  length:157
+getPYItems 鋈
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎, 183, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�u�, 171, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push han,   芜, 96
+push han,   鹜, 99
+push han,   钨, 102
+push han,   妩, 105
+push han,   痦, 108
+push han,   鹉, 111
+push han,   忤, 114
+push han,   寤, 117
+push han,   骛, 120
+push han,   邬, 123
+push han,   牾, 126
+push han,   鼯, 129
+push han,   圬, 132
+push han,   浯, 135
+push han,   仵, 138
+push han,   阢, 141
+push han,   芴, 144
+push han,   庑, 147
+push han,   婺, 150
+push han,   怃, 153
+push han,   杌, 156
+push han,   焐, 159
+push han,   蜈, 162
+push han,   迕, 165
+push han,   鋈, 168
+push han,   �u, 170
+push han,   �, 173
+getPYItems start:152,  length:159
+getPYItems �
+preEdit w, 400, 100 , 240 64
+pagedown
+aim_app_on_show_icwin 400, 100 ,240 ,64
+joni debug _Xi18nMessageHandler
+aim_Proto_handler 0x3c --> 60
+handleForwardEvent
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+keysym 0x6a
+lookup1 w, 152, 8
+getPYITEM all index size 6, hans size 0
+han_str 外歪崴��6, 14, 9, -76
+push han,   外, 3
+push han,   歪, 6
+push han,   崴, 9
+han_str 望王往网忘亡汪旺枉妄惘罔尢辋魍, 45, 45, -115
+push han,   望, 3
+push han,   王, 6
+push han,   往, 9
+push han,   网, 12
+push han,   忘, 15
+push han,   亡, 18
+push han,   汪, 21
+push han,   旺, 24
+push han,   枉, 27
+push han,   妄, 30
+push han,   惘, 33
+push han,   罔, 36
+push han,   尢, 39
+push han,   辋, 42
+push han,   魍, 45
+han_str 为位未委维味围卫威微伟谓唯危慰尾违魏玮蔚伪畏胃喂炜韦惟巍纬萎娓苇尉帷渭猥偎薇痿猬逶帏韪煨鲔桅潍隈圩囗诿隗崴洧葳嵬闱沩涠艉軎?�, 185, 183, -114
+push han,   为, 3
+push han,   位, 6
+push han,   未, 9
+push han,   委, 12
+push han,   维, 15
+push han,   味, 18
+push han,   围, 21
+push han,   卫, 24
+push han,   威, 27
+push han,   微, 30
+push han,   伟, 33
+push han,   谓, 36
+push han,   唯, 39
+push han,   危, 42
+push han,   慰, 45
+push han,   尾, 48
+push han,   违, 51
+push han,   魏, 54
+push han,   玮, 57
+push han,   蔚, 60
+push han,   伪, 63
+push han,   畏, 66
+push han,   胃, 69
+push han,   喂, 72
+push han,   炜, 75
+push han,   韦, 78
+push han,   惟, 81
+push han,   巍, 84
+push han,   纬, 87
+push han,   萎, 90
+push han,   娓, 93
+push han,   苇, 96
+push han,   尉, 99
+push han,   帷, 102
+push han,   渭, 105
+push han,   猥, 108
+push han,   偎, 111
+push han,   薇, 114
+push han,   痿, 117
+push han,   猬, 120
+push han,   逶, 123
+push han,   帏, 126
+push han,   韪, 129
+push han,   煨, 132
+push han,   鲔, 135
+push han,   桅, 138
+push han,   潍, 141
+push han,   隈, 144
+push han,   圩, 147
+push han,   囗, 150
+push han,   诿, 153
+push han,   隗, 156
+push han,   崴, 159
+push han,   洧, 162
+push han,   葳, 165
+push han,   嵬, 168
+push han,   闱, 171
+push han,   沩, 174
+push han,   涠, 177
+push han,   艉, 180
+push han,   軎, 183
+han_str 翁瓮嗡蓊蕹, 15, 15, -71
+push han,   翁, 3
+push han,   瓮, 6
+push han,   嗡, 9
+push han,   蓊, 12
+push han,   蕹, 15
+han_str 我握窝卧渥沃涡斡蜗幄喔倭挝莴肟硪龌, 51, 51, -116
+push han,   我, 3
+push han,   握, 6
+push han,   窝, 9
+push han,   卧, 12
+push han,   渥, 15
+push han,   沃, 18
+push han,   涡, 21
+push han,   斡, 24
+push han,   蜗, 27
+push han,   幄, 30
+push han,   喔, 33
+push han,   倭, 36
+push han,   挝, 39
+push han,   莴, 42
+push han,   肟, 45
+push han,   硪, 48
+push han,   龌, 51
+han_str 无五物务武午舞於误恶吴屋伍悟吾污乌雾侮捂巫毋呜诬勿梧坞戊兀唔晤芜鹜钨妩痦鹉忤寤骛邬牾鼯圬浯仵阢芴庑婺怃杌焐蜈迕鋈�, 170, 168, -120
+push han,   无, 3
+push han,   五, 6
+push han,   物, 9
+push han,   务, 12
+push han,   武, 15
+push han,   午, 18
+push han,   舞, 21
+push han,   於, 24
+push han,   误, 27
+push han,   恶, 30
+push han,   吴, 33
+push han,   屋, 36
+push han,   伍, 39
+push han,   悟, 42
+push han,   吾, 45
+push han,   污, 48
+push han,   乌, 51
+push han,   雾, 54
+push han,   侮, 57
+push han,   捂, 60
+push han,   巫, 63
+push han,   毋, 66
+push han,   呜, 69
+push han,   诬, 72
+push han,   勿, 75
+push han,   梧, 78
+push han,   坞, 81
+push han,   戊, 84
+push han,   兀, 87
+push han,   唔, 90
+push han,   晤, 93
+push
