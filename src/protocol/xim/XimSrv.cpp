@@ -13,6 +13,7 @@
 #include <X11/keysym.h>
 #include <boost/algorithm/string.hpp>
 #include <signal.h>
+#include <exception>
 
 #include "aim.h"
 #include "Application.h"
@@ -68,62 +69,58 @@ struct XIMPriv {
     IMProtocol *calldata;
 };
 
-ModifierKeyEventTask::ModifierKeyEventTask(XIMS ims, IMProtocol *calldata):Task(0, false)
-{
-    m_ims = ims;
-    m_calldata = calldata;
-}
 
-void ModifierKeyEventTask::doWork()
+int aim_err_handler(Display *d, XErrorEvent *e)
 {
-    gApp.xim.doModifierKeyEvent(m_ims, m_calldata);    
+    printf("aim_err_handler, type:%d, err_code:%d, req_code:%d\n", e->type, e->error_code, e->request_code);
+    return 0;
 }
 
 // Running at the same thread.
-int aim_Proto_handler(XIMS ims, IMProtocol *call_data)
+int aim_proto_handler(XIMS ims, IMProtocol *call_data)
 {
-    PRINTF("aim_Proto_handler 0x%x --> %d\n", call_data->major_code, call_data->major_code);
+    PRINTF("aim_proto_handler 0x%x --> %d\n", call_data->major_code, call_data->major_code);
     switch (call_data->major_code) {
       case XIM_OPEN:
-          gApp.xim.handleIMOpen(ims, call_data);
+          gApp->xim.handleIMOpen(ims, call_data);
           break;
       case XIM_CREATE_IC:
-          gApp.xim.handleIMCreateIC(ims, call_data);
+          gApp->xim.handleIMCreateIC(ims, call_data);
           break;
       case XIM_DESTROY_IC:
           break;
       case XIM_SET_IC_VALUES:
-          gApp.xim.handleIMSetICValues(ims, call_data);
+          gApp->xim.handleIMSetICValues(ims, call_data);
           break;
       case XIM_GET_IC_VALUES:
-          gApp.xim.handleGetICValues(ims, call_data);
+          gApp->xim.handleGetICValues(ims, call_data);
           break;
       case XIM_FORWARD_EVENT:
-          gApp.xim.handleForwardEvent(ims, call_data);
+          gApp->xim.handleForwardEvent(ims, call_data);
           break;
       case XIM_SET_IC_FOCUS:
-          gApp.xim.handleSetICFocusEvent(ims, call_data);
+          gApp->xim.handleSetICFocusEvent(ims, call_data);
           break;
       case XIM_UNSET_IC_FOCUS:
-          gApp.xim.handleUnsetICFocusEvent(ims, call_data);
+          gApp->xim.handleUnsetICFocusEvent(ims, call_data);
           break;
       case XIM_RESET_IC:
-          gApp.xim.handleResetICEvent(ims, call_data);
+          gApp->xim.handleResetICEvent(ims, call_data);
           break;
       case XIM_TRIGGER_NOTIFY:
-          gApp.xim.handleTriggerNotify(ims, call_data);
+          gApp->xim.handleTriggerNotify(ims, call_data);
           break;
       case XIM_PREEDIT_START_REPLY:
-          gApp.xim.handlePreeditStartReply(ims, call_data);
+          gApp->xim.handlePreeditStartReply(ims, call_data);
           break;
       case XIM_PREEDIT_CARET_REPLY:
-          gApp.xim.handlePreeditCaretReply(ims, call_data);
+          gApp->xim.handlePreeditCaretReply(ims, call_data);
           break;
     }
     return 1;
 }
 
-XimSrv::XimSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0), m_preModKey(0)
+XimSrv::XimSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0), m_preModKey(0), m_im(NULL)
 {
 }
 
@@ -131,6 +128,10 @@ XimSrv::~XimSrv()
 {
     PRINTF("~XimSrv\n");
     close();
+    if (m_im != NULL) {
+        printf("delete m_im\n");
+        delete m_im;
+    }
 }
 
 bool XimSrv::open(Display *dpy)
@@ -197,7 +198,7 @@ bool XimSrv::open(Display *dpy)
 
     IMSetIMValues(ims,
           IMEncodingList, encodings,
-		  IMProtocolHandler, aim_Proto_handler,
+		  IMProtocolHandler, aim_proto_handler,
 		  IMFilterEventMask, filter_mask,
 		  NULL);
 
@@ -210,18 +211,21 @@ bool XimSrv::open(Display *dpy)
 
     m_ims = ims;
     //XSelectInput(dpy, imwin, StructureNotifyMask);
+    XSetErrorHandler(aim_err_handler);
     return true;
 }
 
 void XimSrv::close()
 {
     if (m_imwin > 0) {
-        printf("joni close\n");
+        log.d("{XimSrv} close: XDestroyWindow\n");
         XDestroyWindow(m_dpy, m_imwin);
+        m_imwin = 0;
     }
 
     if (m_ims != (XIMS)NULL) {
-        IMCloseIM(m_ims);printf("joni close im\n");
+        log.d("{XimSrv} close:  im\n");
+        IMCloseIM(m_ims);
         m_ims = (XIMS)NULL;
     }
 }
@@ -347,7 +351,7 @@ int XimSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 	/* Here, the start of preediting is notified from IMlibrary, which 
 	   is the only way to start preediting in case of Dynamic Event
 	   Flow, because ON key is mandatary for Dynamic Event Flow. */
-        gApp.pGuiMsgQ->push(MSG_IM_ON);
+        gApp->pGuiMsgQ->push(MSG_IM_ON);
         return 1;
     }
 
@@ -431,14 +435,33 @@ XRectangle XimSrv::getICWinRect()
         if (ic->pre_attr.spot_location.x != -1) {
             int x2 = ic->pre_attr.spot_location.x;
             int y2 = ic->pre_attr.spot_location.y;
-            if (win)
-                XTranslateCoordinates(m_dpy, win, XDefaultRootWindow(m_dpy), x2, y2, &x, &y, &wid);
+            if (win) {
+                try {
+                    XTranslateCoordinates(m_dpy, win, XDefaultRootWindow(m_dpy), x2, y2, &x, &y, &wid);  // TODO: The error was 'BadWindow (invalid Window parameter)'
+                } catch (exception& e) {
+                    printf("x1: %s\n", e.what());
+                }
+            }
+/*
+The error was 'BadWindow (invalid Window parameter)'.
+  (Details: serial 863 error_code 3 request_code 18 (core protocol) minor_code 0)
+  (Note to programmers: normally, X errors are reported asynchronously;
+   that is, you will receive the error a while after causing it.
+   To debug your program, run it with the GDK_SYNCHRONIZE environment
+   variable to change this behavior. You can then get a meaningful
+   backtrace from your debugger if you break on the gdk_x_error() function.)
 
+ */
             w = ic->pre_attr.area.width  == 0 ? ICWIN_W : ic->pre_attr.area.width;
             h = ic->pre_attr.area.height == 0 ? ICWIN_H : ic->pre_attr.area.height;
         } else if (win) {
-            XGetWindowAttributes(m_dpy, win, &clientwin_attr);
-            XTranslateCoordinates(m_dpy, win, XDefaultRootWindow(m_dpy), 0, clientwin_attr.height, &x, &y, &wid);
+            try {
+                XGetWindowAttributes(m_dpy, win, &clientwin_attr);
+                XTranslateCoordinates(m_dpy, win, XDefaultRootWindow(m_dpy), 0, clientwin_attr.height, &x, &y, &wid);
+            }  catch (exception& e) {
+                printf("x2: %s\n", e.what());
+            }
+
             PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n", ic->client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);
             x += (clientwin_attr.width - ICWIN_W) / 2;
             //y += clientwin_attr.height;

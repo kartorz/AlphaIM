@@ -81,7 +81,7 @@ public:
 class IMPreedit {
 public:
     IMPreedit();
-    virtual ~IMPreedit() {};
+    virtual ~IMPreedit();
     virtual int handleKey(int keycode, int modifier, char *key, IMPreeditCallback *callback) {return NONE_KEY;};
     void guiReload(IMPreeditCallback *callback);
     void clear();
@@ -110,12 +110,16 @@ protected:
     bool isMatchKeys(int keycode, int modifier, TriggerKey *trigger);
     u32  mapCNPun(char *key);
     string  mapCNPunToU8Str(char *key);
+    string  lookup(string input);
 
     bool m_bStart;
     string m_input;
     string m_ci;
     string m_candidate;
     int m_curPage; // Start from 1.
+    int m_pageWin[2];
+    int m_uiStringMax;
+    bool m_bCandiItem;
 
     bool   m_bTrigger;
     bool   m_bCN;

@@ -24,27 +24,21 @@ extern void init_singals();
 
 void cleanup(void)
 {
-#ifdef AL_DEBUG
-    gApp.sig.cleanup();
-#endif
-    //gApp.xim.close();
+    if (gApp) {
+        log.d("app exit, cleanup in main\n");printf("cleanup\n");
+        gApp->xim.close();
+    //#ifdef AL_DEBUG
+        gApp->sig.cleanup();
+    //#endif
+        delete gApp;
+    }
 }
 
 static void gui_activate_callback(Window imwin, Display *dpy)
 {
    //printf("joni:%x, %p\n", imwin, dpy);
-   //const char *locale = "C,POSIX,POSIX,en_US.utf8,zh_CN.UTF-8";
-   string pyPath = DATADIR;
-   pyPath += "/pinyin-utf8.imdb";
-   string phPath = DATADIR;
-   phPath += "/phrase-utf8.imdb";
-   string hanPath = DATADIR;
-   hanPath += "/han-utf8.tdf";
- 
-   iIM *pyim = new PY(pyPath, phPath, hanPath);
-
-   gApp.xim.setIM(pyim, true);
-   gApp.xim.open(dpy);
+   gApp->xim.setIM(gApp->newIM(), true);
+   gApp->xim.open(dpy);
 }
 
 static void run_as_daemon()
@@ -80,6 +74,7 @@ static void run_as_daemon()
     //close(STDOUT_FILENO);
     //close(STDERR_FILENO);
 }
+
 int main(int argc, char* argv[])
 {
     //iPY *pyDB = new PY();
@@ -88,15 +83,16 @@ int main(int argc, char* argv[])
     //vector<string> items = pyDB->lookup("w")
 
     system_dir = DATADIR;
-    home_dir = "~/.AlphaIM";
+    home_dir = "/home/joni/.AlphaIM";
     run_as_daemon();
     atexit(cleanup);
+    gApp = new Application();
 //#ifdef AL_DEBUG
-    gApp.sig.init();
+    gApp->sig.init();
 //#endif
 
 #ifdef GTK3
-    return aim_app_main(gApp.pGuiMsgQ, gui_activate_callback, argc, argv);
+    return aim_app_main(gApp->pGuiMsgQ, gui_activate_callback, argc, argv);
 #else
     return 0;
 #endif

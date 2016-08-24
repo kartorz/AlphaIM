@@ -495,9 +495,9 @@ if test -z "$CFLAGS" ; then
   CFLAGS="-MMD -fPIC $CFLAGS"
   if test $_debug = 'yes' ; then
     CFLAGS="-g -O0 $CFLAGS -DAL_DEBUG"
+    _install_strip=
   else
     CFLAGS="-O0 $CFLAGS"
-    _install_strip=
   fi
 else
   warn_cflags=yes

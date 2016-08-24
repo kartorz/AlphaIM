@@ -139,6 +139,10 @@ IC::IC(int icid)
     focus_win = 0;
 }
 
+IC::~IC()
+{
+}
+
 void IC::set(IMChangeICStruct *calldata)
 {
     XICAttribute *xattr = calldata->ic_attr;
@@ -184,6 +188,7 @@ Xicm::Xicm(): m_icid(0), m_icFocus(-1)
 
 Xicm::~Xicm()
 {
+    log.d("~Xicm\n");
     std::map<int, IC*>::iterator iter;
     for (iter = m_ics.begin(); iter != m_ics.end(); iter++)
         delete(iter->second);

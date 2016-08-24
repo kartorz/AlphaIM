@@ -56,6 +56,7 @@ public:
 class  IC {
 public:
     IC(int icid);
+    ~IC();
     void set(IMChangeICStruct *calldata);
     void get(IMChangeICStruct *calldata);
 

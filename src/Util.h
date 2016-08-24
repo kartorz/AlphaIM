@@ -21,8 +21,8 @@ public:
 
     static void   currentDir(string& path);
     static string usrProfileDir(string appname);
-    static void   execDir(string& path);
-    static void   tempDir(string& path);
+    static string execDir(string& path);
+    static string tempDir(string path);
     static void   removeFileName(string& path);
     static void   sleep(int ms/*milliseconds*/);
 

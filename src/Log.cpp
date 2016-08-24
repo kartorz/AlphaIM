@@ -21,11 +21,9 @@ Log log;
 Log::Log()
 : m_level(LOG_ERROR)
 {
-    std::string path;
-    Util::tempDir(path);
+    std::string path = Util::tempDir("");
     path += "/";
     path += LOG_FILENAME;
-
     //std::string path = "stdout";
     m_logFile = fopen(path.c_str(), "w+");
     if (m_logFile == NULL) {

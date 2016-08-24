@@ -9,8 +9,9 @@
 
 #include "Application.h"
 #include "TaskManager.h"
+#include "PY.h"
 
-Application  gApp;
+Application*  gApp = NULL;
 
 Application::Application()
 {
@@ -21,11 +22,28 @@ Application::Application()
 
     TaskManager::getInstance()->start(MAX_WORK_THREAD);
     m_sysMsgr->start();
+    log.d("start Application ...\n");
+}
+
+iIM* Application::newIM()
+{
+    //const char *locale = "C,POSIX,POSIX,en_US.utf8,zh_CN.UTF-8";
+   string pyPath = DATADIR;
+   pyPath += "/pinyin-utf8.imdb";
+   string phPath = DATADIR;
+   phPath += "/phrase-utf8.imdb";
+   string usrPhPath = home_dir + "/aim_phrase-utf8.imdb";
+   string hanPath = DATADIR;
+   hanPath += "/han-utf8.tdf";
+
+   return (new PY(pyPath, phPath, usrPhPath, hanPath));
 }
 
 Application::~Application()
 {
+    log.d("~ Application start\n");
     delete m_sysMsgr;
     delete pGuiMsgQ;
     delete pSysMsgQ;
+    log.d("~Application done\n");
 }

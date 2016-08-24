@@ -27,8 +27,10 @@ void ic_win_refresh(IcWin *win,
     GtkWindow *icwin = GTK_WINDOW (win);
     IcWinClass *klass = IC_WIN_GET_CLASS(win);
 
-    gtk_label_set_text(GTK_LABEL (klass->input_label), strInput.c_str());
-
+    std::string markup = "<span foreground=\"blue\" size=\"x-large\">";
+    markup += "  " + strInput + "</span>";
+    gtk_label_set_markup (GTK_LABEL (klass->input_label), markup.c_str());
+    //gtk_label_set_text(GTK_LABEL (klass->input_label), strInput.c_str());
     int pi = 0;
     if (items != NULL) {
         int len = items->size() < PREEDIT_ITEMS_MAX ? items->size() : PREEDIT_ITEMS_MAX;
@@ -38,7 +40,13 @@ void ic_win_refresh(IcWin *win,
             text += pichr;
             text += ": ";
             text += items->at(pi).val;
-            gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), text.c_str());
+            //gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), text.c_str());
+            if (pi == 0)
+                markup = "<span foreground=\"blue\" size=\"x-large\" background=\"green\">";
+            else
+                markup = "<span foreground=\"blue\" size=\"x-large\">";
+            markup += text +  "</span>";
+            gtk_label_set_markup (GTK_LABEL (klass->preedit_label[pi]), markup.c_str());
         }
 
         delete items;
@@ -56,8 +64,8 @@ void ic_win_refresh(IcWin *win,
 
 IcWin *ic_win_new()
 {
-    #define ICWIN_W  410
-    #define ICWIN_H  80
+   // #define ICWIN_W  510
+   // #define ICWIN_H  92
 
     IcWin* icwin = (IcWin *)g_object_new (IC_WIN_TYPE,
                                           "type", GTK_WINDOW_POPUP,
@@ -70,15 +78,21 @@ IcWin *ic_win_new()
 
     GtkWidget *window = ( GtkWidget *)(GTK_WINDOW(icwin));
     //gtk_widget_set_size_request(window, ICWIN_W, ICWIN_H);    
-    GtkWidget *gridc = gtk_grid_new();
+   // GtkWidget *gridc = gtk_grid_new();
+    GtkWidget *gridc = (GtkWidget *) g_object_new(GTK_TYPE_GRID,
+                                                  "row-spacing", 10,
+                                                  NULL);
     gtk_container_add(GTK_CONTAINER (window), gridc);
     //g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
 
     klass->input_label = gtk_label_new(NULL);
-    gtk_grid_attach(GTK_GRID (gridc), klass->input_label, 0, 0, 3, 1);
+    //gtk_label_set_justify ((GtkLabel *)klass->input_label, GTK_JUSTIFY_LEFT);
+    gtk_widget_set_halign (klass->input_label, GTK_ALIGN_START);
+    gtk_grid_attach(GTK_GRID (gridc), klass->input_label, 0, 0, PREEDIT_ITEMS_MAX, 1);
 
     for (int i = 0; i < PREEDIT_ITEMS_MAX; i++) {
         klass->preedit_label[i] = gtk_label_new(NULL);
+        //gtk_label_set_markup (GTK_LABEL (klass->preedit_label[i]), "<span foreground=\"blue\" size=\"x-large\"");
         gtk_grid_attach(GTK_GRID (gridc), klass->preedit_label[i], i, 1, 1, 1);
     }
 

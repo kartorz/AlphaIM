@@ -33,8 +33,7 @@ protected:
     virtual void parseInxtreeHeaderEnd();
 
 private:
-    FILE *m_dbFile;
-    struct inxtree_header m_header;
+    //FILE *m_dbFile;
     IndexTreeWriter m_writer;
 };
 

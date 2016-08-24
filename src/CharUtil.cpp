@@ -157,7 +157,7 @@ u32 CharUtil::utf8byteToUCS4Char(const char** ub)
     u32 uchr;
 
     if(ub == NULL)
-        return 0;
+        return 0; // '\0'
 
     b = **ub;
     (char *)(*ub)++;
@@ -169,7 +169,7 @@ u32 CharUtil::utf8byteToUCS4Char(const char** ub)
 
     if(b < 0xC0 || b > 0xFD ) {
         uchr = 0;
-        return 0;
+        return -1; // invalid utf8 string.
     }
 
     if(b < 0xE0) {
@@ -198,7 +198,7 @@ u32 CharUtil::utf8byteToUCS4Char(const char** ub)
     }
 
     if(i < len)
-        return 0;
+        return -1;
     return uchr;
 }
 
@@ -220,6 +220,8 @@ size_t  CharUtil::utf8StrToUcs4Str(const char *u8s,  u32** u32Ptr)
         u4char_t u4chr = utf8byteToUCS4Char(&u8s);
         if (u4chr == 0)
             break;
+        if (u4chr == -1)
+            return 0;
         u4s[offset++] = u4chr;
     }
     u4slen = offset;

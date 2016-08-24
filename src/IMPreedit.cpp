@@ -13,34 +13,47 @@
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
 
-IMPreedit::IMPreedit():m_bTrigger(false)
+IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(100)
 {
+}
+
+IMPreedit::~IMPreedit()
+{
+    log.d(":~IMPreedit\n");
 }
 
 bool IMPreedit::commit(int i)
 {
-    i += (m_curPage - 1) * IM_ITEM_PAGE_SIZE - 1; // 'i' starts from 1
-    if (i == 0) // commit candidate string.
+    i = m_pageWin[0] + i - 1; // 'i' starts from 1.
+    if (i == 0 && m_bCandiItem) // commit candidate string.
         return true;
 
-    if(m_items.size() >= i) {
-        IMItem& item = m_items[i];
+    i -= m_bCandiItem;  // offset to m_items
+    printf("commit: i: %d, size: %d\n", i, m_items.size());
+    if(m_items.size() > i) {
+        IMItem item = m_items[i];
 
         int key_pos = m_input.find(item.key, 0);
         if (key_pos != string::npos) {
             int next_pos = key_pos + item.key.length();
+            printf("next pos: %d\n", next_pos);
             if (next_pos < m_input.length()) {
                 m_ci += m_input.substr(0, key_pos); // invalid PY before the 'key'.
                 m_ci += item.val; // key --> val;
                 m_ciItems.push_back(item);
-
                 m_input = m_input.substr(next_pos, m_input.length() - next_pos);
-                m_items.clear();
-                m_candidate = im->lookup(m_input, m_items);
+                m_candidate = lookup(m_input);
                 page(1);
             } else {
-                boost::algorithm::replace_first(m_input, item.key,  item.val);
-                boost::algorithm::replace_first(m_candidate, m_items[0].val,  m_items[i].val);
+                //boost::algorithm::replace_first(m_input, item.key,  item.val);
+                //boost::algorithm::replace_first(m_candidate, m_items[0].val,  m_items[i].val);
+                m_input = "";
+                m_candidate = "";
+                m_ci += m_input.substr(0, key_pos);
+                m_ci += item.val;
+                m_ciItems.push_back(item);
+                page(1);
+                //TODO: show pharse db beging with commit string.
                 return true; // Done, commit the 'commit' string.
             }
         } else {
@@ -111,8 +124,6 @@ string IMPreedit::mapCNPunToU8Str(char *key)
 void IMPreedit::add(char *key)
 {
     m_bStart = true;
-    m_items.clear();
-
     if (m_bCNPun) {
         string strCNPun = mapCNPunToU8Str(key);
         if (strCNPun != "") {
@@ -124,21 +135,22 @@ void IMPreedit::add(char *key)
         m_input += key;
     }
 
-    m_candidate =  im->lookup(m_input, m_items);
+    m_candidate = lookup(m_input);
     page(1);
 }
 
 void IMPreedit::del()
 {
+#if 0
     if (m_ciItems.size () > 0) {
-        IMItem& it = m_ciItems.back();
+        IMItem it = m_ciItems.back();
         m_ciItems.pop_back();
         boost::algorithm::erase_last(m_ci, it.val);
-        //int pos = m_ci.find_last_of(item.val);
+        //int pos = m_ci.find_last_of(it.val);
         //if (pos != string::npos)
-        //    m_ci.erase(pos, item.val.length());
+        //    m_ci.erase(pos, it.val.length());
         //printf("1111%s, %s\n", m_input.c_str(), it.key.c_str());
-        string temp = it.key + m_input;
+        //string temp = it.key + m_input;
         m_input = it.key + m_input;
     } else {
         if (m_input != "") {
@@ -149,10 +161,45 @@ void IMPreedit::del()
             }
         }
     }
+#else
+    if (m_input != "") {
+        printf("del: m_input %s \n", m_input.c_str());
+        char* r = CharUtil::u8charat(m_input.c_str(), -1, NULL);
+        if (r != NULL) {
+            boost::algorithm::erase_last(m_input, r);
+            free(r);
+        }
+    }
+
+    if (m_input == "" && m_ciItems.size () > 0) {
+        IMItem it = m_ciItems.back();
+        m_ciItems.pop_back();
+        boost::algorithm::erase_last(m_ci, it.val);
+        //int pos = m_ci.find_last_of(it.val);
+        //if (pos != string::npos)
+        //    m_ci.erase(pos, it.val.length());
+        //printf("1111%s, %s\n", m_input.c_str(), it.key.c_str());
+        //string temp = it.key + m_input;
+        m_input = it.key + m_input;
+        printf("del: m_input2 %s \n", m_input.c_str());
+    }
+
+    m_candidate = lookup(m_input);
+    page(1);
+#endif
+}
+
+string IMPreedit::lookup(string input)
+{
+    string ret;
+    m_curPage = 0;
+    m_pageWin[0] = 0;
+    m_pageWin[1] = 0;
+    m_candidate = "";
 
     m_items.clear(); 
-    m_candidate = im->lookup(m_input, m_items);
-    page(1);
+    ret = im->lookup(input, m_items);
+    return ret;
 }
 
 void IMPreedit::clear()
@@ -161,7 +208,9 @@ void IMPreedit::clear()
     m_input = "";
     m_ci = "";
     m_candidate = "";
-    m_curPage = 1;
+    m_curPage = 0;
+    m_pageWin[0] = 0;
+    m_pageWin[1] = 0;
     m_items.clear();
     m_ciItems.clear();
     m_uiItems.clear();
@@ -173,37 +222,101 @@ void IMPreedit::close(bool bReset)
         clear();
     }
     guiAction(MSG_IM_OFF);
+    im->close();
 }
 
+/*
+ * The items number of a page is variable depending on length of phrase.
+ * eg:   1 xx  2 xx                 .. 9 xx
+ *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx 
+ *
+ */
+
+/*
+ * The items number of a page is variable depending on length of phrase.
+ * eg:   1 xx  2 xx                 .. 9 xx
+ *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx 
+ *  
+ * Current page: ( m_pageWin[0] , m_pageWin[1] ]
+ */
 void IMPreedit::page(int pg)
 {
-    if (m_candidate == "")
+    //if (m_candidate == "") // Maybe, there are ""s in db.
+    if (m_items.size() == 0)
         return;
 
-    // Exception: if m_items.size() == 0, paMax = 0.
-    int pgMax = (m_items.size() + IM_ITEM_PAGE_SIZE - 1)  / IM_ITEM_PAGE_SIZE;
-    if (pg > pgMax)
-        pg = pgMax;
-    
     if (pg < 1)
         pg = 1;
 
+    bool bPgDown = m_curPage <= pg;
+    if (bPgDown && m_pageWin[1] >=  m_items.size())
+        return;
+
+    if (!bPgDown && m_pageWin[0] <= -1)
+        return;
+
+    int maxItems = IM_ITEM_PAGE_SIZE;
+    int start, end;
+
     m_curPage = pg;
-
-    int start = (pg - 1) * IM_ITEM_PAGE_SIZE;
-    int end = start + IM_ITEM_PAGE_SIZE;
-    end = m_items.size() < end ? m_items.size() : end;
-
     m_uiItems.clear();
+    m_bCandiItem = false;
+
+    IMItem  candiItem;
     if (pg == 1) {
-        IMItem  it = {"", m_candidate};
-        m_uiItems.push_back(it);
-        ++start;
+
+        if (m_candidate != m_items[0].val) {
+            candiItem.key = "";
+            candiItem.val = m_candidate;
+            maxItems--;
+        }
+
+        start = 0;
+        end = m_items.size() < maxItems ? m_items.size() : maxItems;
+        bPgDown = true;
+    } else {
+        //printf("pg:%d, [%d, %d]\n", m_curPage, m_pageWin[0], m_pageWin[1]);
+        if (bPgDown) {
+            //  win[0] ... win[1] | 
+            //             start ... end   
+            start = m_pageWin[1];
+            end = start + maxItems;
+            end = m_items.size() < end ? m_items.size() : end;
+        } else {
+            // start ... end |
+            //           win[0] ... win[1]
+            end = m_pageWin[0];
+            start = end - maxItems;
+            start = start < 0 ? 0 : start;
+        }
+        //printf(" (%d, %d)\n", start, end);
     }
 
-    for (int i = start; i < end; i++) {
-        m_uiItems.push_back(m_items[i]);
+    int length = candiItem.val.length();
+    int pos;
+    for (pos = 0; pos < end - start; pos++) {
+        IMItem it = bPgDown ? m_items[start + pos] : m_items[end - pos - 1] ;
+        m_uiItems.push_back(it);
+        length += it.val.length();
+        if (length > m_uiStringMax) {
+            ++pos; // Fix m_pageWin
+            break;
+        }
     }
+
+    if (bPgDown) {
+        m_pageWin[0] = start;
+        m_pageWin[1] = start + pos;
+    } else {
+        m_pageWin[0] = end - pos;
+        m_pageWin[1] = end;
+    }
+    //printf("done [%d, %d]\n", m_pageWin[0], m_pageWin[1]);
+
+    if (candiItem.val != "") {
+        m_bCandiItem = true;
+        m_uiItems.push_front(candiItem);
+    }   
 }
 
 void IMPreedit::doSwitchCEPun()
@@ -234,12 +347,12 @@ void IMPreedit::doSwitchCE(IMPreeditCallback *callback)
 
 void IMPreedit::doPageup()
 {
-    page(--m_curPage);
+    page(m_curPage-1);
 }
 
 void IMPreedit::doPagedown()
 {
-    page(++m_curPage);
+    page(m_curPage+1);
 }
 
 bool IMPreedit::doInput(char *key)
@@ -271,16 +384,16 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
             string candidate = m_ci + m_candidate;
             PRINTF("commit %s\n", candidate.c_str());
             callback->onCommit(callback->opaque, candidate);
-            
+
             doClose();
-            
+            im->addUserPhrase(candidate);
         }
     }
 }
 
 void IMPreedit::guiAction(int id)
 {
-    gApp.pGuiMsgQ->push(id);
+    gApp->pGuiMsgQ->push(id);
 }
 
 void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
@@ -293,9 +406,9 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
         deque<IMItem>& items = m_uiItems;
 
         deque<IMItem> *pItems = new deque<IMItem>(items);
-        
+
         PRINTF("preEdit %s, %d, %d , %d %d\n", input.c_str(), rect.x, rect.y, rect.w, rect.h);
-        
+
         Message msg;
         msg.id = MSG_IM_INPUT;
         msg.iArg1   = rect.x;
@@ -305,9 +418,9 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
         msg.strArg1 = input;
         msg.pArg1 =   pItems;
         
-        gApp.pGuiMsgQ->push(msg);
+        gApp->pGuiMsgQ->push(msg);
     }
-    //gApp.pGuiMsgQ->push(MSG_IM_OFF);
+    //gApp->pGuiMsgQ->push(MSG_IM_OFF);
 }
 
 void IMPreedit::guiReload(IMPreeditCallback *callback)
@@ -344,4 +457,5 @@ bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
     }
     return False;
 }
+
 

@@ -19,18 +19,6 @@
 
 using namespace std;
 
-class ModifierKeyEventTask: public Task
-{
-public:
-    ModifierKeyEventTask(XIMS ims, IMProtocol *calldata);
-    virtual ~ModifierKeyEventTask() {}
-    virtual void doWork();
-
-private:
-    XIMS m_ims;
-    IMProtocol *m_calldata;
-};
-
 class XimSrv : public IMPreeditCallback
 {
 friend class ModifierKeyEventTask;

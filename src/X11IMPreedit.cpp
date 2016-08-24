@@ -16,12 +16,12 @@ static TriggerKey OnOffKeys[] = {
 /* Conversion Keys List */
 static TriggerKey CommitKeys[] = {
     {XK_space, 0L, 0L},
+    {XK_Return, 0, 0},
     {0L, 0L, 0L}
 };
 
 /* Forward Keys List */
 static TriggerKey ForwardKeys[] = {
-    {XK_Return, 0, 0},
     {XK_Tab, 0, 0},
     {0L, 0L, 0L}
 };

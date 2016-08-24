@@ -16,13 +16,14 @@
 #include "MessageQueue.h"
 #include "SysMessager.h"
 #include "Signal.h"
+#include "iIM.h"
 
 class Application
 {
 public:
     Application();
     ~Application();
-
+    iIM* newIM();
     XimSrv  xim;
     MessageQueue *pGuiMsgQ; // Message send to gui
     MessageQueue *pSysMsgQ;
@@ -31,7 +32,6 @@ private:
     SysMessager  *m_sysMsgr;
 };
 
-
-extern Application  gApp;
-
+extern Application*  gApp;
 #endif
+

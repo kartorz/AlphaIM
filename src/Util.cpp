@@ -186,7 +186,7 @@ string Util::usrProfileDir(string appname)
     return path;
 }
 
-void Util::execDir(string& strpath)
+string Util::execDir(string& strpath)
 {
 #ifdef WIN32
     WIN32Util::execDir(strpath);
@@ -205,14 +205,15 @@ void Util::execDir(string& strpath)
         strpath = execPath.remove_filename().string();
     }
 #endif
+   return strpath;
 }
  
-void Util::tempDir(string& path)
+string Util::tempDir(string app)
 {
 #ifdef _LINUX
-    path = "/tmp";
+    return "/tmp";
 #else
-    usrProfileDir(path);
+    return usrProfileDir(app);
 #endif
 }
 
@@ -347,6 +348,7 @@ void* ReadFile::operator()(FILE *f, size_t length)
         fseek(f, 0, SEEK_SET); 
     }
     ptr = malloc(length);
+    memset(ptr, 0, length);
     size_t rdbytes = 0;
     size_t rsize;
     do {

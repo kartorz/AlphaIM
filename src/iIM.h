@@ -25,6 +25,10 @@ public:
     // 'items' : candidate target items.
     // 'return': the whole candidate string.
     virtual string lookup(const string& input, deque<IMItem>& items) = 0;
+    virtual void addUserPhrase(const string& phrase) = 0;
+    virtual void addUserPhraseAsync(const string& phrase) = 0;
+    virtual void close() = 0;
+    virtual ~iIM() {};
 };
 
 #endif

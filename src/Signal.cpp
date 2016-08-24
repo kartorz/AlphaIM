@@ -2,16 +2,17 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <execinfo.h>
 
 #include "Signal.h"
+#include "Log.h"
 
 static void signal_handler(int sig)
 {
-    if (sig == SIGHUP) Signal::panic("FATAL: Program hanged up\n");
-
-    if (sig == SIGSEGV || sig == SIGBUS)
+    //if (sig == SIGHUP) Signal::panic("FATAL: Program hanged up\n");
+    if (sig == SIGSEGV || sig == SIGBUS || sig == SIGHUP)
     {
-        //Signal::dumpstack();
+        Signal::dumpstack();
         Signal::panic("FATAL: %s Fault. Logged StackTrace\n", (sig == SIGSEGV) ? "Segmentation" : ((sig == SIGBUS) ? "Bus" : "Unknown"));
     }
 
@@ -23,12 +24,19 @@ static void signal_handler(int sig)
 void Signal::dumpstack(void)
 {
     #define PROGNAME   "AlphaIM"
-    char dbx[160];
+    //char dbx[160];
+    log.e("dumpstack\n");
 
+    void* callstack[512];
+    int frames = backtrace(callstack, 512);
+    char** strs = backtrace_symbols(callstack, frames);
+    for (int i = 0; i < frames; ++i) {
+        printf("%s\n", strs[i]);
+        log.e("%s\n", strs[i]);
+    }
+    free(strs);
 //    snprintf(dbx, 160,  "echo 'where\ndetach' | dbx -a %d > %s.dump", getpid(), PROGNAME);
 //    snprintf(dbx, 160,  "gdb -q -p %d", getpid());
-
-//    system(dbx);
     return;
 }
 
