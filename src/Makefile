@@ -30,7 +30,8 @@ SRCS_ALPHAIM += main.cpp      \
              TDFParser.cpp    \
              PY.cpp           \
 			 IMPreedit.cpp    \
-	         X11IMPreedit.cpp
+	         X11IMPreedit.cpp \
+             UsrPhrase.cpp
 
 #ifeq ($(DEBUG), yes)
 SRCS_ALPHAIM += Signal.cpp

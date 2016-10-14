@@ -30,6 +30,8 @@
 #include "Util.h"
 
 #include "PinyinTDFParser.h"
+#include "HanTDFParser.h"
+#include "PhTDFParser.h"
 
 using namespace std;
 
@@ -44,15 +46,19 @@ using namespace std;
 static void usage()
 {
     printf("Usage: AIMTool [options] \n");
-    printf("options:");
+    printf("options:\n");
     printf("    -h help\n");
     printf("    -v version\n");
-    printf("    -p map db  :create PY database \n");
+    printf("    -p tdf db  :create PY database \n");
+    printf("    -a tdf db  :create Han database \n");
+    printf("    -w tdf db  :create Phrase database \n");
     printf("       For example:\n");
     printf("       -p system/pinyin.tdf  system/pinyin.imdb \n");
 }
 
 static void make_pinyinDB(const string& pinyinPath, const string& dbPath);
+static void make_hanDB(const string& hanPath, const string& dbPath);
+static void make_phDB(const string& hanPath, const string& dbPath);
 
 int main(int argc, char* argv[])
 {
@@ -63,7 +69,7 @@ int main(int argc, char* argv[])
 #endif
     //Util::getTimeMS();
 
-	while (( c = getopt(argc, argv, "hvp:")) != -1) {
+	while (( c = getopt(argc, argv, "hvpaw:")) != -1) {
 	    switch (c) {
 	    case 'h':
 	    	usage();
@@ -78,10 +84,24 @@ int main(int argc, char* argv[])
                 make_pinyinDB(optarg, argv[3]);
                 return 0;
             }
-            usage();
-            return 0;
+
+	    case 'a':
+            if (argc ==  4) {
+                make_hanDB(optarg, argv[3]);
+                return 0;
+            }
+
+	    case 'w':
+            if (argc ==  4) {
+                make_phDB(optarg, argv[3]);
+                return 0;
+            }
+
 	    }
-	}
+
+        usage();
+        return 0;
+    }
 
     usage();
     return 0;
@@ -98,5 +118,33 @@ static void make_pinyinDB(const string& pinyinPath, const string& dbPath)
 
     printf("write db file, done: \n");
     printf("    entries: %u\n", pyParser.getTotalEntry());
+    printf("    costs: (%u)s:(%u)ms\n", Util::getTimeMS()/1000, Util::getTimeMS()%1000);
+}
+
+static void make_hanDB(const string& hanPath, const string& dbPath)
+{
+    HanTDFParser hanParser;
+    //pyParser.setDbPath(dbPath);
+    Util::getTimeMS();
+
+    hanParser.parser(hanPath);
+    hanParser.write(dbPath);
+
+    printf("write db file, done: \n");
+    printf("    entries: %u\n", hanParser.getTotalEntry());
+    printf("    costs: (%u)s:(%u)ms\n", Util::getTimeMS()/1000, Util::getTimeMS()%1000);
+}
+
+static void make_phDB(const string& path, const string& dbPath)
+{
+    PhTDFParser phParser;
+    //pyParser.setDbPath(dbPath);
+    Util::getTimeMS();
+
+    phParser.parser(path);
+    phParser.write(dbPath);
+
+    printf("write db file, done: \n");
+    printf("    entries: %u\n", phParser.getTotalEntry());
     printf("    costs: (%u)s:(%u)ms\n", Util::getTimeMS()/1000, Util::getTimeMS()%1000);
 }

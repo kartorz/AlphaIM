@@ -85,7 +85,8 @@ public:
     virtual int handleKey(int keycode, int modifier, char *key, IMPreeditCallback *callback) {return NONE_KEY;};
     void guiReload(IMPreeditCallback *callback);
     void clear();
-    void close(bool bReset=false);
+    void close();
+    void reset();
 
     iIM  *im;
     bool bRefreshWin;

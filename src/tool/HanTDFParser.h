@@ -13,15 +13,15 @@
 #include <string.h>
 
 #include "indextree/IndexTreeWriter.h"
-#include "TDFParser.h"
+#include "PinyinTDFParser.h"
 
 //#define PINYIN_MAGIC  0xB4B3
 
-class HanTDFParser : public TDFParser
+class HanTDFParser : public PinyinTDFParser
 {
 public:
     HanTDFParser();
-    ~HanTDFParser();
+    virtual ~HanTDFParser();
 
 protected:
     virtual void parseRow(int row, string& str, vector<string>& columns);

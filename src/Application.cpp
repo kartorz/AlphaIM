@@ -34,7 +34,7 @@ iIM* Application::newIM()
    phPath += "/phrase-utf8.imdb";
    string usrPhPath = home_dir + "/aim_phrase-utf8.imdb";
    string hanPath = DATADIR;
-   hanPath += "/han-utf8.tdf";
+   hanPath += "/han-utf8.imdb";
 
    return (new PY(pyPath, phPath, usrPhPath, hanPath));
 }

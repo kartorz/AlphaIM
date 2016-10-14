@@ -10,6 +10,7 @@
 #include "indextree/IndexTreeWriter.h"
 #include "TDFParser.h"
 #include "TaskManager.h"
+#include "UsrPhrase.h"
 
 using namespace std;
 
@@ -23,12 +24,10 @@ typedef struct
 {
     deque<IMItem> items;
     string input;
-    int validlen;
 }CacheItem;
 
 class PY: public iIM
 {
-friend class HanTDFParser;
 friend class AddToUserDBTask;
 
 public:
@@ -36,54 +35,60 @@ public:
     PY(const string& pydb,
        const string& phdb,
        const string& usrPhdb,
-       const string& pytbl);
+       const string& handb);
 
     virtual ~PY();
-
     virtual string lookup(const string& input, deque<IMItem>& items);
+    virtual void selectUsrPhrase(const IMItem& imitem);
+
     virtual void addUserPhrase(const string& phrase);
     virtual void addUserPhraseAsync(const string& phrase);
     virtual void close();
+    virtual void reset();
 
 private:
-    int  lookup(string key, IndexList& indexList, deque<IMItem>& items);
-    int  lookupCache(const string& key, deque<IMItem>& items);
-    void cache(const string& input, int validlen, deque<IMItem>& items);
+    string lookup(const string& input, deque<IMItem>& items,  bool firstRound);
+    void lookupPhrase(string key, string input, deque<IMItem>& items);
+    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[]);
+
+    bool lookupCache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
+    void cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
+
     void getPYItems(const string& key, deque<IMItem>& items);
-    bool phraseExists(const string& py, const string& phrase);
+    void getHanItems(const string& py, inxtree_dataitem& d, deque<IMItem>& items);
+    void sort(deque<IMItem>& items);
+    void sort(IndexList& items);
+    void addToPhDB(const string& phrase, u8 priority);
+    void trackUsrInput(const string phrase);
+    void parseUsrInput(vector<string> &phrases);
+    void addToUsrDB(const string& phrase);
+    void getPhraseKey(const string& phrase, vector<string>& phkeys);
 
     MutexCriticalSection m_phdbCS;
 
     IndexTree m_pyDB;
     IndexTree m_phDB;
     IndexTreeWriter  m_usrPhDB;
+    IndexTreeWriter  m_hanDB;
     int m_addCnt;
+    int m_selCnt;
 
-    FILE *m_usrTbl;
+    map<string, deque<IMItem> > m_InputMap;
+    map<string, deque<IMItem> > m_PyMap;
 
-    map<string, HC>   m_hcMap;
-    deque<CacheItem>  m_cache;
     IndexTree* m_phDBs[2];
     int  m_phDBsLen;
-};
+    string m_pendingPhrase;
+    string m_usrPhraseTmp;
+    FILE  *m_usrPhraseFile;
 
-class HanTDFParser : public TDFParser
-{
-public:
-    HanTDFParser(PY* py) {m_owner = py;}
-    ~HanTDFParser() {};
-
-protected:
-    virtual void parseRow(int row, string& str, vector<string>& columns);
-
-private:
-    PY *m_owner;
+    UsrPhrase m_usrPhrase;
 };
 
 class AddToUserDBTask: public Task
 {
 public:
-    AddToUserDBTask(string phrase);
+    AddToUserDBTask(PY* owner, string phrase);
     virtual ~AddToUserDBTask() {}
     virtual void doWork();
 

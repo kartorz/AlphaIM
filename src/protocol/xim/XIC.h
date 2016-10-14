@@ -82,7 +82,7 @@ public:
     int setICFocus(IMChangeFocusStruct *calldata);
     int unsetICFocus(IMChangeFocusStruct *calldata);
     int resetICFocus(IMChangeFocusStruct *calldata);
-    void closeIC(int focus = -1, bool bReset = false);
+    void closeIC(int focus = -1);
     IC* getIC(int focus = -1);
 
 private:

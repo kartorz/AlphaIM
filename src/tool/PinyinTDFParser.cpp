@@ -20,6 +20,8 @@
 
 PinyinTDFParser::PinyinTDFParser()
 {
+    printf("PinyinTDFParser()\n");
+    m_writer.open();
     m_writer.setStrinxThreshold(0, 8);
 }
 

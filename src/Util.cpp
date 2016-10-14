@@ -307,11 +307,10 @@ int Util::stringCommonLen(const string& str1, const string& str2, int start)
 {
     const char* pstr1 = str1.c_str();
     const char* pstr2 = str2.c_str();
-    int ret = 0;
-    for (int i=start; *(pstr1+i) != '\0' && *(pstr2+i) != '\0'; i++)
-        if (*(pstr1+i) == *(pstr2+i)) ++ret;
-
-    return ret;
+    int i = start;
+    for (; *(pstr1+i) != '\0' && *(pstr2+i) != '\0' && *(pstr1+i) == *(pstr2+i); i++) {
+    }
+    return i;
 }
 
 /*string Util::replaceString(string& ori, string old, string new, int count)

@@ -70,9 +70,11 @@ static void run_as_daemon()
     }
 #endif
     /* Close out the standard file descriptors */
-    //close(STDIN_FILENO);
-    //close(STDOUT_FILENO);
-    //close(STDERR_FILENO);
+#ifndef AL_DEBUG
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+#endif
 }
 
 int main(int argc, char* argv[])

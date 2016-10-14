@@ -7,33 +7,25 @@
  *
  */
 
-#ifndef _PINYINTDFPARSER_H_
-#define _PINYINTDFPARSER_H_
+#ifndef _PHTDFPARSER_H_
+#define _PHTDFPARSER_H_
 
 #include <string.h>
 
 #include "indextree/IndexTreeWriter.h"
-#include "TDFParser.h"
+#include "PinyinTDFParser.h"
 
 //#define PINYIN_MAGIC  0xB4B3
 
-class PinyinTDFParser : public TDFParser
+class PhTDFParser : public PinyinTDFParser
 {
 public:
-    PinyinTDFParser();
-    virtual ~PinyinTDFParser();
-
-    void write(const string& dbpath);
-    unsigned int getTotalEntry();
+    PhTDFParser();
+    virtual ~PhTDFParser();
 
 protected:
     virtual void parseRow(int row, string& str, vector<string>& columns);
-    virtual void parseInxtreeHeaderStart();
-    virtual void parseInxtreeHeader(vector<string>& columns);
     virtual void parseInxtreeHeaderEnd();
-
-    //FILE *m_dbFile;
-    IndexTreeWriter m_writer;
 };
 
 #endif

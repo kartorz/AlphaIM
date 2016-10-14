@@ -218,12 +218,14 @@ bool XimSrv::open(Display *dpy)
 void XimSrv::close()
 {
     if (m_imwin > 0) {
+        PRINTF("{XimSrv} close: XDestroyWindow\n");
         log.d("{XimSrv} close: XDestroyWindow\n");
         XDestroyWindow(m_dpy, m_imwin);
         m_imwin = 0;
     }
 
     if (m_ims != (XIMS)NULL) {
+        PRINTF("{XimSrv} close:  im\n");
         log.d("{XimSrv} close:  im\n");
         IMCloseIM(m_ims);
         m_ims = (XIMS)NULL;
@@ -361,7 +363,7 @@ int XimSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 	   has been registered by IMOpenIM or IMSetIMValues, otherwise,
 	   the end of preediting must be notified from the IMserver to the
 	   IMlibrary. */
-        m_icMgr.closeIC(-1, true);
+        m_icMgr.closeIC();
         return 1;
     }
 

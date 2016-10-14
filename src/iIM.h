@@ -15,9 +15,10 @@ using namespace std;
 typedef struct {
     string key;
     string val;
+    int    priority;
 } IMItem;
 
-using namespace std;
+
 
 class iIM {
 public:
@@ -25,9 +26,20 @@ public:
     // 'items' : candidate target items.
     // 'return': the whole candidate string.
     virtual string lookup(const string& input, deque<IMItem>& items) = 0;
+
+    //
+    virtual void selectUsrPhrase(const IMItem& imitem) = 0;
+
+    // Add phrase to user db.
     virtual void addUserPhrase(const string& phrase) = 0;
     virtual void addUserPhraseAsync(const string& phrase) = 0;
+
+    // Disable IC.
     virtual void close() = 0;
+    
+    // Change IC focus.
+    virtual void reset() = 0;
+
     virtual ~iIM() {};
 };
 

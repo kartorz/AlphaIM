@@ -18,8 +18,14 @@ public:
     static wchar_t* mbsrtowcs(const char *mb);
     static char*    wcsrtombs(const wchar_t *wc);
     static int      wcrtomb(char* s, wchar_t *wc);
+
+    // Caller shold free the returned (char*) ptr.
     static char*    nextu8char(const char* u8str, int *o_len);
+    static int      nextu8char(const char* u8str, char* u8chr);
+
+    // Caller shold free the returned (char*) ptr.
     static char*    u8charat(const char* u8str, int pos, int *o_start);
+
     static wchar_t* gb2312towcs(const char *gbbytes);
 };
 

@@ -22,21 +22,30 @@ IMPreedit::~IMPreedit()
     log.d(":~IMPreedit\n");
 }
 
+// ret:
+//    true - close the ic-window
+//    false - otherwise.
 bool IMPreedit::commit(int i)
 {
     i = m_pageWin[0] + i - 1; // 'i' starts from 1.
-    if (i == 0 && m_bCandiItem) // commit candidate string.
+    if (i == 0) // commit candidate string.
+    {
+        //printf("commit candidate %s\n", m_items[i].val.c_str());
+        if (m_items.size() > 0)
+            im->selectUsrPhrase(m_items[i]);
         return true;
+    }
 
     i -= m_bCandiItem;  // offset to m_items
     printf("commit: i: %d, size: %d\n", i, m_items.size());
     if(m_items.size() > i) {
         IMItem item = m_items[i];
+        im->selectUsrPhrase(item);
 
         int key_pos = m_input.find(item.key, 0);
         if (key_pos != string::npos) {
             int next_pos = key_pos + item.key.length();
-            printf("next pos: %d\n", next_pos);
+            //printf("next pos: %d\n", next_pos);
             if (next_pos < m_input.length()) {
                 m_ci += m_input.substr(0, key_pos); // invalid PY before the 'key'.
                 m_ci += item.val; // key --> val;
@@ -44,6 +53,7 @@ bool IMPreedit::commit(int i)
                 m_input = m_input.substr(next_pos, m_input.length() - next_pos);
                 m_candidate = lookup(m_input);
                 page(1);
+                return false; // commit string, go on.
             } else {
                 //boost::algorithm::replace_first(m_input, item.key,  item.val);
                 //boost::algorithm::replace_first(m_candidate, m_items[0].val,  m_items[i].val);
@@ -53,13 +63,12 @@ bool IMPreedit::commit(int i)
                 m_ci += item.val;
                 m_ciItems.push_back(item);
                 page(1);
-                //TODO: show pharse db beging with commit string.
-                return true; // Done, commit the 'commit' string.
+                return true;  // Done, commit the 'commit' string, close ic-window.
             }
-        } else {
-            log.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
-            return true; //Something wrong, just commit, don't lose user input.
         }
+
+        log.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
+        return true; //Something wrong, just commit, don't lose user input.
     }
     return false;
 }
@@ -216,11 +225,15 @@ void IMPreedit::clear()
     m_uiItems.clear();
 }
 
-void IMPreedit::close(bool bReset)
+void IMPreedit::reset()
 {
-    if (bReset) {
-        clear();
-    }
+    guiAction(MSG_IM_OFF);
+    im->reset();
+}
+
+void IMPreedit::close()
+{
+    clear();
     guiAction(MSG_IM_OFF);
     im->close();
 }
@@ -295,7 +308,8 @@ void IMPreedit::page(int pg)
     int length = candiItem.val.length();
     int pos;
     for (pos = 0; pos < end - start; pos++) {
-        IMItem it = bPgDown ? m_items[start + pos] : m_items[end - pos - 1] ;
+        //IMItem it = bPgDown ? m_items[start + pos] : m_items[end - pos - 1] ;
+        IMItem it = m_items[start + pos];
         m_uiItems.push_back(it);
         length += it.val.length();
         if (length > m_uiStringMax) {
@@ -386,7 +400,7 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
             callback->onCommit(callback->opaque, candidate);
 
             doClose();
-            im->addUserPhrase(candidate);
+            im->addUserPhraseAsync(candidate);
         }
     }
 }

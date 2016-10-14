@@ -5,80 +5,66 @@
 #include "indextree/IndexTree.h"
 #include "Util.h"
 #include "Log.h"
+#include "indextree_item.h"
 
 #undef PRINTF
-#define PRINTF(fmt, args...)  printf(fmt, ##args)
-//#define PRINTF(fmt, args...)
+//#define PRINTF(fmt, args...)  printf(fmt, ##args)
+#define PRINTF(fmt, args...)
 
-#define CACHE_ITEMS_MAX 10
+#define CACHE_ITEMS_MAX 100
 
 #define SEP_CHAR '-'
 #define WRITE_USERDB_TH  50
+#define UPDATE_USERDB_TH 50
+#define DEFAULT_PRIORITY  20
+#define REFRESH_PRIORITY_TH  4000
+#define MAX_USRDB_ENTRY     5000
+#define MAX_PRIORITY    255
+#define MAX_PHRASE_LEN  10
 
-void HanTDFParser::parseRow(int row, string& str, vector<string>& columns)
-{
-    if (columns.size() == 3) {
-        HC hc;
-        string key      = columns[0];
-        hc.py       = columns[1];
-        hc.priority = Util::stringToInt(columns[2]);
-        m_owner->m_hcMap[key] = hc;
-    }
-}
-
-PY::PY(): m_addCnt(0)
+PY::PY(): m_addCnt(0), m_selCnt(0)
 {
 }
 
 PY::PY(const string& pydb,
        const string& phdb,
        const string& usrPhdb,
-       const string& pytbl): m_addCnt(0)
+       const string& handb): 
+       m_addCnt(0), m_selCnt(0),
+       m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
 {
     m_pyDB.load(pydb, 0xB4B3);
     m_phDB.load(phdb, 0xB4B3);
+    m_hanDB.load(handb, 0xB4B3, true);
+
     if (!m_usrPhDB.load(usrPhdb, 0xB4B3, true)) {
         log.d("Load usr phd, failure\n");
         memset(&m_usrPhDB.m_header, 0, sizeof(struct inxtree_header));
         m_usrPhDB.m_header.magic[0] = 0xB3;
         m_usrPhDB.m_header.magic[1] = 0xB4;
         m_usrPhDB.m_header.d_coding[0] = INXTREE_UTF8;
+        inxtree_write_u16(m_usrPhDB.m_header.i_size, 1);
     }
 
-    HanTDFParser han_tdf(this);
-    han_tdf.parser(pytbl);
     m_phDBs[0] = &m_phDB;
     m_phDBs[1] = &m_usrPhDB;
     m_phDBsLen = 2;
-/*    IndexList index_list;
-    int size = m_phDB.getIndexList(index_list, "wm", 0, -1);
-    for (int i = 0; i < size; i++) {
-        inxtree_dataitem& d = index_list[i]->d;
-        printf("%s\n", (char *)d.ptr_data);
-    }*/
-    //printf("size == %d\n", size);
-    //vector<inxtree_dataitem> items;
-    //m_phDB.lookup("wm", items);
-    /*for (int i = 0; i < items.size(); i++) {
-        inxtree_dataitem& d = items[i];
-        printf("%s\n", (char *)d.ptr_data);
-    }*/
 }
 
 PY::~PY()
 {
-    //printf("joni debug ~PY\n");
-    //log(LOG_INFO, "~PY write userphd\n");
-    close();
-
+    log(LOG_INFO, "~PY write userphd\n");
     if (m_addCnt > 0) {
         m_addCnt = 0;
         m_usrPhDB.write();
-        log.d("~PY: write user phrase db\n");
     }
 }
 
 void PY::close()
+{
+}
+
+void PY::reset()
 {
     if (m_addCnt > 0) {
         m_addCnt = 0;
@@ -88,240 +74,463 @@ void PY::close()
 
 string PY::lookup(const string& input, deque<IMItem>& items)
 {
-    string ret = "";
-    string key = input;
-    int validlen;
-    string validkey;
-    string rest;
+    return lookup(input, items, true);
+}
 
+string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
+{
+    string key = input;
+    string ret = "";
+    string validkey;
     PRINTF("lookup1 %s\n", key.c_str());
     if (!key.empty()) {
         //@ Start from a valid PY.
-        validlen = m_pyDB.validLen(key);
-        // A whole invlid pinyin, delete the first char, search again.
+        int validlen = m_pyDB.validLen(key);
+ 
+       // A whole invlid pinyin, delete the first char, search again.
         if (validlen == 0) {
-            rest = key.substr(1, validlen - 1);
+            string rest = key.substr(1);
             ret += key[0]; // Append the invalid char to candidate string.
-            ret += lookup(rest, items);
+            ret += lookup(rest, items, true);
             return ret;
         }
 
-        //@ search phrase and filter
-        validkey = key.substr(0, validlen);
-        rest = key.substr(validlen, key.length() - validlen);
-        PRINTF("lookup1 validkey: %s, rest: %s\n", validkey.c_str(), rest.c_str());
-        validlen = m_pyDB.validLen(rest); // The second PY.
-        if (validlen >  0) {
-            int validlen2;
-            //if ((validlen2 = lookupCache(input, items)) == 0) {
-                IndexList indexList;
-                for (int i = 0; i < m_phDBsLen; i++)
-                    (*m_phDBs[i]).getIndexList(indexList, validkey, 0, -1);
+        validkey = input.substr(0, validlen);
 
-                int size1 = items.size();
-                validlen = lookup(input, indexList, items);
-                if (validlen > 0 && (items.size() - size1) > 0 /* larger 'index', not match*/) {
-                    //cache(input, validlen, items);
-                    rest = input.substr(validlen, input.length() - validlen);printf("lookup from phd done\n");
-                }
-            /*} else {
-                validlen = validlen2;
-                rest = input.substr(validlen, input.length() - validlen);
-            }*/
-            PRINTF("lookup phdb valid:%d rest: %s\n", validlen, rest.c_str());
+        //@ Search phrase and filter
+        if (validkey.length() < input.length()) {
+            lookupPhrase(validkey, input, items);
         }
 
-        if (!lookupCache(validkey, items)) {
-            getPYItems(validkey, items);
-            cache(validkey, validkey.length(), items);
+       //PRINTF("lookup1 validkey: %s, rest: %s\n", validkey.c_str(), rest.c_str());  
+        //@ Check if appending PinYin items
+        if (firstRound || (items.size() == 0)) {
+            if (!lookupCache(m_InputMap, validkey, items)) {
+                deque<IMItem> pyitems;
+                getPYItems(validkey, pyitems);
+                cache(m_InputMap, validkey, pyitems);
+                int end = firstRound ? pyitems.size() : 1;
+                for (int i = 0; i < end; i++)
+                    items.push_back(pyitems[i]);
+            }
         }
 
-        if (items.size() > 0)
-            ret += items[0].val;  // Append to candidate string.
+        if (items.size() > 0) {
+            string rest = key.substr(items[0].key.length());
+            ret  = items[0].val;  // Append to candidate string.
 
-        // Contain partly invalid pinyin string, search slice by slice.
-        deque<IMItem> cacheItems;
-        ret += lookup(rest, cacheItems);
-        return ret;
+            // Contain partly invalid pinyin string, search slice by slice.
+            deque<IMItem> cacheItems;
+            ret += lookup(rest, cacheItems, false);
+            return ret;
+        }
     }
     return "";
 }
 
-// Lookup from phrase db.
-int PY::lookup(string key, IndexList& indexList, deque<IMItem>& items)
+void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
 {
-    int validlen = 0;
-
-    if (key != "" && indexList.size() > 0) {
-        bool found = false;
-        int validlen = m_pyDB.validLen(key);
-        //printf("lookup phrase key: %s, validlen: %d\n", key.c_str(), validlen);
-        if (validlen > 0) {
-            string validkey = key.substr(0, validlen);
-
-            vector<iIndexItem*>::iterator iter;
-            for(iter = indexList.begin(); iter != indexList.end();) {
-                string inx = (*iter)->index;
-                if (inx == "") {
-                    ++iter;
-                    continue;
-                }
-                int e = inx.find_first_of(SEP_CHAR, 0);
-                if (e != string::npos)
-                    inx = inx.substr(0, e);
-                //printf("inx: %s, validkey: %s\n", inx.c_str(), validkey.c_str());
-                if (inx.find(validkey, 0) != 0) {
-                    iter = indexList.erase(iter);
-                } else {
-                    found = true;
-                    (*iter)->data_s += validkey;
-                    if (e != string::npos && e < (*iter)->index.length() - 1) {
-                        // 'index' is larger then 'key', so cut 'index' and search continuely.
-                        (*iter)->index = (*iter)->index.substr(e + 1, inx.length() - e - 1);
-                        ++iter;
-                    } else {
-                        (*iter)->index = "";  // Match
-                        inxtree_dataitem& d = (*iter)->d;
-                        if (d.len_data == 0 || d.ptr_data == NULL) {
-                            iter = indexList.erase(iter);
-                        } else {
-                            string val((char *)d.ptr_data);
-                            IMItem item = {(*iter)->data_s, val};
-                            items.push_front(item);
-                            ++iter;
-                            //printf("got a index %s --> %s\n", item.key.c_str(), item.val.c_str());
-                        }
-                    }
-                }
-            }
-
-            if (found) {
-                key = key.substr(validlen, key.length() - validlen);
-                //printf("lookup phrase,validlen:%d next %s\n", validlen, key.c_str());
-                return validlen + lookup(key, indexList, items);
-            }
-        }
-    }
-    return 0;
-}
-
-int PY::lookupCache(const string& input, deque<IMItem>& items)
-{
-    deque<CacheItem>::iterator iter;
-    for (iter = m_cache.begin(); iter != m_cache.end(); iter++) {
-        if (iter->input == input) {
-            PRINTF("joni debug lookup from cache %s, %d\n", input.c_str(), iter->validlen);
-            for (int i = 0; i < iter->items.size(); i++)
-                items.push_back(iter->items[i]);
-            return iter->validlen;
-        }
-    }
-    return 0;
-}
-
-void PY::cache(const string& input, int validlen, deque<IMItem>& items)
-{
-    if (m_cache.size() > CACHE_ITEMS_MAX) {
-        m_cache.pop_front();
-    }
-
-    CacheItem i;
-    i.input = input;
-    i.validlen = validlen;
-    i.items = items;
-    m_cache.push_back(i);
-}
-
-void PY::getPYItems(const string& key, deque<IMItem>& items)
-{
+    // Gets All phrases beging with 'key[0 .. -1]'.
+    // Fix the 'dier' , 'wangu' issue.
+    //    - dier: di'er  die'r
+    //    - wangu: wang'u  wan'gu
+    if (key.length() > 2)
+        key = key.substr(0, key.length() - 1);
+    //printf("lookupPhrase %s\n", key.c_str());
     IndexList indexList;
+    for (int i = 0; i < m_phDBsLen; i++) {
+        m_phDBs[i]->getIndexList(indexList, key, true);
+    }
 
-    int size = m_pyDB.getIndexList(indexList, key, 0, -1);
+    deque<IMItem> imitemList[MAX_PHRASE_LEN + 1];
+    vector<iIndexItem*>::iterator iter;
+    for(iter = indexList.begin(); iter != indexList.end(); iter++) {
+        lookupPhrase(input, *iter, imitemList);
+    }
+
+    // Start from two hans.
+    for (int i = MAX_PHRASE_LEN; i > 1; i--) {
+        if (imitemList[i].size() > 0) {
+            sort(imitemList[i]);
+            for (int ii = 0; ii < imitemList[i].size(); ii++) {
+                items.push_back(imitemList[i].at(ii));
+            }
+        }
+    }
+
+    IndexTree::freeItems(indexList);
+}
+
+void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[])
+{
+    char han[10];
+    int npos = 0;
+    int len = 0;
+    int number = 0;
+    bool found;
+    string imkey = "";
+    string imval = "";
+
+    string prefix;
+    string phs = item->index;
+    int e = phs.find_first_of(SEP_CHAR, 0);
+    if (e != string::npos) {
+        item->index = phs.substr(e + 1);
+        prefix = phs.substr(0, e + 1);
+    }
+
+    char *phstr = (char *)item->index.c_str();
+    int phstrlen = item->index.length();
+
+    do {
+        found = false;
+        int len = CharUtil::nextu8char(phstr + npos, han);
+        if (len != 1) {
+            imval += item->index.substr(npos, len);
+            npos += len;
+            ++number;
+            //printf("lookupPhrase %s --> %s,\n", imval.c_str(), phstr);
+
+            vector<inxtree_dataitem> pyitems;
+            m_hanDB.lookup(han, pyitems);
+            for (int i = 0; i < pyitems.size(); i++) {
+                HanItem hani(pyitems[i].ptr);
+                string py = hani.py;
+                int len = Util::stringCommonLen(py, key);
+                if (len > 0) {
+                    found = true;
+                    imkey += key.substr(0, len);
+                    key = key.substr(len);
+                    break;
+                }
+            }
+            IndexTree::freeItems(pyitems);
+        } else {
+            break;
+        }
+    } while(found && key != "" && npos < phstrlen);
+
+    if (found == true)
+    {
+        if (npos <  phstrlen) {       
+            //printf("check if exist %s, npos:%d, phstrlen:%d\n", (prefix+imval).c_str(), npos, phstrlen);
+            for (int i = 0; i < m_phDBsLen; i++) {                
+                if (m_phDBs[i]->isExist(prefix+imval)) /* Don't append the duplicate item.*/ 
+                    return;
+            }
+        }
+
+        IMItem imitem;
+        imitem.key = imkey;
+        imitem.val = imval;
+        imitem.priority = item->d.buf[0];
+        //printf("found %s, priorid %d\n", phstr, imitem.priority);
+
+        // input: guojia
+        // guo'jia   guo'ji
+        if (key == "") 
+            imitemList[MAX_PHRASE_LEN].push_back(imitem);  // perfect match
+        else
+            imitemList[number].push_back(imitem);
+    }
+}
+
+bool PY::lookupCache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items)
+{
+    map<string, deque<IMItem> >::iterator iter = cache.find(key);
+    if(iter != cache.end()) {
+        PRINTF("lookup from cache %s\n", key.c_str());
+        deque<IMItem> cacheItems = iter->second;
+        for (int i = 0; i < cacheItems.size(); i++) {
+            items.push_back(cacheItems[i]);
+        }
+        return true;
+    }
+    return false;
+}
+
+void PY::cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items)
+{
+    map<string, deque<IMItem> >::iterator iter = cache.find(key);
+    if(iter == cache.end()) {
+        if(cache.size() > CACHE_ITEMS_MAX) {
+            for (int i = 0; i < CACHE_ITEMS_MAX/2; i++)
+                cache.erase(cache.begin());
+        }
+        cache[key] = items;
+    }
+}
+
+void PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
+{
+    char han[8];
+    int len = CharUtil::nextu8char(phrase.c_str(), han);
+    if (len > 0) {
+        vector<inxtree_dataitem> pyitems;
+        m_hanDB.lookup(han, pyitems);
+        if (pyitems.size() == 0) {
+            log(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han); 
+            return;
+        }
+
+        if (len == phrase.length()) {
+            return;
+        }
+
+        for (int i = 0; i < pyitems.size(); i++) {
+            HanItem hani(pyitems[i].ptr);
+            string key = hani.py + SEP_CHAR + phrase; 
+            phkeys.push_back(key);
+        }
+    }
+}
+
+void PY::selectUsrPhrase(const IMItem& imitem)
+{
+    if (imitem.priority < MAX_PRIORITY) {
+        vector<string> phkeys;
+        getPhraseKey(imitem.val, phkeys);
+        for(int i = 0; i < phkeys.size(); i++) {
+            u8 p[1];
+            p[0] = imitem.priority + 1;
+            //printf("im priority %d\n", imitem.priority);
+            if (m_usrPhDB.update(phkeys[i], p, 1)) {
+                if (++m_selCnt > REFRESH_PRIORITY_TH) {
+                    u8 *buf = NULL;
+                    int size = m_usrPhDB.readData(&buf);
+                    if (size > 0) {
+                        for (int i = 0; i < size; i++) {
+                            if (buf[i] > 5)
+                                --buf[i];
+                        }
+
+                        m_usrPhDB.writeData(buf, size);
+
+                        m_selCnt = 0;
+                    }
+                    if (buf != NULL)
+                        free(buf);
+
+                    log(LOG_INFO, "selectUsrPhrase: > REFRESH_PRIORITY_TH, decrease priority\n");
+                }
+            }
+        }
+    }
+}
+
+void PY::getPYItems(const string& py, deque<IMItem>& items)
+{
+    vector<inxtree_dataitem> pyItems[2];
+    IndexList indexList;
+    int size = m_pyDB.getIndexList(indexList, py, INXTREE_LOAD);
     for (int i = 0; i < size; i++) {
         inxtree_dataitem& d = indexList[i]->d;
+        if (indexList[i]->index.length() == py.length()) {  // perfect match. 
+            //printf("perfect match %s\n", indexList[i]->index.c_str());
+            pyItems[0].push_back(d);
+        } else
+            pyItems[1].push_back(d);
+    }
 
-        const char* hanstr = (char *)d.ptr_data;
-        int haninx = 0;
-        char* han = CharUtil::nextu8char(hanstr + haninx, &haninx);
-        while (han != NULL) {
-            IMItem item = {key, han};
-            items.push_back(item);
+    for (int i = 0; i < pyItems[0].size(); i++) {
+        inxtree_dataitem& d = pyItems[0][i];
+        getHanItems(py, d, items);
+    }
+    sort(items);
+    //m_pyDB.freeItems(pyItems[0]);
+    {
+    deque<IMItem> imItems;
+    for (int i = 0; i < pyItems[1].size(); i++) {
+        inxtree_dataitem& d = pyItems[1][i];
+        getHanItems(py, d, imItems);
+    }
+    sort(imItems);
+    //m_pyDB.freeItems(pyItems[1]);
 
-            free(han);
-            han = CharUtil::nextu8char(hanstr + haninx, &haninx);
+    IndexTree::freeItems(indexList); // This will free  inxtree_dataitem->ptr, check if double free.
+
+    for (int j = 0; j < imItems.size(); j++) {
+        items.push_back(imItems[j]);
+    }
+    }
+
+    for (int i = py.length() - 1;  i > 1; i--) {
+        string py2 = py.substr(0, i);
+        deque<IMItem> py2ImItems;
+
+        if (!lookupCache(m_PyMap, py2, py2ImItems)) {
+            vector<inxtree_dataitem> py2Items;
+            m_pyDB.lookup(py2, py2Items);
+            for (int ii = 0; ii < py2Items.size(); ii++) {
+                getHanItems(py2, py2Items[ii], py2ImItems);
+            }
+            m_pyDB.freeItems(py2Items);
+            sort(py2ImItems);
+            cache(m_PyMap, py2, py2ImItems);
+        }
+
+        for (int j = 0; j < py2ImItems.size(); j++) {
+            items.push_back(py2ImItems[j]);
         }
     }
+}
+
+void PY::getHanItems(const string& py, inxtree_dataitem& d, deque<IMItem>& items)
+{
+    char* hanstr = (char *)d.ptr;
+    int haninx = 0;
+    char han[8];
+    int len = CharUtil::nextu8char(hanstr + haninx, han);
+    while (len != -1) {
+        IMItem item;
+        item.key = py;
+        item.val = han;
+
+        HanItem hani(m_hanDB.find(item.val));
+        item.priority = hani.priority;
+
+        items.push_back(item);
+
+        haninx += len;
+        len = CharUtil::nextu8char(hanstr + haninx, han);
+    }
+}
+
+void PY::sort(deque<IMItem>& items)
+{
+    deque<IMItem> B(items.size());
+
+    int C[0x100];
+    memset(C, 0, sizeof(C));
+
+    for (int j = 0; j < items.size(); j++) {
+        int inx = MAX_PRIORITY - items[j].priority; // reverse
+        ++C[inx];
+    }
+
+    for (int j = 1; j <= 0xff; j++) {
+        C[j] += C[j-1];
+    }
+
+    for (int j = items.size() - 1; j >= 0; j--) {
+        int p = MAX_PRIORITY - items[j].priority;
+        int count = C[p];
+        B[count - 1] = items[j];
+        --C[p];
+    }
+
+    items = B;
+}
+
+void PY::sort(IndexList& items)
+{
+    IndexList B(items.size());
+
+    int C[0x100];
+    memset(C, 0, sizeof(C));
+
+    for (int j = 0; j < items.size(); j++) {
+        int inx = MAX_PRIORITY - items[j]->d.buf[0]; // reverse
+        ++C[inx];
+    }
+
+    for (int j = 1; j <= 0xff; j++) {
+        C[j] += C[j-1];
+    }
+
+    for (int j = items.size() - 1; j >= 0; j--) {
+        int p = MAX_PRIORITY - items[j]->d.buf[0];
+        int count = C[p];
+        B[count - 1] = items[j];
+        --C[p];
+    }
+
+    items = B;
 }
 
 void PY::addUserPhrase(const string& phrase)
 {
-    string py;
-    const char* hanstr = phrase.c_str();
-    int haninx = 0;
-    char* han = CharUtil::nextu8char(hanstr + haninx, &haninx);
-    int count = 0;
-    while (han != NULL) {
-         map<string, HC>::iterator iter = m_hcMap.find(han);
-         if(iter == m_hcMap.end()) {
-            log(LOG_INFO, "addUserPhrase: no py with han(%s), return.\n", han); 
-            free(han);
+    vector<string> phraseVec;
+    m_usrPhrase.trackUsrInput(phrase, phraseVec);
+    for (int i = 0; i < phraseVec.size(); i++)
+        addToUsrDB(phraseVec[i]);
+
+    addToUsrDB(phrase);
+}
+
+void PY::addToUsrDB(const string& phrase)
+{
+    char han[8];
+    int len = CharUtil::nextu8char(phrase.c_str(), han);
+    if (len > 0) {
+        vector<inxtree_dataitem> pyitems;
+        m_hanDB.lookup(han, pyitems);
+        if (pyitems.size() == 0) {
+            log(LOG_INFO, "addToUsrDB: no py with han(%s), return.\n", han);
             return;
         }
-        free(han);
-        py += iter->second.py + SEP_CHAR;
-        han = CharUtil::nextu8char(hanstr + haninx, &haninx);
-        ++count; 
-    }
 
-    if (py == "" || count <= 1) {
-        log(LOG_ERROR, "addUserPhrase: py is null, got a invalid phrase(%s).\n",phrase.c_str()); 
-        return;
-    }
+        if (len == phrase.length()) {
+            //printf("only one phrase\n");
+            return;
+        }
 
-    py.erase(py.length()-1);
+        if (m_usrPhDB.getTotalEntry() > MAX_USRDB_ENTRY) {
+            IndexList indexList;
+            m_usrPhDB.getIndexList(indexList, "", true);
+            sort(indexList);
+            m_usrPhDB.clear();
+            for(int i = 0; i < MAX_USRDB_ENTRY / 2 ; i++) {
+                u8 priority = indexList[i]->d.buf[0];
+                u32* keyPtr = NULL;
+                int keyLen = CharUtil::utf8StrToUcs4Str(indexList[i]->index.c_str(), &keyPtr);
+                if (keyLen > 0) {
+                    m_usrPhDB.add(keyPtr, keyLen, (void *)&priority, 1);
+                    free(keyPtr);
+                }
+            }
+            m_usrPhDB.write();
+            IndexTree::freeItems(indexList);
 
-    PRINTF("addUserPhrase: (%s)-->(%s)\n", py.c_str(), phrase.c_str());
+            m_addCnt = 0;
 
-    if (!phraseExists(py, phrase)) {   
-        u32* keyPtr = NULL;
-        int keyLen = CharUtil::utf8StrToUcs4Str(py.c_str(), &keyPtr);printf("add to indextree\n");
-        if (keyLen > 0) {
-            m_usrPhDB.add(keyPtr, keyLen, (void *)phrase.c_str(), phrase.length() + 1/*'\0'*/);
-            free(keyPtr);
-            if (++m_addCnt > WRITE_USERDB_TH) {
-                m_addCnt = 0;
-                m_usrPhDB.write();
+            log(LOG_INFO, "addToUsrDB: > MAX_USRDB_ENTRY, clean up user db. \n");
+        }
+
+        for (int i = 0; i < pyitems.size(); i++) {
+            HanItem hani(pyitems[i].ptr);
+            string key = hani.py + SEP_CHAR + phrase; 
+            for (int i = 0; i < m_phDBsLen; i++) {                
+                if (m_phDBs[i]->isExist(key))
+                    return;
+            }
+
+            //printf("addUserPhrase %s\n", key.c_str());
+            u8 priority = DEFAULT_PRIORITY;
+            u32* keyPtr = NULL;
+            int keyLen = CharUtil::utf8StrToUcs4Str(key.c_str(), &keyPtr);
+            if (keyLen > 0) {
+                m_usrPhDB.add(keyPtr, keyLen, (void *)&priority, 1);
+                free(keyPtr);
+                if (++m_addCnt > WRITE_USERDB_TH) {
+                    m_addCnt = 0;
+                    m_usrPhDB.write();
+                }
             }
         }
+    } else {
+        log(LOG_ERROR, "addUserPhrase: got a invalid phrase(%s).\n",phrase.c_str()); 
     }
 }
 
 void PY::addUserPhraseAsync(const string& phrase)
 {
-    AddToUserDBTask* tsk = new AddToUserDBTask(phrase);
+    AddToUserDBTask* tsk = new AddToUserDBTask(this, phrase);
     TaskManager::getInstance()->addTask(tsk);
 }
 
-bool PY::phraseExists(const string& py, const string& phrase) 
-{
-    vector<inxtree_dataitem> items;
-    for (int i = 0; i < m_phDBsLen; i++)
-        (*m_phDBs[i]).lookup(py,items);
-    
-    vector<inxtree_dataitem>::iterator iter;
-    for(iter = items.begin(); iter != items.end(); ++iter) {
-        inxtree_dataitem& d = (*iter);
-        if (d.len_data > 0 && d.ptr_data != NULL) {
-            string val((char *)d.ptr_data);
-            if (val.compare(phrase) == 0)
-                return true;
-        }
-    }
-    return false;
-}
-
-AddToUserDBTask::AddToUserDBTask(string phrase):
-Task(0, false), m_phrase(phrase)
+AddToUserDBTask::AddToUserDBTask(PY* owner, string phrase):
+Task(0, false), m_owner(owner), m_phrase(phrase)
 {
 }
 

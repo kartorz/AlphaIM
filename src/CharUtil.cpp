@@ -146,8 +146,38 @@ char* CharUtil::nextu8char(const char* u8str, int *o_len)
     char *ret = (char *)malloc(len+1);
     strncpy(ret, u8str, len);
     ret[len] = '\0';
-    *o_len += len;
+    if (o_len) *o_len += len;
     return ret;
+}
+
+int CharUtil::nextu8char(const char* u8str, char* u8chr)
+{
+    int i, len;
+    unsigned char b;
+
+    b = *u8str;
+    if (b == 0x00)
+        return -1;
+
+    if(b < 0x80) {
+        len = 1;
+    } else if(b < 0xC0 || b > 0xFD ) {
+        return -1;
+    } else if(b < 0xE0) {
+        len = 2;
+    } else if(b < 0xF0) {
+        len = 3;  
+    } else if( b < 0xF8) {
+        len = 4;	
+    } else if(b < 0xFC) {  
+        len = 5;
+    } else {
+        len = 6;
+    }
+
+    strncpy(u8chr, u8str, len);
+    u8chr[len] = '\0';
+    return len;
 }
 
 u32 CharUtil::utf8byteToUCS4Char(const char** ub)
@@ -160,7 +190,7 @@ u32 CharUtil::utf8byteToUCS4Char(const char** ub)
         return 0; // '\0'
 
     b = **ub;
-    (char *)(*ub)++;
+    (char *)(*ub)++; //Move to next byte.
 
     if(b < 0x80) {
         uchr = b;
@@ -168,7 +198,7 @@ u32 CharUtil::utf8byteToUCS4Char(const char** ub)
     }
 
     if(b < 0xC0 || b > 0xFD ) {
-        uchr = 0;
+        uchr = -1;
         return -1; // invalid utf8 string.
     }
 
@@ -210,6 +240,7 @@ int CharUtil::ucs4slen(const u32 *ucs)
     return len;
 }
 
+// Caller should release *u32Ptr;
 size_t  CharUtil::utf8StrToUcs4Str(const char *u8s,  u32** u32Ptr)
 {
     size_t len = strlen(u8s);
@@ -221,9 +252,10 @@ size_t  CharUtil::utf8StrToUcs4Str(const char *u8s,  u32** u32Ptr)
         if (u4chr == 0)
             break;
         if (u4chr == -1)
-            return 0;
+            continue; //return 0;
         u4s[offset++] = u4chr;
     }
+    u4s[offset] = '\0';
     u4slen = offset;
     *u32Ptr = u4s;
     return u4slen;
@@ -235,6 +267,9 @@ char* CharUtil::ucs4StrToUTF8Str(const u32 *ucs, size_t* u8slen)
     size_t total = ucs4slen(ucs);
     total = total * UCS4C_TO_U8BYTES_MAX + 1;
     char *u8s = (char *)malloc(total);
+    if (u8s == NULL)
+        return NULL;
+
     memset(u8s, '\0', total);
     u32 uchr;
     size_t offset = 0;

@@ -145,7 +145,8 @@ gboolean aim_app_on_show_icwin(gpointer user_data)
     std::string strInput = pmsg->strArg1;
     std::deque<IMItem> *items = (std::deque<IMItem> *)(pmsg->pArg1);
 
-    PRINTF("aim_app_on_show_icwin %d, %d ,%d ,%d\n", x,y,w,h);
+    //PRINTF("aim_app_on_show_icwin %d, %d ,%d ,%d\n", x,y,w,h);
+    //printf("aim_app_on_show_icwin %d, %d ,%d ,%d\n", x,y,w,h);
 
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
     ic_win_refresh(klass->icwin, x, y, w, h, strInput, items);

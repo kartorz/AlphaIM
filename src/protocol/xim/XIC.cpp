@@ -245,15 +245,15 @@ int Xicm::resetICFocus(IMChangeFocusStruct *calldata)
     PRINTF("resetICfocus %d icid %d \n",m_icFocus, calldata->icid);
     IC *ic = getIC(calldata->icid);
     if (ic != NULL && m_icFocus == calldata->icid ) {
-        ic->preedit.close();
+        ic->preedit.reset();
     }
 }
 
-void Xicm::closeIC(int focus,  bool bReset)
+void Xicm::closeIC(int focus)
 {
     IC *ic = getIC(focus);
     if (ic != NULL) {
-        ic->preedit.close(bReset);
+        ic->preedit.close();
     }
 }
 
