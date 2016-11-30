@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "Log.h"
 #include "indextree_item.h"
+#include "Configure.h"
 
 #undef PRINTF
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
@@ -49,6 +50,8 @@ PY::PY(const string& pydb,
     m_phDBs[0] = &m_phDB;
     m_phDBs[1] = &m_usrPhDB;
     m_phDBsLen = 2;
+
+    m_selCnt = Configure::getRefrence().readSelcnt();
 }
 
 PY::~PY()
@@ -313,6 +316,7 @@ void PY::selectUsrPhrase(const IMItem& imitem)
 
                     log(LOG_INFO, "selectUsrPhrase: > REFRESH_PRIORITY_TH, decrease priority\n");
                 }
+                Configure::getRefrence().writeSelcnt(m_selCnt);
             }
         }
     }

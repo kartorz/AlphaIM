@@ -62,49 +62,6 @@ X11IMPreedit::X11IMPreedit():m_preModKey(-1),m_preRetKey(0)
 {
 }
 
-u32 X11IMPreedit::mapCNPun(char *key)
-{
-    switch (*key) {
-    case '.':
-        return 0x3002;
-    case '?':
-        return 0xFF1F;
-    case '!':
-        return 0xFF01;
-    case ',':
-        return 0xFF0C;
-    case '`':
-        return 0x3001;
-    case ';':
-        return 0xFF1B;
-    case ':':
-        return 0xFF1A;
-    case '\"':
-        if (m_bPreQuo) {
-            m_bPreQuo = false;
-            return 0x201C;
-        } else {
-            m_bPreQuo = true;
-            return 0x201D;
-        }
-    case  '(':
-        return 0xFF08;
-    case ')':
-        return 0xFF09;
-    case '[':
-        return 0x3010;
-    case ']':
-        return 0x3011;
-    case '-':
-        return 0x2014;
-    case '<':
-        return 0x300A;
-    case '>':
-        return 0x300B;
-    }
-    return 0;
-}
-
 /*
  * There are some pains when comes to precess x11 keys.
  * 1) modifier + key

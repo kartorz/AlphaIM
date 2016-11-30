@@ -10,7 +10,6 @@ public:
     virtual int  handleKey(int keycode, int modifier, char *key,  int evtype, IMPreeditCallback *callback);
 
 private:
-    u32  mapCNPun(char *key);
     int m_preModKey;
     int m_preRetKey;
 };

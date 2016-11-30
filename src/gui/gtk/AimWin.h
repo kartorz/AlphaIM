@@ -1,7 +1,8 @@
-#ifndef __AIMWIN_H
-#define __AIMWIN_H
+#ifndef _AIMWIN_H_
+#define _AIMWIN_H_
 
 #include <gtk/gtk.h>
+#include "HelpWin.h"
 
 typedef struct _AimWin         AimWin;
 typedef struct _AimWinClass    AimWinClass;

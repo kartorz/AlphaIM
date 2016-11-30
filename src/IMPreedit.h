@@ -41,9 +41,6 @@ using namespace std;
 
 #define CACHE_ITEMS_MAX  10
 
-#define ICWIN_W  480
-#define ICWIN_H  64
-
 typedef struct {
     int x,y,w,h;
 } ICRect;
@@ -83,6 +80,8 @@ public:
     IMPreedit();
     virtual ~IMPreedit();
     virtual int handleKey(int keycode, int modifier, char *key, IMPreeditCallback *callback) {return NONE_KEY;};
+    virtual void handleMessage(int msg);
+
     void guiReload(IMPreeditCallback *callback);
     void clear();
     void close();

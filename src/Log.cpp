@@ -19,7 +19,7 @@
 Log log;
 
 Log::Log()
-: m_level(LOG_ERROR)
+: m_level(LOG_DEBUG)
 {
     std::string path = Util::tempDir("");
     path += "/";

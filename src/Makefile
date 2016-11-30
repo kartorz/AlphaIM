@@ -31,7 +31,8 @@ SRCS_ALPHAIM += main.cpp      \
              PY.cpp           \
 			 IMPreedit.cpp    \
 	         X11IMPreedit.cpp \
-             UsrPhrase.cpp
+             UsrPhrase.cpp \
+             Configure.cpp
 
 #ifeq ($(DEBUG), yes)
 SRCS_ALPHAIM += Signal.cpp
@@ -121,7 +122,7 @@ install-%: % install-dirs
 install-system: install-dirs
 	install -m 0666  system/pinyin-utf8.imdb       "$(DATADIR)/"
 	install -m 0666  system/phrase-utf8.imdb       "$(DATADIR)/"
-	install -m 0666  system/han-utf8.tdf           "$(DATADIR)/"
+	install -m 0666  system/han-utf8.imdb          "$(DATADIR)/"
 
 uninstall:
 	rm -f $(BINDIR)/AlphaIM $(BINDIR)/AIMTool

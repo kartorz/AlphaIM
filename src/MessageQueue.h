@@ -39,6 +39,10 @@ enum {
     MSG_IM_EPUN,
     MSG_IM_CLOSE,
     MSG_IM_COMMIT,
+
+    MSG_UI_LAN,
+    MSG_UI_PUN,
+
     MSG_QUIT,
 };
 

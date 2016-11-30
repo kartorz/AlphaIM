@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include "AimWin.h"
 #include "IcWin.h"
+#include "HelpWin.h"
 
 #include "aim.h"
 #include "GuiMessager.h"
@@ -28,10 +29,14 @@ struct _AimAppClass
     GuiMessager         *gui_messager;
     IcWin               *icwin;
     AimWin              *imwin;
+    HelpWin             *hpwin;
+
     GtkStatusIcon       *systray;
     GtkWidget           *systray_img_en;
     GtkWidget           *systray_img_cn;
     GtkWidget           *systray_img_app;
+    bool                bshow_imwin;
+    int                 x,y;
 };
 
 #ifdef __cplusplus

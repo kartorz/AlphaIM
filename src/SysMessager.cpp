@@ -43,19 +43,18 @@ void SysMessager::processMessage()
         return;
     }
     //log(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
-	switch (msg.id) {
-        case MSG_IM_INPUT: {
-
-            break;
-        }
-
+    if (msg.id >= MSG_UI_LAN  && msg.id <= MSG_UI_PUN)
+        gApp->xim.handleUIMessage(msg.id);
+    else {
+        switch (msg.id) {
 	    case MSG_QUIT: {
-                abort();
-                break;
+            abort();
+            break;
         }
 
         default:
             break;
+        }
     }
 	//printf("Message done\n");
 }

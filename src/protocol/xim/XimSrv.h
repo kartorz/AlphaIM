@@ -39,10 +39,10 @@ public:
     int handleTriggerNotify(XIMS ims, IMProtocol *calldata);
     int handlePreeditStartReply(XIMS ims, IMProtocol *calldata);
     int handlePreeditCaretReply(XIMS ims, IMProtocol *calldata);
-
     int doModifierKeyEvent(XIMS ims, IMProtocol *calldata);
 
     void setIM(iIM *im, bool en);
+    void handleUIMessage(int msg);
 
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candiate);

@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "AimWin.h"
 #include "Util.h"
+#include "Configure.h"
 
 #ifdef GTK3
 #include <gdk/gdkx.h>
@@ -37,6 +38,8 @@ void cleanup(void)
 static void gui_activate_callback(Window imwin, Display *dpy)
 {
    //printf("joni:%x, %p\n", imwin, dpy);
+   log.d("setIM and open\n");
+
    gApp->xim.setIM(gApp->newIM(), true);
    gApp->xim.open(dpy);
 }
@@ -79,15 +82,13 @@ static void run_as_daemon()
 
 int main(int argc, char* argv[])
 {
-    //iPY *pyDB = new PY();
-    //pyDB->load("system/pinyin-utf8.imdb");
-
-    //vector<string> items = pyDB->lookup("w")
-
-    system_dir = DATADIR;
-    home_dir = "/home/joni/.AlphaIM";
     run_as_daemon();
     atexit(cleanup);
+
+    Configure::getRefrence().initialization();
+    system_dir = Configure::getRefrence().m_dataDir;
+    home_dir = Configure::getRefrence().m_homeDir;
+
     gApp = new Application();
 //#ifdef AL_DEBUG
     gApp->sig.init();

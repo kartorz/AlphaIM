@@ -7,8 +7,10 @@
 
 // Page range [1..n]
 #define IM_ITEM_PAGE_SIZE  9
-#define ICWIN_W  480
+#define ICWIN_W  768
 #define ICWIN_H  64
+#define IM_INPUT_MAX  40
+
 
 using namespace std;
 
