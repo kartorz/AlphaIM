@@ -211,7 +211,9 @@ bool XimSrv::open(Display *dpy)
 
     m_ims = ims;
     //XSelectInput(dpy, imwin, StructureNotifyMask);
-    XSetErrorHandler(aim_err_handler);
+    //XSetErrorHandler(aim_err_handler);
+   log.d("imopen\n");
+
     return true;
 }
 
@@ -285,6 +287,14 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     int ret = ic->preedit.handleKey(keysym, kev->state, strbuf, evtype, this);
     if (ret == FORWARD_KEY) {
         IMForwardEvent(ims, (XPointer)calldata);
+    }
+}
+
+void XimSrv::handleUIMessage(int msg)
+{
+    IC* ic = m_icMgr.getIC();
+    if (ic != NULL) {
+        ic->preedit.handleMessage(msg);
     }
 }
 
@@ -416,7 +426,7 @@ void XimSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 
 void XimSrv::setIM(iIM *im, bool en)
 {
-    m_im = im;   
+    m_im = im;
 }
 
 XRectangle XimSrv::getICWinRect()
@@ -454,8 +464,14 @@ The error was 'BadWindow (invalid Window parameter)'.
    backtrace from your debugger if you break on the gdk_x_error() function.)
 
  */
-            w = ic->pre_attr.area.width  == 0 ? ICWIN_W : ic->pre_attr.area.width;
-            h = ic->pre_attr.area.height == 0 ? ICWIN_H : ic->pre_attr.area.height;
+            //w = ic->pre_attr.area.width  == 0 ? ICWIN_W : ic->pre_attr.area.width;
+            //h = ic->pre_attr.area.height == 0 ? ICWIN_H : ic->pre_attr.area.height;
+            w = ICWIN_W;
+            h = ICWIN_H;
+            x = x > 0 ? x : 0;
+            y = y > 0 ? y : 0;
+
+            //PRINTF("getICWin spot location [%d] (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n", ic->client_win, x, y, w, h, m_dpyW, m_dpyH);
         } else if (win) {
             try {
                 XGetWindowAttributes(m_dpy, win, &clientwin_attr);
@@ -464,21 +480,21 @@ The error was 'BadWindow (invalid Window parameter)'.
                 printf("x2: %s\n", e.what());
             }
 
-            PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n", ic->client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);
+            //PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n", ic->client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);
             x += (clientwin_attr.width - ICWIN_W) / 2;
             //y += clientwin_attr.height;
             w = ICWIN_W;/*clientwin_attr.width < ICWIN_W ? ICWIN_W : clientwin_attr.width;*/
             h = ICWIN_H;
         }
 
-        if (x + w > m_dpyW - ICWIN_W - 120) {
-            x = m_dpyW - ICWIN_W - 120;
+        if (x + w > m_dpyW - 20) {
+            x = m_dpyW - ICWIN_W - 20;
         }
          
         if (y + h > m_dpyH - 10) {
-            y = m_dpyH - h - 10;
+            y = y - 2*h;
         }
-
+        //PRINTF("getICWin (%d, %d, %d, %d)\n",  x, y, w, h);
         ret.x = x;
         ret.y = y;
         ret.width = w;
@@ -488,4 +504,3 @@ The error was 'BadWindow (invalid Window parameter)'.
 
     return ret;
 }
-

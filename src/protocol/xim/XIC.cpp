@@ -215,9 +215,9 @@ int Xicm::setICValues(IMChangeICStruct *calldata)
 
 int Xicm::getICValues(IMChangeICStruct *calldata)
 {
-     std::map<int, IC*>::iterator iter = m_ics.find(calldata->icid);
-     if(iter != m_ics.end()) {
-         iter->second->get(calldata);
+    std::map<int, IC*>::iterator iter = m_ics.find(calldata->icid);
+    if(iter != m_ics.end()) {
+        iter->second->get(calldata);
     }
 }
 

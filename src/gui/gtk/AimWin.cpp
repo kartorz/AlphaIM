@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <string>
 
+#include "Application.h"
 #include "AimWin.h"
 #include "aim.h"
 
@@ -12,6 +13,22 @@ static void aim_win_init(AimWin *win)
 
 static void aim_win_class_init(AimWinClass *klass)
 {
+}
+
+static void on_lanbutton_clicked (GtkButton *button, gpointer user_data)
+{
+    //gApp->pSysMsgQ->push(MSG_UI_LAN);
+}
+
+static void on_punbutton_clicked (GtkButton *button, gpointer user_data)
+{
+    //gApp->pSysMsgQ->push(MSG_UI_PUN);
+}
+
+extern gboolean aim_app_on_show_hpwin(gpointer user_data);
+static void on_helpbutton_clicked (GtkButton *button, gpointer user_data)
+{
+    gdk_threads_add_idle(aim_app_on_show_hpwin, user_data);
 }
 
 void aim_win_set_pos(AimWin *win, int x, int y)
@@ -94,7 +111,7 @@ void aim_win_switch_lan(AimWin *win, bool is_cn)
 
 AimWin *aim_win_new(int x, int y)
 {
-    #define IMWIN_W  166
+    #define IMWIN_W  126
     #define IMWIN_H  40
     #define BTN_W    50
     std::string icons_path = system_dir + "/" +  ICONS_PATH;
@@ -128,6 +145,7 @@ AimWin *aim_win_new(int x, int y)
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 1, 1);
     klass->lan_button = button;
+    g_signal_connect(button, "clicked", G_CALLBACK (on_lanbutton_clicked), NULL);
 
     GtkWidget *image_pun  = gtk_image_new_from_file((icons_path + "/pun.png").c_str());
     button = gtk_button_new();
@@ -135,27 +153,33 @@ AimWin *aim_win_new(int x, int y)
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 40, 1);
     klass->pun_button = button;
+    g_signal_connect(button, "clicked", G_CALLBACK (on_punbutton_clicked), NULL);
 
-    image = gtk_image_new_from_file((icons_path + "/pencil.png").c_str());
+    image = gtk_image_new_from_file((icons_path + "/help.png").c_str());
     button = gtk_button_new();
     gtk_button_set_image(GTK_BUTTON(button), (GtkWidget *) image);
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 80, 1);
+    g_signal_connect(button, "clicked", G_CALLBACK (on_helpbutton_clicked), NULL);
 
+#if 0
     image = gtk_image_new_from_file((icons_path + "/setting.png").c_str());
     button = gtk_button_new();
     gtk_button_set_image(GTK_BUTTON(button), (GtkWidget *)image);
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 120, 1);
+#endif
 
+
+#if 0
     gtk_widget_show_all (win);
 
     // Must after gtk_widget_show_all();
     GdkWindow *gdk_imwin = gtk_widget_get_window(win);
     gdk_window_move(gdk_imwin, x, y);
+#endif
     klass->x = x;
     klass->y = y;
-
     //g_signal_connect (win, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 
     return imwin;

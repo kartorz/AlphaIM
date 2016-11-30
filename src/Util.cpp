@@ -186,15 +186,15 @@ string Util::usrProfileDir(string appname)
     return path;
 }
 
-string Util::execDir(string& strpath)
+string Util::execDir()
 {
+    string strpath;
 #ifdef WIN32
     WIN32Util::execDir(strpath);
     //boost::filesystem::path p(p1);
     //p.remove_filename();
     //strpath = p.string();
 #elif defined(_LINUX)
-    strpath = "/usr/local/share/alphadict";
     char buf[512];
     int length = readlink("/proc/self/exe", buf, 512);
     if(length != -1) {

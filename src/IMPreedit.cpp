@@ -13,7 +13,7 @@
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
 
-IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(100)
+IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(50)
 {
 }
 
@@ -37,7 +37,7 @@ bool IMPreedit::commit(int i)
     }
 
     i -= m_bCandiItem;  // offset to m_items
-    printf("commit: i: %d, size: %d\n", i, m_items.size());
+    //printf("commit: i: %d, size: %d\n", i, m_items.size());
     if(m_items.size() > i) {
         IMItem item = m_items[i];
         im->selectUsrPhrase(item);
@@ -106,7 +106,7 @@ u32 IMPreedit::mapCNPun(char *key)
         return 0x3010;
     case ']':
         return 0x3011;
-    case '-':
+    case '_':
         return 0x2014;
     case '<':
         return 0x300A;
@@ -133,19 +133,21 @@ string IMPreedit::mapCNPunToU8Str(char *key)
 void IMPreedit::add(char *key)
 {
     m_bStart = true;
-    if (m_bCNPun) {
-        string strCNPun = mapCNPunToU8Str(key);
-        if (strCNPun != "") {
-            m_input += strCNPun;
+    if (m_input.length() < IM_INPUT_MAX) {
+        if (m_bCNPun) {
+            string strCNPun = mapCNPunToU8Str(key);
+            if (strCNPun != "") {
+                m_input += strCNPun;
+            } else {
+                m_input += key;
+            }
         } else {
             m_input += key;
         }
-    } else {
-        m_input += key;
-    }
 
-    m_candidate = lookup(m_input);
-    page(1);
+        m_candidate = lookup(m_input);
+        page(1);
+    }
 }
 
 void IMPreedit::del()
@@ -172,7 +174,6 @@ void IMPreedit::del()
     }
 #else
     if (m_input != "") {
-        printf("del: m_input %s \n", m_input.c_str());
         char* r = CharUtil::u8charat(m_input.c_str(), -1, NULL);
         if (r != NULL) {
             boost::algorithm::erase_last(m_input, r);
@@ -190,7 +191,6 @@ void IMPreedit::del()
         //printf("1111%s, %s\n", m_input.c_str(), it.key.c_str());
         //string temp = it.key + m_input;
         m_input = it.key + m_input;
-        printf("del: m_input2 %s \n", m_input.c_str());
     }
 
     m_candidate = lookup(m_input);
@@ -347,9 +347,10 @@ void IMPreedit::doSwitchCE(IMPreeditCallback *callback)
     m_bCN = !m_bCN;
 
     if (!m_bCN) {
-        string candidate = m_input;
-        callback->onCommit(callback->opaque, candidate);
-
+        if (callback) {
+            string candidate = m_input;
+            callback->onCommit(callback->opaque, candidate);
+        }
         guiAction(MSG_IM_EN);
         doClose();
     } else {
@@ -472,4 +473,16 @@ bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
     return False;
 }
 
+
+void IMPreedit::handleMessage(int msg)
+{
+    switch(msg) {
+    case MSG_UI_LAN:
+        doSwitchCE(NULL);
+        return;
+    case MSG_UI_PUN:
+        doSwitchCEPun();
+        return;
+    }
+}
 

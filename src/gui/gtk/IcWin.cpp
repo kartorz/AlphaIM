@@ -64,9 +64,6 @@ void ic_win_refresh(IcWin *win,
 
 IcWin *ic_win_new()
 {
-   // #define ICWIN_W  510
-   // #define ICWIN_H  92
-
     IcWin* icwin = (IcWin *)g_object_new (IC_WIN_TYPE,
                                           "type", GTK_WINDOW_POPUP,
                                           "decorated", FALSE,

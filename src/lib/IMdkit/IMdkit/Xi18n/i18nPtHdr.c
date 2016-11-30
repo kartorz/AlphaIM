@@ -1585,7 +1585,7 @@ Bool *delete;
     Xi18nClient *client = (Xi18nClient *)_Xi18nFindClient(i18n_core,
 							  connect_id);
     memset(&call_data, 0, sizeof(IMProtocol));
-//printf("joni debug _Xi18nMessageHandler\n");
+    //printf("joni debug _Xi18nMessageHandler\n");
     call_data.major_code = hdr->major_opcode;
     call_data.any.minor_code = hdr->minor_opcode;
     call_data.any.connect_id = connect_id;

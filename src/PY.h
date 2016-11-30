@@ -64,7 +64,7 @@ private:
     void addToUsrDB(const string& phrase);
     void getPhraseKey(const string& phrase, vector<string>& phkeys);
 
-    MutexCriticalSection m_phdbCS;
+    //MutexCriticalSection m_phdbCS;
 
     IndexTree m_pyDB;
     IndexTree m_phDB;

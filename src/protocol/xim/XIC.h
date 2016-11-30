@@ -19,6 +19,7 @@
 #include "Ximd/Xi18n.h"
 #include "iIM.h"
 #include "X11IMPreedit.h"
+#include "MutexLock.h"
 
 #define MAX_PY_SLICE  50
 
@@ -89,6 +90,9 @@ private:
     std::map<int, IC*> m_ics;
     int m_icid;
     int m_icFocus;
+
+    MutexCriticalSection m_cs;
+
 };
 
 #endif

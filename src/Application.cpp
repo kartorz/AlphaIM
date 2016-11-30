@@ -10,8 +10,16 @@
 #include "Application.h"
 #include "TaskManager.h"
 #include "PY.h"
+#include "Configure.h"
 
 Application*  gApp = NULL;
+
+// loop time is 30m.
+void SlowJob::doWork()
+{
+    //printf("slowjob dowork\n");
+    m_owner->slowJob();
+}
 
 Application::Application()
 {
@@ -22,21 +30,25 @@ Application::Application()
 
     TaskManager::getInstance()->start(MAX_WORK_THREAD);
     m_sysMsgr->start();
+
+    TaskManager::getInstance()->addTask(new SlowJob(this), 0);
     log.d("start Application ...\n");
 }
 
 iIM* Application::newIM()
 {
     //const char *locale = "C,POSIX,POSIX,en_US.utf8,zh_CN.UTF-8";
-   string pyPath = DATADIR;
-   pyPath += "/pinyin-utf8.imdb";
-   string phPath = DATADIR;
-   phPath += "/phrase-utf8.imdb";
+   string pyPath = system_dir + "/pinyin-utf8.imdb";
+   string phPath = system_dir + "/phrase-utf8.imdb";
+   string hanPath = system_dir + "/han-utf8.imdb";
    string usrPhPath = home_dir + "/aim_phrase-utf8.imdb";
-   string hanPath = DATADIR;
-   hanPath += "/han-utf8.imdb";
 
    return (new PY(pyPath, phPath, usrPhPath, hanPath));
+}
+
+void Application::slowJob()
+{
+    Configure::getRefrence().writeXml();
 }
 
 Application::~Application()
