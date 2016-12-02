@@ -2,6 +2,8 @@
 #define _CHAR_UTIL_H_
 #include "type.h"
 
+#define MIN_HAN_U8BYTES  3
+
 class CharUtil
 {
 public:

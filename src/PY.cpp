@@ -188,7 +188,7 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[])
     do {
         found = false;
         int len = CharUtil::nextu8char(phstr + npos, han);
-        if (len != 1) {
+        if (len >= MIN_HAN_U8BYTES) {
             imval += item->index.substr(npos, len);
             npos += len;
             ++number;
@@ -268,7 +268,7 @@ void PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
 {
     char han[8];
     int len = CharUtil::nextu8char(phrase.c_str(), han);
-    if (len > 0) {
+    if (len >= MIN_HAN_U8BYTES) {
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
@@ -385,7 +385,7 @@ void PY::getHanItems(const string& py, inxtree_dataitem& d, deque<IMItem>& items
     int haninx = 0;
     char han[8];
     int len = CharUtil::nextu8char(hanstr + haninx, han);
-    while (len != -1) {
+    while (len >= MIN_HAN_U8BYTES) {
         IMItem item;
         item.key = py;
         item.val = han;
@@ -466,7 +466,7 @@ void PY::addToUsrDB(const string& phrase)
 {
     char han[8];
     int len = CharUtil::nextu8char(phrase.c_str(), han);
-    if (len > 0) {
+    if (len >= MIN_HAN_U8BYTES) {
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
