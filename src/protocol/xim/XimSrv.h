@@ -16,6 +16,7 @@
 #include "XIC.h"
 #include "iIM.h"
 #include "TaskManager.h"
+#include "MutexLock.h"
 
 using namespace std;
 
@@ -65,6 +66,8 @@ private:
     bool m_bDynamicEvent;
     int m_preModKey;
     //ModifierKeyEventTask*  m_modifierKeyTask[2];
+
+    MutexCriticalSection m_cs;
 };
 
 #endif

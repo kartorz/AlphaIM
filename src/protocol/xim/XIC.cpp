@@ -264,6 +264,7 @@ IC* Xicm::getIC(int focus)
     if(iter != m_ics.end()) {
         return iter->second;
     }
+    return NULL;
 }
 
 
