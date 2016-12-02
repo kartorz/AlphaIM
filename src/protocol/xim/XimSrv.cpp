@@ -260,6 +260,8 @@ int XimSrv::handleGetICValues(XIMS ims, IMProtocol *calldata)
 int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 {
     PRINTF("handleForwardEvent\n");
+    MutexLock lock(m_cs);  //Exclud handleUIMessage
+
     /* Lookup KeyPress Events only */
     int evtype = calldata->forwardevent.event.type;
     if (evtype != KeyPress && evtype != KeyRelease) {
@@ -292,6 +294,8 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 
 void XimSrv::handleUIMessage(int msg)
 {
+    MutexLock lock(m_cs);
+
     IC* ic = m_icMgr.getIC();
     if (ic != NULL) {
         ic->preedit.handleMessage(msg);

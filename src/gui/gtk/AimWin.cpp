@@ -17,12 +17,12 @@ static void aim_win_class_init(AimWinClass *klass)
 
 static void on_lanbutton_clicked (GtkButton *button, gpointer user_data)
 {
-    //gApp->pSysMsgQ->push(MSG_UI_LAN);
+    gApp->pSysMsgQ->push(MSG_UI_LAN);
 }
 
 static void on_punbutton_clicked (GtkButton *button, gpointer user_data)
 {
-    //gApp->pSysMsgQ->push(MSG_UI_PUN);
+    gApp->pSysMsgQ->push(MSG_UI_PUN);
 }
 
 extern gboolean aim_app_on_show_hpwin(gpointer user_data);

@@ -40,6 +40,7 @@ void SysMessager::processMessage()
     bool ret = m_msgQ->pop(msg);
     if (ret == false) {
         //printf("{SysMessager} no message, exit\n");
+        log(LOG_ERROR,"SysMessager: ret == false, exit\n");
         return;
     }
     //log(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
