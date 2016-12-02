@@ -157,7 +157,7 @@ int CharUtil::nextu8char(const char* u8str, char* u8chr)
 
     b = *u8str;
     if (b == 0x00)
-        return -1;
+        return 0;
 
     if(b < 0x80) {
         len = 1;
