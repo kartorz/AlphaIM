@@ -266,5 +266,3 @@ IC* Xicm::getIC(int focus)
     }
     return NULL;
 }
-
-

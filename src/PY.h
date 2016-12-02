@@ -14,6 +14,18 @@
 
 using namespace std;
 
+#define CACHE_ITEMS_MAX 100
+
+#define SEP_CHAR '-'
+#define WRITE_USERDB_TH  50
+#define UPDATE_USERDB_TH 50
+#define DEFAULT_PRIORITY  20
+#define REFRESH_PRIORITY_TH  4000
+#define MAX_USRDB_ENTRY     5000
+#define MAX_PRIORITY    255
+
+#define MAX_PHRASE_LEN  10
+
 typedef struct
 {
     string py;
@@ -49,7 +61,7 @@ public:
 private:
     string lookup(const string& input, deque<IMItem>& items,  bool firstRound);
     void lookupPhrase(string key, string input, deque<IMItem>& items);
-    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[]);
+    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[2][MAX_PHRASE_LEN + 1]);
 
     bool lookupCache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
     void cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
