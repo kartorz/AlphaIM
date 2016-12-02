@@ -12,17 +12,6 @@
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
 
-#define CACHE_ITEMS_MAX 100
-
-#define SEP_CHAR '-'
-#define WRITE_USERDB_TH  50
-#define UPDATE_USERDB_TH 50
-#define DEFAULT_PRIORITY  20
-#define REFRESH_PRIORITY_TH  4000
-#define MAX_USRDB_ENTRY     5000
-#define MAX_PRIORITY    255
-#define MAX_PHRASE_LEN  10
-
 PY::PY(): m_addCnt(0), m_selCnt(0)
 {
 }
@@ -145,18 +134,29 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
         m_phDBs[i]->getIndexList(indexList, key, true);
     }
 
-    deque<IMItem> imitemList[MAX_PHRASE_LEN + 1];
+    deque<IMItem> imitemList[2][MAX_PHRASE_LEN + 1];
     vector<iIndexItem*>::iterator iter;
     for(iter = indexList.begin(); iter != indexList.end(); iter++) {
         lookupPhrase(input, *iter, imitemList);
     }
 
-    // Start from two hans.
+    // Perfect match.
+    for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
+        if (imitemList[0][i].size() > 0) {
+            sort(imitemList[0][i]);
+            for (int ii = 0; ii < imitemList[0][i].size(); ii++) {
+                items.push_back(imitemList[0][i].at(ii));
+            }
+        }
+    }
+
+    // Start from two hans
     for (int i = MAX_PHRASE_LEN; i > 1; i--) {
-        if (imitemList[i].size() > 0) {
-            sort(imitemList[i]);
-            for (int ii = 0; ii < imitemList[i].size(); ii++) {
-                items.push_back(imitemList[i].at(ii));
+        if (imitemList[1][i].size() > 0) {
+            sort(imitemList[1][i]);
+            for (int ii = 0; ii < imitemList[1][i].size(); ii++) {
+                //printf("push_back %s, i:%d, size:%d\n",imitemList[j][i].at(ii).val.c_str(), i, imitemList[j][i].size());
+                items.push_back(imitemList[1][i].at(ii));
             }
         }
     }
@@ -164,13 +164,18 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
     IndexTree::freeItems(indexList);
 }
 
-void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[])
+void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2][MAX_PHRASE_LEN + 1])
 {
     char han[10];
     int npos = 0;
     int len = 0;
     int number = 0;
-    bool found;
+
+    /*  0: not found
+     *  1: partly match
+     *  2: whole match
+     */
+    int found;
     string imkey = "";
     string imval = "";
 
@@ -186,24 +191,31 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[])
     int phstrlen = item->index.length();
 
     do {
-        found = false;
+        found = 0;
+        // Get a han from phrase.
         int len = CharUtil::nextu8char(phstr + npos, han);
         if (len >= MIN_HAN_U8BYTES) {
-            imval += item->index.substr(npos, len);
-            npos += len;
-            ++number;
             //printf("lookupPhrase %s --> %s,\n", imval.c_str(), phstr);
-
             vector<inxtree_dataitem> pyitems;
             m_hanDB.lookup(han, pyitems);
             for (int i = 0; i < pyitems.size(); i++) {
                 HanItem hani(pyitems[i].ptr);
                 string py = hani.py;
-                int len = Util::stringCommonLen(py, key);
-                if (len > 0) {
-                    found = true;
-                    imkey += key.substr(0, len);
-                    key = key.substr(len);
+                int len2 = Util::stringCommonLen(py, key);
+                // Partly match.
+                if (len2 > 0) {
+                    found =  len2 == py.length() ? 2 : 1;
+                    //printf("%s: py:%s, key:%s, len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), len2, found);
+
+                    imkey += key.substr(0, len2);
+                    key = key.substr(len2);
+
+                    // Save this han for result.
+                    //    phrase: 有线广播; key: youxian; result: 有线
+                    imval += item->index.substr(npos, len);
+                    npos += len;
+                    ++number;
+
                     break;
                 }
             }
@@ -213,9 +225,12 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[])
         }
     } while(found && key != "" && npos < phstrlen);
 
-    if (found == true)
+    if (found > 0)
     {
-        if (npos <  phstrlen) {       
+        if (number > MAX_PHRASE_LEN)
+            number = MAX_PHRASE_LEN;
+
+        if (npos <  phstrlen) {
             //printf("check if exist %s, npos:%d, phstrlen:%d\n", (prefix+imval).c_str(), npos, phstrlen);
             for (int i = 0; i < m_phDBsLen; i++) {                
                 if (m_phDBs[i]->isExist(prefix+imval)) /* Don't append the duplicate item.*/ 
@@ -227,14 +242,17 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[])
         imitem.key = imkey;
         imitem.val = imval;
         imitem.priority = item->d.buf[0];
-        //printf("found %s, priorid %d\n", phstr, imitem.priority);
+        //printf("found %s, priorid %d, match val:%s remain key: %s, imkey(%s) \n",
+        //       phstr, imitem.priority, imval.c_str(), key.c_str(), imkey.c_str());
 
         // input: guojia
         // guo'jia   guo'ji
-        if (key == "") 
-            imitemList[MAX_PHRASE_LEN].push_back(imitem);  // perfect match
-        else
-            imitemList[number].push_back(imitem);
+        if (key == "" && found == 2) {
+            //printf("perfect match %s, number:%d\n", phstr, number);
+            imitemList[0][number].push_back(imitem);
+        } else {
+            imitemList[1][number].push_back(imitem);
+        }
     }
 }
 
