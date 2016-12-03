@@ -26,6 +26,8 @@ public:
 
     void setStrinxThreshold(int wordsMax, int depthMax);
     void open();
+    void close();
+
     bool load(const string& inxFilePath, int magic, bool online = false);
 
     bool add(u32 *key, int keylen, void *dataPtr, int dataLen);
@@ -33,6 +35,7 @@ public:
     void add(string key);
     // Can't modify the length of item's data.
     bool update(const string& key, u8 *ptr, int len);
+    bool update(const string& key, u8 *ptr, int len, int off);
 
     bool write(string output="");
     void sync();
