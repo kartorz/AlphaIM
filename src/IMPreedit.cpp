@@ -32,7 +32,7 @@ bool IMPreedit::commit(int i)
     {
         //printf("commit candidate %s\n", m_items[i].val.c_str());
         if (m_items.size() > 0)
-            im->selectUsrPhrase(m_items[i]);
+            im->usrCommit(m_items[i]);
         return true;
     }
 
@@ -40,7 +40,7 @@ bool IMPreedit::commit(int i)
     //printf("commit: i: %d, size: %d\n", i, m_items.size());
     if(m_items.size() > i) {
         IMItem item = m_items[i];
-        im->selectUsrPhrase(item);
+        im->usrCommit(item);
 
         int key_pos = m_input.find(item.key, 0);
         if (key_pos != string::npos) {

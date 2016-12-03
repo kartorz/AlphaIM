@@ -274,15 +274,17 @@ void PY::cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMIt
 {
     map<string, deque<IMItem> >::iterator iter = cache.find(key);
     if(iter == cache.end()) {
+    #if 0
         if(cache.size() > CACHE_ITEMS_MAX) {
             for (int i = 0; i < CACHE_ITEMS_MAX/2; i++)
                 cache.erase(cache.begin());
         }
+    #endif
         cache[key] = items;
     }
 }
 
-void PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
+int PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
 {
     char han[8];
     int len = CharUtil::nextu8char(phrase.c_str(), han);
@@ -290,12 +292,12 @@ void PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
-            log(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han); 
-            return;
+            log(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han);
+            return 0;
         }
 
         if (len == phrase.length()) {
-            return;
+            return 1;
         }
 
         for (int i = 0; i < pyitems.size(); i++) {
@@ -303,40 +305,94 @@ void PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
             string key = hani.py + SEP_CHAR + phrase; 
             phkeys.push_back(key);
         }
+        return 1;
     }
+    return 0;
 }
 
-void PY::selectUsrPhrase(const IMItem& imitem)
+// Reresh prprity by decreasing -1.
+void PY::refreshHanPriority(IndexTreeWriter& hanDB)
+{
+    u8 *buf = NULL;
+    int size = hanDB.readData(&buf);
+    if (size > 0) {
+        int npos = 0;
+        while (npos < size){
+            u8 *itemptr = buf + npos;
+            if (itemptr[2] > 1)
+                --itemptr[2];
+
+            int len = inxtree_read_u16(itemptr) + 2;
+            npos += len;
+        }
+
+        hanDB.writeData(buf, size);
+    }
+
+    if (buf != NULL)
+        free(buf);
+
+    log(LOG_INFO, "refreshHanPriority\n");
+}
+
+// Reresh prprity by decreasing -1.
+void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
+{
+    u8 *buf = NULL;
+    int size = phDB.readData(&buf);
+    if (size > 0) {
+        for (int i = 0; i < size; i++) {
+            if (buf[i] > 1)
+                --buf[i];
+        }
+
+        phDB.writeData(buf, size);
+    }
+    if (buf != NULL)
+        free(buf);
+
+    log(LOG_INFO, "refreshPhrasePriority\n");
+}
+
+void PY::usrCommit(const IMItem& imitem)
 {
     if (imitem.priority < MAX_PRIORITY) {
         vector<string> phkeys;
-        getPhraseKey(imitem.val, phkeys);
-        for(int i = 0; i < phkeys.size(); i++) {
+        int ret = getPhraseKey(imitem.val, phkeys);
+        if (ret > 0) {
+            bool update = false;
             u8 p[1];
             p[0] = imitem.priority + 1;
-            //printf("im priority %d\n", imitem.priority);
-            if (m_usrPhDB.update(phkeys[i], p, 1)) {
+
+            if (ret == 1) {
+                if (m_hanDB.update(imitem.val, p, 1, 0))
+                    update = true;
+            } else {
+                for(int i = 0; i < phkeys.size(); i++) {
+                    //printf("im priority %d\n", imitem.priority);
+
+                    if (m_usrPhDB.update(phkeys[i], p, 1))
+                        update = true;
+                    else if (m_phDB.update(phkeys[i], p, 1))
+                        update = true;
+                }
+            }
+
+            if (update) {
+
+                // Have updated priority
+                m_InputMap.clear();
+                m_PyMap.clear();
+
                 if (++m_selCnt > REFRESH_PRIORITY_TH) {
-                    u8 *buf = NULL;
-                    int size = m_usrPhDB.readData(&buf);
-                    if (size > 0) {
-                        for (int i = 0; i < size; i++) {
-                            if (buf[i] > 5)
-                                --buf[i];
-                        }
-
-                        m_usrPhDB.writeData(buf, size);
-
-                        m_selCnt = 0;
-                    }
-                    if (buf != NULL)
-                        free(buf);
-
-                    log(LOG_INFO, "selectUsrPhrase: > REFRESH_PRIORITY_TH, decrease priority\n");
+                    refreshPhrasePriority(m_usrPhDB);
+                    refreshPhrasePriority(m_phDB);
+                    refreshHanPriority(m_hanDB);
+                    m_selCnt = 0;
                 }
                 Configure::getRefrence().writeSelcnt(m_selCnt);
             }
-        }
+        } // ret > 0
     }
 }
 

@@ -649,6 +649,7 @@ IndexTree::dataitem(address_t loc)
     return d;
 }
 
+// Caller shold release d.ptr for varialbe size item.
 struct inxtree_dataitem
 IndexTree::dataitem(FILE *datafile, off_t off)
 {

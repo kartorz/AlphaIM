@@ -51,7 +51,7 @@ public:
 
     virtual ~PY();
     virtual string lookup(const string& input, deque<IMItem>& items);
-    virtual void selectUsrPhrase(const IMItem& imitem);
+    virtual void usrCommit(const IMItem& imitem);
 
     virtual void addUserPhrase(const string& phrase);
     virtual void addUserPhraseAsync(const string& phrase);
@@ -74,12 +74,18 @@ private:
     void trackUsrInput(const string phrase);
     void parseUsrInput(vector<string> &phrases);
     void addToUsrDB(const string& phrase);
-    void getPhraseKey(const string& phrase, vector<string>& phkeys);
+
+    // 0: no pinyin, 1: only one han, 2: got it
+    int getPhraseKey(const string& phrase, vector<string>& phkeys);
+
+    void refreshHanPriority(IndexTreeWriter& hanDB);
+    void refreshPhrasePriority(IndexTreeWriter& phDB);
+
 
     //MutexCriticalSection m_phdbCS;
 
     IndexTree m_pyDB;
-    IndexTree m_phDB;
+    IndexTreeWriter  m_phDB;
     IndexTreeWriter  m_usrPhDB;
     IndexTreeWriter  m_hanDB;
     int m_addCnt;

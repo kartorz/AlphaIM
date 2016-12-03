@@ -39,8 +39,6 @@
 using namespace std;
 
 
-#define CACHE_ITEMS_MAX  10
-
 typedef struct {
     int x,y,w,h;
 } ICRect;

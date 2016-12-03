@@ -30,7 +30,7 @@ public:
     virtual string lookup(const string& input, deque<IMItem>& items) = 0;
 
     //
-    virtual void selectUsrPhrase(const IMItem& imitem) = 0;
+    virtual void usrCommit(const IMItem& imitem) = 0;
 
     // Add phrase to user db.
     virtual void addUserPhrase(const string& phrase) = 0;

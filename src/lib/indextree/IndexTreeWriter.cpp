@@ -66,8 +66,14 @@ bool IndexTreeWriter::load(const string& inxFilePath, int magic, bool online)
     return false;
 }
 
+void IndexTreeWriter::close()
+{
+    sync();
+}
+
 IndexTreeWriter::~IndexTreeWriter()
 {
+    //printf("~IndexTreeWriter\n");
     sync();
 }
 
@@ -539,6 +545,42 @@ IndexTreeWriter::dataitem(address_t loc)
     return d;
 }
 
+bool IndexTreeWriter::update(const string& key, u8 *ptr, int len, int off)
+{
+    indextree::MutexLock lock(m_cs);
+
+    struct LookupStat lookupStat;
+    lookupStat.advance = key;
+    if (IndexTree::lookup((char*)key.c_str(), m_indexTree->root(), lookupStat)) {
+        for (int i=0; i<lookupStat.locs.size(); i++) {
+            address_t loc = lookupStat.locs[i];
+            if (loc != INXTREE_INVALID_ADDR) {
+                if (loc < m_inxDataLen) {
+                    // Is a disk file, cache it.
+                    struct inxtree_dataitem d = dataitem(loc);  // Same length
+                    if (d.len_data == 0)
+                        return false;
+
+                    if (m_dataItemSize > 0)
+                        memcpy(d.buf + off, ptr, len);
+                    else
+                        memcpy(d.ptr + off, ptr, len);
+
+                    m_updateCache[loc] = d;
+                    //if (m_updateCache.size() > MAX_CACHE_TH)
+                        sync();
+                } else {
+                    loc -= m_inxDataLen;
+                    fseek(m_dataTmpFile, loc + off, SEEK_SET);
+                    fwrite(ptr, len, 1, m_dataTmpFile);
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
 bool IndexTreeWriter::update(const string& key, u8 *ptr, int len)
 {
     indextree::MutexLock lock(m_cs);
@@ -565,7 +607,7 @@ bool IndexTreeWriter::update(const string& key, u8 *ptr, int len)
                         sync();
                 } else {
                     loc -= m_inxDataLen;
-                    fseek(m_dataTmpFile, loc, SEEK_SET);printf("update tmp  %d\n", loc);
+                    fseek(m_dataTmpFile, loc, SEEK_SET);
                     fwrite(ptr, len, 1, m_dataTmpFile);
                 }
             }
@@ -586,12 +628,17 @@ void IndexTreeWriter::sync()
         fseek(m_inxFile, off, SEEK_SET);
         if (m_dataItemSize > 0)
             fwrite(d.buf, d.len_data, 1, m_inxFile);
-        else
-            ; //TODO
+        else {
+            unsigned char len[2];
+            inxtree_write_u16(len, d.len_data);
+            fwrite((void *)len, 2, 1, m_inxFile);
+            fwrite(d.ptr, d.len_data, 1, m_inxFile);
+            free(d.ptr);
+        }
     }
     m_updateCache.clear();
 
-    fsync(fileno(m_inxFile));
+    fflush(m_inxFile);
 }
 
 int IndexTreeWriter::readData(u8 **ptr)
@@ -636,15 +683,15 @@ void IndexTreeWriter::writeData(u8 *ptr, int size)
     fseek(m_inxFile, off, SEEK_SET);
     if (size <= m_inxDataLen) {
         fwrite(ptr, size, 1, m_inxFile);
+        fflush(m_inxFile);
     } else {
         fwrite(ptr, m_inxDataLen, 1, m_inxFile);
 
         fseek(m_dataTmpFile, 0, SEEK_SET);
         fwrite(ptr + m_inxDataLen, size - m_inxDataLen, 1, m_dataTmpFile);
-    }
 
-    //fflush(m_inxFile);
-    //fflush(m_dataTmpFile);
-    //fsync(fileno(m_inxFile));
+        fflush(m_inxFile);
+        fflush(m_dataTmpFile);
+    }
     //fsync(fileno(m_dataTmpFile));
 }
