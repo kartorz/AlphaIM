@@ -44,10 +44,6 @@ friend class AddToUserDBTask;
 
 public:
     PY();
-    PY(const string& pydb,
-       const string& phdb,
-       const string& usrPhdb,
-       const string& handb);
 
     virtual ~PY();
     virtual string lookup(const string& input, deque<IMItem>& items);
@@ -57,6 +53,8 @@ public:
     virtual void addUserPhraseAsync(const string& phrase);
     virtual void close();
     virtual void reset();
+
+    int initialization();
 
 private:
     string lookup(const string& input, deque<IMItem>& items,  bool firstRound);

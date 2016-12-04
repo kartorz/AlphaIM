@@ -57,7 +57,8 @@ struct inxtree_header {
 	u8 loc_data     [ BP(80, 83) ];
     u8 flags        [ BP(84, 84) ];
     u8 i_size       [ BP(85, 86) ];
-	u8 custom       [ BP(87, 256)];
+    u8 f_size       [ BP(87, 90) ];
+	u8 custom       [ BP(91, 256)];
 };
 
 struct inxtree_chrindex {

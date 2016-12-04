@@ -67,7 +67,12 @@ bool IndexTree::load(FILE *inxFile, int magic)
     m_strIndexLoc = inxtree_read_u32(m_header.loc_strindex);
     m_dataLoc = inxtree_read_u32(m_header.loc_data);
     m_dataItemSize = inxtree_read_u16(m_header.i_size);
+    m_fileSize = inxtree_read_u32(m_header.f_size);
     m_totalEntry = inxtree_read_u32(m_header.d_entries);
+
+    fseek(m_inxFile, 0L, SEEK_END);
+    if (ftello(m_inxFile) != m_fileSize)
+        return false;
 
     return loadIndexTree();
 }

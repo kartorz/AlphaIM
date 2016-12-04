@@ -1,4 +1,6 @@
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+
 #include "aim.h"
 #include "PY.h"
 #include "CharUtil.h"
@@ -12,28 +14,61 @@
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
 
-PY::PY(): m_addCnt(0), m_selCnt(0)
+using namespace boost::filesystem;
+
+PY::PY(): m_addCnt(0), m_selCnt(0),
+m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
 {
 }
 
-PY::PY(const string& pydb,
-       const string& phdb,
-       const string& usrPhdb,
-       const string& handb): 
-       m_addCnt(0), m_selCnt(0),
-       m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
+int PY::initialization()
 {
-    m_pyDB.load(pydb, 0xB4B3);
-    m_phDB.load(phdb, 0xB4B3);
-    m_hanDB.load(handb, 0xB4B3, true);
+    int ret = 0;
 
-    if (!m_usrPhDB.load(usrPhdb, 0xB4B3, true)) {
-        log.d("Load usr phd, failure\n");
-        memset(&m_usrPhDB.m_header, 0, sizeof(struct inxtree_header));
-        m_usrPhDB.m_header.magic[0] = 0xB3;
-        m_usrPhDB.m_header.magic[1] = 0xB4;
-        m_usrPhDB.m_header.d_coding[0] = INXTREE_UTF8;
-        inxtree_write_u16(m_usrPhDB.m_header.i_size, 1);
+    string phPath = home_dir + "/phrase-utf8.imdb";
+    if (!Util::isFileExist(phPath)) {
+        log.d("copy phrase db to home\n");
+        string phPathOri = system_dir + "/phrase-utf8.imdb";
+        boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
+    }
+    ret += m_phDB.load(phPath, 0xB4B3);
+
+    string hanPath = home_dir + "/han-utf8.imdb";
+    if (!Util::isFileExist(hanPath)) {
+        log.d("copy han db to home\n");
+        string hanPathOri = system_dir + "/han-utf8.imdb";
+        boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
+        //permissions(file_path, add_perms|owner_write|group_write|others_write);
+    }
+    ret += m_hanDB.load(hanPath, 0xB4B3);
+
+    string pyPath = system_dir + "/pinyin-utf8.imdb";
+    ret += m_pyDB.load(pyPath, 0xB4B3);
+
+    string usrPhPath = home_dir + "/user_phrase-utf8.imdb";
+    string usrPhPathOk = usrPhPath + "_ok";
+    if (!m_usrPhDB.load(usrPhPath, 0xB4B3, true)) {
+        bool load =  false;
+
+        log.d("Load usr phd, failure. check backup file. \n");
+        if (Util::isFileExist(usrPhPathOk)) {
+            boost::filesystem::copy_file(usrPhPathOk, usrPhPath, copy_option::overwrite_if_exists);
+            load = m_usrPhDB.load(usrPhPath, 0xB4B3, true);
+            log.d("Load backup user phrase : %d \n", load);
+        }
+
+        if (!load) {
+            boost::filesystem::remove(usrPhPathOk);
+            boost::filesystem::remove(usrPhPath);
+
+            memset(&m_usrPhDB.m_header, 0, sizeof(struct inxtree_header));
+            m_usrPhDB.m_header.magic[0] = 0xB3;
+            m_usrPhDB.m_header.magic[1] = 0xB4;
+            m_usrPhDB.m_header.d_coding[0] = INXTREE_UTF8;
+            inxtree_write_u16(m_usrPhDB.m_header.i_size, 1);
+        }
+    } else {
+        copy_file(usrPhPath, usrPhPathOk, copy_option::overwrite_if_exists);
     }
 
     m_phDBs[0] = &m_phDB;
@@ -41,6 +76,8 @@ PY::PY(const string& pydb,
     m_phDBsLen = 2;
 
     m_selCnt = Configure::getRefrence().readSelcnt();
+
+    return ret;
 }
 
 PY::~PY()
