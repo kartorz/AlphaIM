@@ -138,7 +138,8 @@ protected:
     int m_indexEnd;
     int m_indexNumber;
     int m_dataItemSize;
-    unsigned int m_totalEntry;
+    u32 m_fileSize;
+    u32 m_totalEntry;
     map<int, void*> m_blkCache;
 };
 

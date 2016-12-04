@@ -286,9 +286,11 @@ bool IndexTreeWriter::write(string output)
 	fseek(m_dataTmpFile, 0, SEEK_SET);
     IndexTreeHelper::mergeFile(outputFile, m_dataTmpFile);
 
+    fseek(outputFile, 0L, SEEK_END);
+    u32 filesize = ftello(outputFile);
+    inxtree_write_u32(m_header.f_size, filesize);
 	fseek(outputFile, 0, SEEK_SET);
 	fwrite(&m_header, sizeof(struct inxtree_header), 1, outputFile);
-
 
 	fclose(outputFile);
 	fclose(strinxTmpFile);

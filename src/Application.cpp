@@ -35,30 +35,18 @@ Application::Application()
     m_sysMsgr->start();
 
     TaskManager::getInstance()->addTask(new SlowJob(this), 0);
+
     log.d("start Application ...\n");
 }
 
 iIM* Application::newIM()
 {
     //const char *locale = "C,POSIX,POSIX,en_US.utf8,zh_CN.UTF-8";
-   string phPath = home_dir + "/phrase-utf8.imdb";
-   if (!Util::isFileExist(phPath)) {
-       log.d("copy phrase db to home\n");
-       string phPathOri = system_dir + "/phrase-utf8.imdb";
-       copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
-   }
 
-   string hanPath = home_dir + "/han-utf8.imdb";
-   if (!Util::isFileExist(hanPath)) {
-       log.d("copy han db to home\n");
-       string hanPathOri = system_dir + "/han-utf8.imdb";
-       copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
-       //permissions(file_path, add_perms|owner_write|group_write|others_write);
-   }
-
-   string usrPhPath = home_dir + "/user_phrase-utf8.imdb";
-   string pyPath = system_dir + "/pinyin-utf8.imdb";
-   return (new PY(pyPath, phPath, usrPhPath, hanPath));
+    PY *py = new PY(); // XimSrv will delete this.
+    int ret = py->initialization();
+    log.i("newIM:  result of PY init: %d\n", ret);
+    return py;
 }
 
 void Application::slowJob()

@@ -81,19 +81,19 @@ int main(int argc, char* argv[])
 
 	    case 'p':
             if (argc ==  4) {
-                make_pinyinDB(optarg, argv[3]);
+                make_pinyinDB(argv[2], argv[3]);
                 return 0;
             }
 
 	    case 'a':
             if (argc ==  4) {
-                make_hanDB(optarg, argv[3]);
+                make_hanDB(argv[2], argv[3]);
                 return 0;
             }
 
 	    case 'w':
             if (argc ==  4) {
-                make_phDB(optarg, argv[3]);
+                make_phDB(argv[2], argv[3]);
                 return 0;
             }
 
