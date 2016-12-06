@@ -88,6 +88,7 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
           gApp->xim.handleIMCreateIC(ims, call_data);
           break;
       case XIM_DESTROY_IC:
+          gApp->xim.handleIMDestroyIC(ims, call_data);
           break;
       case XIM_SET_IC_VALUES:
           gApp->xim.handleIMSetICValues(ims, call_data);
@@ -242,6 +243,12 @@ int XimSrv::handleIMOpen(XIMS ims, IMProtocol *calldata)
 int XimSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
     m_icMgr.createIC((IMChangeICStruct *)calldata, m_im);
+    return true;
+}
+
+int XimSrv::handleIMDestroyIC(XIMS ims, IMProtocol *calldata)
+{
+    m_icMgr.destroyIC((IMChangeICStruct *)calldata);
     return true;
 }
 
