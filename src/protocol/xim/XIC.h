@@ -78,6 +78,7 @@ public:
     ~Xicm();
 
     int createIC(IMChangeICStruct *calldata, iIM *im);
+    int destroyIC(IMChangeICStruct *calldata);
     int setICValues(IMChangeICStruct *calldata);
     int getICValues(IMChangeICStruct *calldata);
     int setICFocus(IMChangeFocusStruct *calldata);

@@ -31,6 +31,7 @@ public:
     void close();
     int handleIMOpen(XIMS ims, IMProtocol *calldata);
     int handleIMCreateIC(XIMS ims, IMProtocol *calldata);
+    int handleIMDestroyIC(XIMS ims, IMProtocol *calldata);
     int handleIMSetICValues(XIMS ims, IMProtocol *calldata);
     int handleGetICValues(XIMS ims, IMProtocol *calldata);
     int handleForwardEvent(XIMS ims, IMProtocol *calldata);

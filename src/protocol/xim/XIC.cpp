@@ -15,9 +15,9 @@
 #include "XIC.h"
 #include "Application.h"
 
-#undef PRINTF
+//#undef PRINTF
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
-#define PRINTF(fmt, args...)
+//#define PRINTF(fmt, args...)
 
 #define setxattr(A, T, V) do {    \
     A.value = (void *)malloc(sizeof(T));    \
@@ -39,6 +39,7 @@ StatusAttributes::~StatusAttributes()
     }
 }
 
+//'_Xi18nGetIC' free 'attr'
 void StatusAttributes::set(XICAttribute *xattr, int num)
 {
     for (int i = 0; i < num && xattr[i].name; i++) {
@@ -203,6 +204,16 @@ int Xicm::createIC(IMChangeICStruct *calldata, iIM *im)
 
     m_ics[ic->id] =  ic;
     return 0;
+}
+
+int Xicm::destroyIC(IMChangeICStruct *calldata)
+{
+    int id = calldata->icid;
+    std::map<int, IC*>::iterator iter = m_ics.find(id);
+    if(iter != m_ics.end()) {
+        delete iter->second;
+        m_ics.erase(id);
+    }
 }
 
 int Xicm::setICValues(IMChangeICStruct *calldata)
