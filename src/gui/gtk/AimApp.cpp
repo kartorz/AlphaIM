@@ -83,13 +83,12 @@ static void aim_app_activate (GApplication *app)
     //gtk_icon_theme_append_search_path(icons, "system/theme");
     //printf ("joni debug has icon: %d\n", gtk_icon_theme_has_icon(icons, "setting"));
 
-    //klass->systray_img_app =  gtk_image_new_from_file((system_dir + "/"  + "app.png").c_str());
-
+    klass->systray_img_app =  gtk_image_new_from_file((system_dir + "/"  + "app.png").c_str());
     std::string icons_path = system_dir + "/" +  ICONS_PATH;
     klass->systray_img_en =  gtk_image_new_from_file((icons_path + "/en.png").c_str());
     klass->systray_img_cn =  gtk_image_new_from_file((icons_path + "/cn.png").c_str());
 
-    klass->systray = gtk_status_icon_new_from_pixbuf(gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_en)));
+    klass->systray = gtk_status_icon_new_from_pixbuf(gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
     g_signal_connect(GTK_STATUS_ICON (klass->systray), "button-press-event", G_CALLBACK (aim_app_on_systray_press), klass->imwin);
     klass->bshow_imwin = false;
 
@@ -108,6 +107,7 @@ static void aim_app_class_init(AimAppClass *klass)
 gboolean aim_app_on_active_im(gpointer user_data)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
+
     gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
     //gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
     if (klass->bshow_imwin) {
@@ -119,8 +119,7 @@ gboolean aim_app_on_active_im(gpointer user_data)
 gboolean aim_app_on_disactive_im(gpointer user_data)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_en)));
-    //gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
+    gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
 
     gtk_widget_hide(GTK_WIDGET (klass->icwin));
 
