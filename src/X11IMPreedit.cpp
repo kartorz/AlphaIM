@@ -110,6 +110,7 @@ int X11IMPreedit::handleKey(int keysym, int modifier, char *key, int evtype, IMP
         }
         m_bTrigger = false;
         callback->onIMOff(callback->opaque);
+        doClose();
         guiAction(MSG_IM_OFF);
         return TRIGGER_OFF_KEY;
     }
