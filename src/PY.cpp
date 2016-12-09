@@ -235,27 +235,30 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2]
             //printf("lookupPhrase %s --> %s,\n", imval.c_str(), phstr);
             vector<inxtree_dataitem> pyitems;
             m_hanDB.lookup(han, pyitems);
+            int matchlen = 0;
             for (int i = 0; i < pyitems.size(); i++) {
                 HanItem hani(pyitems[i].ptr);
                 string py = hani.py;
                 int len2 = Util::stringCommonLen(py, key);
-                // Partly match.
-                if (len2 > 0) {
-                    found =  len2 == py.length() ? 2 : 1;
-                    //printf("%s: py:%s, key:%s, len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), len2, found);
-
-                    imkey += key.substr(0, len2);
-                    key = key.substr(len2);
-
-                    // Save this han for result.
-                    //    phrase: 有线广播; key: youxian; result: 有线
-                    imval += item->index.substr(npos, len);
-                    npos += len;
-                    ++number;
-
-                    break;
+                if (len2 > 0 && matchlen < len2) {
+                    matchlen = len2;
+                    found = matchlen == py.length() ? 2 : 1;
+                    //printf("%s: py:%s, key:%s, len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), matchlen, found);
                 }
             }
+
+            if (matchlen > 0) {
+                imkey += key.substr(0, matchlen);
+                key = key.substr(matchlen);
+
+                // Save this han for result.
+                //    phrase: 有线广播; key: youxian; result: 有线
+                imval += item->index.substr(npos, len);
+                npos += len;
+
+                ++number;
+            }
+
             IndexTree::freeItems(pyitems);
         } else {
             break;
