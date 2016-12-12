@@ -12,6 +12,8 @@ def get_priority(p):
 
     if p > 0xff:
         p = 0xff
+    elif p == 0:
+        p = 1
 
     return p
 
@@ -100,6 +102,9 @@ def make_phrase_file(py_path, phrase_path, py_phrase_path):
                         #print("joni freq%d"%(freq))
 
                     pys = py_list.get(line[0], [])
+                    if (len(pys) == 0):
+                        print("no py: %s"%(line[0]))		
+
                     for py in pys:
                         line2s.append(py)
 
