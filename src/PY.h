@@ -59,7 +59,7 @@ public:
 private:
     string lookup(const string& input, deque<IMItem>& items,  bool firstRound);
     void lookupPhrase(string key, string input, deque<IMItem>& items);
-    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[2][MAX_PHRASE_LEN + 1]);
+    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[6][MAX_PHRASE_LEN + 1]);
 
     bool lookupCache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
     void cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);

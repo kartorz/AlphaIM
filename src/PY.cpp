@@ -159,6 +159,14 @@ string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
 
 void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
 {
+    /*      0: perfect match
+     * 1 -- 2: PY > key.
+     * 3 -- 4: key > PY.
+     *      5: other.
+     *
+     */
+    #define ITEMLIST_LEN  6
+
     // Gets All phrases beging with 'key[0 .. -1]'.
     // Fix the 'dier' , 'wangu' issue.
     //    - dier: di'er  die'r
@@ -171,29 +179,31 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
         m_phDBs[i]->getIndexList(indexList, key, true);
     }
 
-    deque<IMItem> imitemList[2][MAX_PHRASE_LEN + 1];
+    deque<IMItem> imitemList[ITEMLIST_LEN][MAX_PHRASE_LEN + 1];
     vector<iIndexItem*>::iterator iter;
     for(iter = indexList.begin(); iter != indexList.end(); iter++) {
         lookupPhrase(input, *iter, imitemList);
     }
 
     // Perfect match.
-    for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
-        if (imitemList[0][i].size() > 0) {
-            sort(imitemList[0][i]);
-            for (int ii = 0; ii < imitemList[0][i].size(); ii++) {
-                items.push_back(imitemList[0][i].at(ii));
+    for (int j = 0; j < ITEMLIST_LEN - 1; j++) {
+        for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
+            if (imitemList[j][i].size() > 0) {
+                sort(imitemList[j][i]);
+                for (int ii = 0; ii < imitemList[j][i].size(); ii++) {
+                    items.push_back(imitemList[j][i].at(ii));
+                }
             }
         }
     }
 
     // Start from two hans
     for (int i = MAX_PHRASE_LEN; i > 1; i--) {
-        if (imitemList[1][i].size() > 0) {
-            sort(imitemList[1][i]);
-            for (int ii = 0; ii < imitemList[1][i].size(); ii++) {
+        if (imitemList[ITEMLIST_LEN-1][i].size() > 0) {
+            sort(imitemList[ITEMLIST_LEN-1][i]);
+            for (int ii = 0; ii < imitemList[ITEMLIST_LEN-1][i].size(); ii++) {
                 //printf("push_back %s, i:%d, size:%d\n",imitemList[j][i].at(ii).val.c_str(), i, imitemList[j][i].size());
-                items.push_back(imitemList[1][i].at(ii));
+                items.push_back(imitemList[ITEMLIST_LEN-1][i].at(ii));
             }
         }
     }
@@ -201,16 +211,15 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
     IndexTree::freeItems(indexList);
 }
 
-void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2][MAX_PHRASE_LEN + 1])
+void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[6][MAX_PHRASE_LEN + 1])
 {
     char han[10];
     int npos = 0;
     int len = 0;
     int number = 0;
 
-    /*  0: not found
-     *  1: partly match
-     *  2: whole match
+    /*      0: whole match
+     *  other: the difference between key and py.
      */
     int found;
     string imkey = "";
@@ -228,7 +237,7 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2]
     int phstrlen = item->index.length();
 
     do {
-        found = 0;
+        found = -1;
         // Get a han from phrase.
         int len = CharUtil::nextu8char(phstr + npos, han);
         if (len >= MIN_HAN_U8BYTES) {
@@ -242,7 +251,8 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2]
                 int len2 = Util::stringCommonLen(py, key);
                 if (len2 > 0 && matchlen < len2) {
                     matchlen = len2;
-                    found = matchlen == py.length() ? 2 : 1;
+                    //found = matchlen == py.length() ? 2 : 1;
+                    found =  py.length() - matchlen;
                     //printf("%s: py:%s, key:%s, len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), matchlen, found);
                 }
             }
@@ -263,9 +273,9 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2]
         } else {
             break;
         }
-    } while(found && key != "" && npos < phstrlen);
+    } while(found > -1 && key != "" && npos < phstrlen);
 
-    if (found > 0)
+    if (found > -1)
     {
         if (number > MAX_PHRASE_LEN)
             number = MAX_PHRASE_LEN;
@@ -287,11 +297,16 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[2]
 
         // input: guojia
         // guo'jia   guo'ji
-        if (key == "" && found == 2) {
+        if (key == "")  {
             //printf("perfect match %s, number:%d\n", phstr, number);
-            imitemList[0][number].push_back(imitem);
+            if (found > 3) found = 5;
+            imitemList[found][number].push_back(imitem);
         } else {
-            imitemList[1][number].push_back(imitem);
+            int off =  found >= key.length() ? found : key.length();
+            off += 2;
+            //printf("off :%d, found:%d, keylen:%d\n", off, found, key.length());
+            if (off > 5) off = 5;
+            imitemList[off][number].push_back(imitem);
         }
     }
 }
