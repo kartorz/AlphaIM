@@ -1,0 +1,104 @@
+关于 “阿尔法输入法”
+==================
+版本号: 0.8
+作者:   李力琼 (joni lee) <joni.kartorz.lee@gmail.com>
+
+它是一款以词组为单位，快速智能的输入法。不收集用户数据，也不依赖网络词典，不需要更新词库，
+更加不会弹广告，资源消耗低， 是众多输入法中的一个简洁版, 同win10自带的输入法比较类似。
+
+功能特性:
+  . 自动学习生成用户词组。
+      - 记录用户整句输入的词组。
+      - 逐个输入汉字，需要重复出现2次以上，才会被认定为词组。
+    只要用户坚持整个词组输入，时间长了以后，会形成自己的词库，后续输入会越来越快。
+
+  . 使用频度排序。  
+
+  . 支持模糊拼音， 只需要输入词组拼音首字母即可。 
+
+
+快捷健
+=====
+  - 打开关闭输入法
+      . Ctr  + SPACE
+      . Shift + SPACE
+
+  - 中英文切换
+      . 左Shift
+
+  - 中英文符号切换
+      . 右Shift
+
+  - 提交
+      . SPACE
+      . Enter
+
+  - 取消
+      . Esc
+      . Ctr + C
+
+  - 向前翻页
+      . Ctr + F
+      . PgUp
+      . 左方向键盘
+      . '-'键
+
+  - 向后翻页
+      . Ctr + J
+      . PgDn
+      . 右方向键盘
+      . '=' 键
+
+许可证
+=======
+AlphaIM在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布.
+你可以通过 gpl-2.0.txt 文件, 或者 网页 "http://www.gnu.org/copyleft/gpl.html" 了解相关的许可证信息。
+
+
+安装需要的开发包
+==============
+
+"AlphaIM"依赖如下开发包:
+  1) boost: "http://www.boost.org/"
+  2) x11, gtk.
+
+ubuntu14.04:
+    sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev 
+             libx11-dev  libgtk-3-dev
+
+
+如何编译
+=======
+
+linux,unix
+----------
+$ ./configure  
+$ ./configure --help
+  can give you some useful information, if you get trouble and want to set some 
+  custom configurations to fix it.
+
+$ make 
+
+$ make install
+
+windows
+-------
+
+
+X11系统配置
+==========
+. 卸载/删除已经安装的输入法。
+. 打开或创建 ~/.xprofile
+. 加入下列内容:
+  export XMODIFIERS=@im=aim
+  export GTK_IM_MODULE=aim
+  export QT_IM_MODULE=aim
+  export QT4_IM_MODULE=aim
+  
+  AlphaIM
+
+
+如何提交Bug, 贡献代码， 提出意见，或者取得联系
+========================================
+我的email是: joni.kartorz.lee@gmail.com.
+任何同软件相关的问题，你都可以联系我。
