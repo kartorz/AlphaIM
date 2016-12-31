@@ -114,7 +114,7 @@ AIMTool: $(OBJS_AIMTOOL)
 install: $(INSTALL_TARGETS-yes)
 
 install-dirs:
-	$(INSTALL) -d $(BINDIR) $(DATADIR)
+	$(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/theme
 
 install-%: % install-dirs
 	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
@@ -123,6 +123,8 @@ install-system: install-dirs
 	install -m 0666  system/pinyin-utf8.imdb       "$(DATADIR)/"
 	install -m 0666  system/phrase-utf8.imdb       "$(DATADIR)/"
 	install -m 0666  system/han-utf8.imdb          "$(DATADIR)/"
+	install -m 0755  system/app.png                "$(DATADIR)/"
+	cp     -av       system/theme/*                "$(DATADIR)/theme/"
 
 uninstall:
 	rm -f $(BINDIR)/AlphaIM $(BINDIR)/AIMTool

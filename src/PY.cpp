@@ -198,7 +198,8 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
     }
 
     // Start from two hans
-    for (int i = MAX_PHRASE_LEN; i > 1; i--) {
+//    for (int i = MAX_PHRASE_LEN; i > 1; i--) {
+    for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
         if (imitemList[ITEMLIST_LEN-1][i].size() > 0) {
             sort(imitemList[ITEMLIST_LEN-1][i]);
             for (int ii = 0; ii < imitemList[ITEMLIST_LEN-1][i].size(); ii++) {

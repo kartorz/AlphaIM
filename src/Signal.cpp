@@ -4,35 +4,68 @@
 #include <stdio.h>
 #include <execinfo.h>
 
+#include "aim.h"
 #include "Signal.h"
-#include "Log.h"
 
 static void signal_handler(int sig)
 {
+    std::string path = home_dir + "/dump";
+    FILE* f = fopen(path.c_str(), "w+");
+
     //if (sig == SIGHUP) Signal::panic("FATAL: Program hanged up\n");
     if (sig == SIGSEGV || sig == SIGBUS || sig == SIGHUP)
     {
-        Signal::dumpstack();
-        Signal::panic("FATAL: %s Fault. Logged StackTrace\n", (sig == SIGSEGV) ? "Segmentation" : ((sig == SIGBUS) ? "Bus" : "Unknown"));
+        Signal::dumpstack(f);
+        Signal::panic(f, "FATAL: %s Fault. Logged StackTrace\n", (sig == SIGSEGV) ? "Segmentation" : ((sig == SIGBUS) ? "Bus" : "Unknown"));
+        fclose(f);
+        exit(-1);
     }
 
-    if (sig == SIGQUIT) Signal::panic("QUIT signal ended program\n");
-    if (sig == SIGKILL) Signal::panic("KILL signal ended program\n");
-    if (sig == SIGINT) exit(0);
+    if (sig == SIGQUIT) {
+        Signal::panic(f, "QUIT signal ended program\n");
+        fclose(f);
+        exit(-1);
+    }
+
+    if (sig == SIGKILL) {
+        Signal::panic(f, "KILL signal ended program\n");
+        fclose(f);
+        exit(-1);
+    }
+
+    if (sig == SIGINT) {
+        fclose(f);
+        exit(0);
+    }
+
+    fclose(f);
 }
 
-void Signal::dumpstack(void)
+#if 0
+void Signal::log(FILE* f, const char *msg, ...)
+{
+    // Can't use class Log -- that will be destroied.
+    va_list args;
+    va_start(args, msg);
+    vfprintf(f, msg, args);
+    va_end(args);
+    fflush(f);
+}
+#endif
+
+void Signal::dumpstack(FILE* f)
 {
     #define PROGNAME   "AlphaIM"
-    //char dbx[160];
-    log.e("dumpstack\n");
+
+
+    panic(f, "dumpstack\n");
 
     void* callstack[512];
     int frames = backtrace(callstack, 512);
     char** strs = backtrace_symbols(callstack, frames);
     for (int i = 0; i < frames; ++i) {
         printf("%s\n", strs[i]);
-        log.e("%s\n", strs[i]);
+        panic(f,"%s\n", strs[i]);
     }
     free(strs);
 //    snprintf(dbx, 160,  "echo 'where\ndetach' | dbx -a %d > %s.dump", getpid(), PROGNAME);
@@ -40,15 +73,13 @@ void Signal::dumpstack(void)
     return;
 }
 
-void Signal::panic(const char *fmt, ...)
+void Signal::panic(FILE* f, const char *fmt, ...)
 {
-    char buf[50];
     va_list argptr;
     va_start(argptr, fmt);
-    vsnprintf(buf, 50, fmt, argptr);
+    vfprintf(f, fmt, argptr);
     va_end(argptr);
-    fprintf(stderr, buf);
-    exit(-1);
+    fflush(f);
 }
 
 void Signal::init()

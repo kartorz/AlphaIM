@@ -36,12 +36,11 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
     if (m_phraseTmp.length() - m_roundBase >=  USRPHTMP_ROUND_SIZE) {
         m_roundBase = m_phraseTmp.length();
         //printf("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
-	log.d("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
+        log.d("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
         parseUsrInput(m_phraseTmp, phrases);
 
         if (m_phraseTmp.length() >= USRPHTMP_MAX_SZIE) {
             m_phraseTmp.clear();
-            printf("after clear tmp%s\n", m_phraseTmp.c_str());
         }
         if (m_phraseFile) {
             //printf("write to phrase file\n");
@@ -49,8 +48,7 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
             m_fileCache.clear();
 
             if (ftello(m_phraseFile)  >=  USRPHFILE_MAX_SZIE) {
-                printf("clear phrase file\n");
-        	log.d("clear phrase file\n");
+                log.d("clear phrase file\n");
 
                 util::ReadFile read;
                 const char *ptr = (const char *)read(m_phraseFile, -1);               
@@ -169,7 +167,7 @@ void UsrPhrase::parseUsrInput(string usrph, vector<string> &phrases)
                 ucs[phlen] = 0;
                 char *u8s = CharUtil::ucs4StrToUTF8Str(ucs, NULL);
                 if (u8s != NULL) {
-                    printf("%s\n", u8s);
+                    //printf("%s\n", u8s);
                     phrases.push_back(u8s);
                     free(u8s);
                 }

@@ -11,8 +11,8 @@ public:
     void init();
     void cleanup();
 
-    static void panic(const char *fmt, ...);
-    static void dumpstack();
+    static void panic(FILE* f, const char *fmt, ...);
+    static void dumpstack(FILE* f);
     struct sigaction sigact;
 };
 
