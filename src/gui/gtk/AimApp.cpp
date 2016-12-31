@@ -23,9 +23,14 @@ gboolean aim_app_on_systray_press(GtkStatusIcon *status_icon,
                                   GdkEvent      *event,
                                   gpointer       user_data)
 {
-    //AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
     AimWin *imwin = (AimWin *)user_data;
     aim_win_show_hide(imwin);
+
+    AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
+    if (klass->hpwin != NULL) {
+         help_win_hide(klass->hpwin);
+    }
+
     return false;
 }
 
@@ -124,6 +129,11 @@ gboolean aim_app_on_disactive_im(gpointer user_data)
     gtk_widget_hide(GTK_WIDGET (klass->icwin));
 
     aim_win_enable_im(klass->imwin, false);
+
+    if (klass->hpwin != NULL) {
+         help_win_hide(klass->hpwin);
+    }
+
     return false;
 }
 
@@ -198,6 +208,15 @@ gboolean aim_app_on_show_hpwin(gpointer user_data)
 
     help_win_show_hide(klass->hpwin);
 
+    return false;
+}
+
+gboolean aim_app_on_hide_hpwin(gpointer user_data)
+{
+    AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
+    if (klass->hpwin != NULL) {
+         help_win_hide(klass->hpwin);
+    }
     return false;
 }
 

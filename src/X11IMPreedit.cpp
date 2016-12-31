@@ -50,6 +50,7 @@ static TriggerKey CancelKeys[] = {
 
 static TriggerKey CESwitchKeys[] = {
     {XK_Shift_L, ShiftMask, ShiftMask},
+    {XK_Shift_L, ControlMask, ControlMask},
     {0L, 0L, 0L}
 };
 
@@ -58,7 +59,7 @@ static TriggerKey CEPSwitchKeys[] = {
     {0L, 0L, 0L}
 };
 
-X11IMPreedit::X11IMPreedit():m_preModKey(-1),m_preRetKey(0)
+X11IMPreedit::X11IMPreedit():m_preModKey(0),m_preRetKey(0)
 {
 }
 
@@ -71,8 +72,16 @@ X11IMPreedit::X11IMPreedit():m_preModKey(-1),m_preRetKey(0)
  *    - Release key event:
  *      kev state: 1 code: 'keycode'  char: 'keyval' 
  *      kev state: 1 code: ffe1       char: 0
- * 2) Forward key.
+ * 2) ctrl + shift
+ *     - Press key event:
+ *      kev state: 0 code: ffe3  key: 0
+ *      kev state: 4 code: ffe1  key: 0
+ *     - Release key event:
+ *      kev state: 5 code: ffe3  key: 0
+ *      kev state: 1 code: ffe1  key: 0
+ * 3) Forward key.
  *    Forward 'Release key event' not working.
+ *
  */
 int X11IMPreedit::handleKey(int keysym, int modifier, char *key, int evtype, IMPreeditCallback *callback)
 {
@@ -84,19 +93,24 @@ int X11IMPreedit::handleKey(int keysym, int modifier, char *key, int evtype, IMP
     // Check Shift + key
     if (keysym == XK_Shift_L || keysym == XK_Shift_R) {
         if (evtype == KeyPress) {
-            return true;
-        }
-        if (m_preModKey == ShiftMask) {
-            m_preModKey = -1;
-            return true;
+            if (modifier != ControlMask) // by pass: Ctrl + shift
+                return FORWARD_KEY;
+        } else {
+            //printf("m_preModKey == %d --> %d\n", m_preModKey, ShiftMask);
+            if ((m_preModKey & ShiftMask) == ShiftMask) {
+                m_preModKey = 0;
+                return FORWARD_KEY;
+            }
         }
     } else {
-        if (evtype == KeyRelease)
+        //  #define KeyPress		2
+        //  #define KeyRelease		3
+        if (evtype == KeyRelease) {
+            m_preModKey = modifier;
             return m_preRetKey;
+        }
         //printf("m_preModKey == %d, current == %d\n", m_preModKey, modifier);
-        m_preModKey = modifier;
     }
-
     m_preRetKey = NONE_KEY;
 
     // Check OnOff

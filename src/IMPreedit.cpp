@@ -19,7 +19,7 @@ IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(50)
 
 IMPreedit::~IMPreedit()
 {
-    log.d(":~IMPreedit\n");
+    //log.d(":~IMPreedit\n");
 }
 
 // ret:
@@ -432,7 +432,7 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
         msg.fArg2   = rect.h;
         msg.strArg1 = input;
         msg.pArg1 =   pItems;
-        
+
         gApp->pGuiMsgQ->push(msg);
     }
     //gApp->pGuiMsgQ->push(MSG_IM_OFF);

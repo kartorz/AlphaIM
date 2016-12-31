@@ -73,16 +73,16 @@ static void run_as_daemon()
     }
 #endif
     /* Close out the standard file descriptors */
-#ifndef AL_DEBUG
+//#ifndef AL_DEBUG
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
-#endif
+//#endif
 }
 
 int main(int argc, char* argv[])
 {
-    //run_as_daemon();
+    run_as_daemon();
     atexit(cleanup);
 
     Configure::getRefrence().initialization();

@@ -27,6 +27,7 @@ struct _HelpWinClass
 
 extern GType     help_win_get_type (void);
 extern void      help_win_show_hide(HelpWin *win);
+extern void      help_win_hide(HelpWin *win);
 extern HelpWin*  help_win_new      (int x, int y);
 
 #endif

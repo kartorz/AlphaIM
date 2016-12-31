@@ -13,12 +13,8 @@ typedef void (*fun_gui_activate_callback)(Window imwin, Display *dpy);
 #define MAX_WORK_THREAD  2
 #define MAX_PREEDIT_PAGE 5
 
-
-#ifdef AL_DEBUG
-#define PRINTF(fmt, args...)  printf(fmt, ##args)
-#else
+//#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
-#endif
 
 /* i in [0 .. c-1] */
 #define LOOP(size)  for (int i=0; i<size; i++)

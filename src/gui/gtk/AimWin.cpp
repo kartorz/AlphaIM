@@ -7,6 +7,8 @@
 
 G_DEFINE_TYPE(AimWin, aim_win, GTK_TYPE_WINDOW /*GTK_TYPE_APPLICATION_WINDOW*/);
 
+extern gboolean aim_app_on_hide_hpwin(gpointer user_data);
+
 static void aim_win_init(AimWin *win)
 {
 }
@@ -18,11 +20,15 @@ static void aim_win_class_init(AimWinClass *klass)
 static void on_lanbutton_clicked (GtkButton *button, gpointer user_data)
 {
     gApp->pSysMsgQ->push(MSG_UI_LAN);
+
+    gdk_threads_add_idle(aim_app_on_hide_hpwin, user_data);
 }
 
 static void on_punbutton_clicked (GtkButton *button, gpointer user_data)
 {
     gApp->pSysMsgQ->push(MSG_UI_PUN);
+
+    gdk_threads_add_idle(aim_app_on_hide_hpwin, user_data);
 }
 
 extern gboolean aim_app_on_show_hpwin(gpointer user_data);
@@ -137,10 +143,15 @@ AimWin *aim_win_new(int x, int y)
 
     //button = gtk_button_new_with_label ("汉");
     //gtk_widget_set_sensitive(button, false);
-
     GtkWidget *image_cn = gtk_image_new_from_file((icons_path + "/en.png").c_str());
     button = gtk_button_new();
+    button = (GtkWidget *) g_object_new(GTK_TYPE_BUTTON,
+                                        "use-underline", TRUE,
+                                        "relief", GTK_RELIEF_NONE,
+                                        NULL);
+
     //GtkStyleContext  *style = gtk_widget_get_style_context(button);
+    //gtk_style_context_add_class (style, "image-button");
     gtk_button_set_image(GTK_BUTTON(button), (GtkWidget *) image_cn);
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 1, 1);
@@ -148,7 +159,10 @@ AimWin *aim_win_new(int x, int y)
     g_signal_connect(button, "clicked", G_CALLBACK (on_lanbutton_clicked), NULL);
 
     GtkWidget *image_pun  = gtk_image_new_from_file((icons_path + "/pun.png").c_str());
-    button = gtk_button_new();
+    button = (GtkWidget *) g_object_new(GTK_TYPE_BUTTON,
+                                        "use-underline", TRUE,
+                                        "relief", GTK_RELIEF_NONE,
+                                        NULL);
     gtk_button_set_image(GTK_BUTTON(button), (GtkWidget *)  image_pun);
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 40, 1);
@@ -156,7 +170,10 @@ AimWin *aim_win_new(int x, int y)
     g_signal_connect(button, "clicked", G_CALLBACK (on_punbutton_clicked), NULL);
 
     image = gtk_image_new_from_file((icons_path + "/help.png").c_str());
-    button = gtk_button_new();
+    button = (GtkWidget *) g_object_new(GTK_TYPE_BUTTON,
+                                        "use-underline", TRUE,
+                                        "relief", GTK_RELIEF_NONE,
+                                        NULL);
     gtk_button_set_image(GTK_BUTTON(button), (GtkWidget *) image);
     gtk_widget_set_size_request(button, 40, 40);
     gtk_fixed_put((GtkFixed *)fixed_container, button, 80, 1);

@@ -17,6 +17,12 @@ static void help_win_class_init(HelpWinClass *klass)
 
 }
 
+void help_win_hide(HelpWin *win)
+{
+    HelpWinClass *klass = HELP_WIN_GET_CLASS(win);
+    gtk_widget_hide(GTK_WIDGET (win));
+}
+
 void help_win_show_hide(HelpWin *win)
 {
     HelpWinClass *klass = HELP_WIN_GET_CLASS(win);
@@ -47,6 +53,7 @@ HelpWin *help_win_new(int x, int y)
     GtkWidget *scrollwin = gtk_scrolled_window_new(NULL, NULL);
     GtkWidget *input_label = gtk_label_new(NULL);
     std::string markup = "<span foreground=\"blue\" size=\"x-large\">";
+    markup += "版本号: 1.0\n\n";
     markup += "快捷键\n";
     markup += "\n";
     markup += "  - 打开关闭输入法\n";
@@ -55,6 +62,7 @@ HelpWin *help_win_new(int x, int y)
     markup += "\n";
     markup += "  - 中英文切换\n";
     markup += "      . 左Shift\n";
+    markup += "      . 左(Ctr + Shift)";
     markup += "\n";
     markup += "  - 中英文符号切换\n";
     markup += "      . 右Shift\n";
