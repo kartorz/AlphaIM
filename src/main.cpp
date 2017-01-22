@@ -9,13 +9,16 @@
 
 #include "aim.h"
 #include "Application.h"
-#include "AimWin.h"
 #include "Util.h"
 #include "Configure.h"
 
 #ifdef GTK3
 #include <gdk/gdkx.h>
 #include "gui/gtk/AimApp.h"
+#endif
+
+#ifdef QT5
+extern int  aim_app_main(MessageQueue *q, fun_gui_activate_callback cb, int argc, char* argv[]);
 #endif
 
 std::string system_dir;
@@ -35,7 +38,7 @@ void cleanup(void)
     }
 }
 
-static void gui_activate_callback(Window imwin, Display *dpy)
+static void gui_activate_callback(Display *dpy)
 {
    //printf("joni:%x, %p\n", imwin, dpy);
    log.d("setIM and open\n");
@@ -94,9 +97,10 @@ int main(int argc, char* argv[])
     gApp->sig.init();
 //#endif
 
-#ifdef GTK3
+#if defined(GTK3) || defined(QT5)
     return aim_app_main(gApp->pGuiMsgQ, gui_activate_callback, argc, argv);
 #else
+    
     return 0;
 #endif
 }

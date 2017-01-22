@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/cn.png</file>
+        <file>res/en.png</file>
+        <file>res/epun.png</file>
+        <file>res/help.png</file>
+        <file>res/icon.png</file>
+        <file>res/pencil.png</file>
+        <file>res/pun.png</file>
+        <file>res/setting.png</file>
+        <file>res/app.png</file>
+    </qresource>
+</RCC>
