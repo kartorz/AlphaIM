@@ -6,7 +6,7 @@
 
 #ifdef X11
 #include <X11/Xlib.h>
-typedef void (*fun_gui_activate_callback)(Window imwin, Display *dpy);
+typedef void (*fun_gui_activate_callback)(Display *dpy);
 #endif
 
 #define ICONS_PATH  "theme/hicolor/32x32"

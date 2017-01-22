@@ -73,6 +73,7 @@ DIRS = .  \
 	lib/sqlite3   \
 	lib/tinyxml2  \
 	gui/gtk       \
+        gui/qt        \
 	protocol/xim  \
 
 ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
@@ -108,6 +109,7 @@ AIMTool: $(OBJS_AIMTOOL)
 
 -include $(DEPS)
 
+-include gui/qt/qt.mk
 
 ###### installation / clean / generic rules #######
 

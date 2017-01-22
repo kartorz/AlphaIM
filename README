@@ -67,6 +67,7 @@ AlphaIM在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布.
 ubuntu14.04:
     sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev 
              libx11-dev  libgtk-3-dev
+sudo apt-get install libqt5qml5 libqt5quick5  qtdeclarative5-dev
 
 
 如何编译
@@ -91,6 +92,9 @@ windows
 X11系统配置
 ==========
 . 卸载/删除已经安装的输入法。
+   sudo im-config  , 选择 auto/xim
+    ~/.xinputrc  run_im auto
+
 . 打开或创建 ~/.xprofile
 . 加入下列内容:
   export XMODIFIERS=@im=aim
