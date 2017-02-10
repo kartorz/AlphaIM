@@ -267,6 +267,7 @@ _prefix=/usr/local
 _qttooldir=auto
 _qt5=auto
 _qt5extras="no"
+_gtk3=no
 _little_endian=auto
 _debug=no
 _cc=cc
@@ -582,6 +583,7 @@ gtk_libs=`pkg-config --libs gtk+-3.0`
 test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
 libs_alphadict="$libs_alphadict  $gtk_libs"
 
+_gtk3=yes
 echocheck "yes"
 echo ""
 
@@ -620,6 +622,8 @@ EXTRALIBS          = $extra_ldflags $ld_static $timer_libs $extra_libs
 EXTRALIBS_ALPHAIM  = $libs_alphadict
 
 DEBUG=$_debug
+GTK3=$_gtk3
+
 EOF
 
 

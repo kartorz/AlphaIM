@@ -8,7 +8,7 @@
 #include "AimWin.h"
 #include "IcWin.h"
 
-void (*gui_activate_callback)(Window imwin, Display *dsy);
+void (*gui_activate_callback)(Display *dsy);
 static gboolean aim_app_on_hide_imwin(gpointer user_data);
 
 AimApp *aim_app_instance = NULL;
@@ -98,7 +98,7 @@ static void aim_app_activate (GApplication *app)
     klass->bshow_imwin = false;
 
     //gdk_threads_add_timeout_seconds (3, aim_app_on_hide_imwin, imwin);
-    gui_activate_callback(0, dsy);
+    gui_activate_callback(dsy);
 }
 
 static void aim_app_class_init(AimAppClass *klass)
