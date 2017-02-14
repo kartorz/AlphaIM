@@ -58,9 +58,9 @@ compile_check() {
   echo >> "$TMPLOG"
   cat "$source" >> "$TMPLOG"
   echo >> "$TMPLOG"
-  echo "$_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS $source $extra_cflags $ld_static $extra_ldflags $libs_alphadict  -o $TMPEXE $@" >> "$TMPLOG"
+  echo "$_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS $source $extra_cflags $ld_static $extra_ldflags $libs_aim  -o $TMPEXE $@" >> "$TMPLOG"
   rm -f "$TMPEXE"
-  $_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS "$source" $extra_cflags $ld_static $extra_ldflags $libs_alphadict  -o "$TMPEXE" "$@"  >> "$TMPLOG" 2>&1
+  $_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS "$source" $extra_cflags $ld_static $extra_ldflags $libs_aim  -o "$TMPEXE" "$@"  >> "$TMPLOG" 2>&1
   TMPRES="$?"
   echo >> "$TMPLOG"
   echo >> "$TMPLOG"
@@ -239,7 +239,7 @@ Installation directories:
   --prefix=DIR           prefix directory for installation [/usr/local]
   --bindir=DIR           directory for installing binaries [PREFIX/bin]
   --datadir=DIR          directory for installing machine independent
-                         data files (resources, dicts, etc) [PREFIX/share/alphadict]
+                         data files (resources, dicts, etc) [PREFIX/share/aim]
 
 Optional features:
   --enable-little-endian force byte order to big-endian  [autodetect]
@@ -573,20 +573,99 @@ else
   die "Please check and install xtrans"
 fi
 
-echocheck "gtk+-3.0"
-gtk_incs=`pkg-config --cflags gtk+-3.0`
-test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
-CFLAGS="$CFLAGS -DGTK3"
-INCLUDES="$gtk_incs"
 
-gtk_libs=`pkg-config --libs gtk+-3.0`
-test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
-libs_alphadict="$libs_alphadict  $gtk_libs"
+echocheck "QT5 header"
+  _qt5_headers="no"
+  inc_tmp=""
+  ld_tmp=""
+  res_comment="check if the qt5 dev(el) packages are installed"
 
-_gtk3=yes
-echocheck "yes"
-echo ""
+  if header_check  QtWidgets/QMainWindow ; then
+    res_comment=""
+    _qt5_headers="yes"
+  else
+    for I in $(echo $extra_cflags | sed s/-I//g) /usr/include  /usr/include/x86_64-linux-gnu \
+      /usr/include/i386-linux-gnu /usr/local/include; do
+      if test -f "$I/qt5/QtWidgets/QMainWindow" ; then
+        inc_tmp="-I$I/qt5 -I$I/qt5/QtWidgets"
+        res_comment=""
+        _qt5_headers="yes"
+        break
+      fi
+    done
+  fi
+echores "$_qt5_headers"
 
+echocheck "QT5 libraries"
+  if test "$_qt5" = "auto" ; then
+    _qt5="no";
+    if test "$_qt5_headers" = "yes" ; then
+      for I in "" /usr/lib/x86_64-linux-gnu   /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
+        if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
+          def_qt5='#define CONFIG_QT5 1'
+          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
+          libs_aim="$libs_aim $ld_tmp"
+          extra_cflags="$inc_tmp $extra_cflags"
+          CFLAGS="$CFLAGS -DQT5"
+          _qt5="yes"
+        fi
+
+        if test -f "$I/libQt5X11Extras.so" -o -L "$I/libQt5X11Extras.so" ; then
+          ld_tmp="-L$I -lQt5X11Extras  -lX11"
+          def_qt5extras='#define CONFIG_QT5EXTRAS 1'
+          libs_aim="$libs_aim $ld_tmp"
+          _qt5extras="yes"
+        fi
+
+        if test $_qt5 = "yes" -a $_qt5extras = "yes" ; then
+          break
+        fi
+      done
+    fi
+  fi
+echores "$_qt5"
+
+echocheck "QT tools"
+if test $_qttooldir = "auto" ; then
+  if test $_qt5 = "yes" ; then
+    for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
+      if test -f "$I/qt5/bin/moc" ; then
+        _qttooldir=$I/qt5/bin
+        break 
+      fi
+      if test -f "$I/qt5/bin/moc" ; then
+        _qttooldir=$I/qt4/bin
+        break
+      fi
+    done
+
+    #if test -z "$_moc" ; then    
+    #  ver_tmp=$(moc -v 2>&1 | tail -n 1 | cut -d ' ' -f 6)
+    #  if test $ver_tmp != "" ; then
+    #    _moc=moc
+    #    _uic=uic
+    #    _rcc=rcc
+    #  fi
+    #fi
+  fi
+  echores "$_qttooldir"
+fi
+
+if test $_qt5 = "no" ; then
+  echocheck "gtk+-3.0"
+  gtk_incs=`pkg-config --cflags gtk+-3.0`
+  test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
+  CFLAGS="$CFLAGS -DGTK3"
+  INCLUDES="$gtk_incs"
+  INCLUDES="$INCLUDES -I\$(TOPDIR)/gui/gtk"
+  gtk_libs=`pkg-config --libs gtk+-3.0`
+  test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
+  libs_aim="$libs_aim  $gtk_libs"
+
+  _gtk3=yes
+  echocheck "yes"
+  echo ""
+fi
 #############################################################################
 echo "Creating config.mak"
 cat > config.mak << EOF
@@ -614,15 +693,20 @@ INSTALLSTRIP =$_install_strip
 TOPDIR  := \$(abspath .)
 MAKEFLAGS = CC=gcc CXX=g++ AR=ar
 CFLAGS   = $WARNFLAGS $WARN_CFLAGS $CFLAGS $extra_cflags $INCLUDES
-CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib  -I\$(TOPDIR)/lib/IMdkit/   -I\$(TOPDIR)/gui/gtk -I\$(TOPDIR)/protocol/xim
+CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib  -I\$(TOPDIR)/lib/IMdkit/  -I\$(TOPDIR)/protocol/xim
 CXXFLAGS = $WARNFLAGS $CXXFLAGS $extra_cxxflags
 CC_DEPFLAGS = $DEPFLAGS
 
 EXTRALIBS          = $extra_ldflags $ld_static $timer_libs $extra_libs
-EXTRALIBS_ALPHAIM  = $libs_alphadict
+EXTRALIBS_ALPHAIM  = $libs_aim
 
 DEBUG=$_debug
 GTK3=$_gtk3
+QT5=$_qt5
+
+MOC="$_qttooldir/moc"
+UIC="$_qttooldir/uic"
+RCC="$_qttooldir/rcc"
 
 EOF
 
@@ -636,8 +720,8 @@ cat > $TMPH << EOF
 ** of the configure script! See ./configure --help for details.
 *---------------------------------------------------------------------------*/
 
-#ifndef ALPHADICT_CONFIG_H
-#define ALPHADICT_CONFIG_H
+#ifndef ALPHAIM_CONFIG_H
+#define ALPHAIM_CONFIG_H
 
 #define MAX_WORK_THREAD 2
 #define APP_NAME  "AlphaIM"
@@ -648,7 +732,7 @@ cat > $TMPH << EOF
 $def_debug
 $def_littleendian
 
-#endif /* ALPHADICT_CONFIG_H */
+#endif /* ALPHAIM_CONFIG_H */
 EOF
 
 # Do not overwrite an unchanged config.h to avoid superfluous rebuilds.
@@ -665,10 +749,10 @@ Config files successfully generated by ./configure $configuration !
   debug: $_debug
 
 'config.h' and 'config.mak' contain your configuration options.
-Note: If you alter theses files (for instance CFLAGS) AlphaDict may no longer
+Note: If you alter theses files (for instance CFLAGS) AlphaIM may no longer
       compile *** DO NOT REPORT BUGS if you tweak these files ***
 
-'make' will now compile AlphaDict  and 'make install' will install it.
+'make' will now compile AlphaIM  and 'make install' will install it.
 Note: On non-Linux systems you might need to use 'gmake' instead of 'make'.
 
 EOF
@@ -694,12 +778,12 @@ EOF
 if test "$warn_cflags" = yes; then
   cat <<EOF
 
-AlphaDict compilation will use the CPPFLAGS/CFLAGS/LDFLAGS/YASMFLAGS set by you,
+AlphaIM compilation will use the CPPFLAGS/CFLAGS/LDFLAGS/YASMFLAGS set by you,
 but:
 
     *** ***  DO NOT REPORT BUGS IF IT DOES NOT COMPILE/WORK!  *** ***
 
-It is strongly recommended to let AlphaDict choose the correct *FLAGS!
+It is strongly recommended to let AlphaIM choose the correct *FLAGS!
 To do so, remove *FLAGS from the environment an re-run configure.
 You can use --extra-*flags to add custom flags if necessary.
 

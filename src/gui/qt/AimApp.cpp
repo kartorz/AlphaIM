@@ -11,17 +11,17 @@ int aim_app_main(MessageQueue *q, fun_gui_activate_callback uicallback, int argc
 {
     QApplication a(argc, argv);
 
+    Display *dsy = QX11Info::display();
+    uicallback(dsy); // will block system.
+
     AimWin w;
     w.hide();
+    //w.show();
 
-    //Display *dsy = QX11Info::display();
-    //uicallback(dsy); // will block system.
-    
     //QRect rec = QApplication::desktop()->screenGeometry();
     //height = rec.height();
     //width = rec.width();
 
     //QSystemTrayIcon
-    
     return a.exec();
 }
