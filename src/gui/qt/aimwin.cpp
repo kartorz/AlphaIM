@@ -17,7 +17,7 @@ AimWin::AimWin(QWidget *parent) :
     QIcon icon;
     icon.addFile(QStringLiteral(":/res/app.png"), QSize(), QIcon::Normal, QIcon::Off);
     m_systray->setIcon(icon);
-    //m_systray->show();
+    m_systray->show();
     QObject::connect(m_systray,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this,
