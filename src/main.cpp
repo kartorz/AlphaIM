@@ -85,7 +85,7 @@ static void run_as_daemon()
 
 int main(int argc, char* argv[])
 {
-    run_as_daemon();
+    //run_as_daemon();
     atexit(cleanup);
 
     Configure::getRefrence().initialization();
