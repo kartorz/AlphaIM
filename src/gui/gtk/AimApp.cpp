@@ -3,12 +3,13 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#ifdef HAS_APPINDICATOR3
+#include <libappindicator/app-indicator.h>
+#endif
 
 #include "AimApp.h"
 #include "AimWin.h"
 #include "IcWin.h"
-
-#define USE_NOTIFICATION
 
 void (*gui_activate_callback)(Display *dsy);
 static gboolean aim_app_on_hide_imwin(gpointer user_data);
@@ -21,7 +22,7 @@ static void aim_app_on_action_systray_press(GSimpleAction *action,
                                             GVariant      *parameter,
                                             gpointer       user_data)
 {
-    printf("joni aim_app_on_action_systray_press \n");
+    //printf("joni aim_app_on_action_systray_press \n");
     //AimWin *imwin = (AimWin *)user_data;
     //aim_win_show_hide(imwin);
 
@@ -32,13 +33,17 @@ static void aim_app_on_action_systray_press(GSimpleAction *action,
 }
 
 static GActionEntry app_actions[] = {
-    { "systray-press", aim_app_on_action_systray_press, NULL, NULL, NULL },
+    { "systray-press", aim_app_on_action_systray_press, NULL, NULL, NULL }
 };
 
 static void aim_app_init (AimApp *app)
 {
-    printf("joni app_init \n");
-     g_action_map_add_action_entries (G_ACTION_MAP (app),
+}
+
+static void aim_app_startup(GApplication *app)
+{
+    G_APPLICATION_CLASS (aim_app_parent_class)->startup (app);
+    g_action_map_add_action_entries (G_ACTION_MAP (app),
                                      app_actions, G_N_ELEMENTS (app_actions),
                                      app);
 }
@@ -118,26 +123,33 @@ printf("aim_app_activate\n");
     klass->systray_img_en =  gtk_image_new_from_file((icons_path + "/en.png").c_str());
     klass->systray_img_cn =  gtk_image_new_from_file((icons_path + "/cn.png").c_str());
 
-    klass->systray = gtk_status_icon_new_from_pixbuf(gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
-
-    //g_signal_connect(GTK_STATUS_ICON (klass->systray), "button-press-event", G_CALLBACK (aim_app_on_systray_press), klass->imwin);
     klass->bshow_imwin = false;
 
-#ifdef USE_NOTIFICATION
-
-    GNotification *notification = g_notification_new ("Hello world!");
-    g_notification_set_body (notification, "This is an example notification.");
-    //GFile *file = g_file_new_for_path ("fruitbowl.png");
-    //GIcon *icon = g_file_icon_new (file);
-    //g_notification_set_icon (notification,G_ICON (icon));
-    //g_object_unref (icon);
-    //g_object_unref (file);
-	//g_application_send_notification (app, "app-systray-press", notification);
-
+#ifdef HAS_NOTIFICATION
+    GNotification *notification = g_notification_new ("aim");
+    GFile *file = g_file_new_for_path ((system_dir + "/"  + "app.png").c_str());
+    GIcon *icon = g_file_icon_new (file);
+    g_notification_set_icon (notification,G_ICON (icon));
+    g_object_unref (icon);
+    g_object_unref (file);
+	g_application_send_notification (app, "app-systray-press", notification);
+    g_notification_add_button_with_target (notification, "label", "app.systray-press", "s", "bla");
     g_notification_set_default_action (notification, "app.systray-press");
     //g_notification_add_button (notification, "5 minutes", "app.reply-5-minutes");
 
     g_object_unref(notification);
+#elif defined(HAS_APPINDICATOR3)
+    /* Indicator */
+    AppIndicator *indicator = app_indicator_new ("org.gtk.aimapp",
+                                   "virtualbox",
+                                    APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+    app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
+    app_indicator_set_attention_icon (indicator, "virtualbox");
+    app_indicator_set_icon(indicator, "virtualbox");
+     g_object_unref(indicator);
+#else
+    klass->systray = gtk_status_icon_new_from_pixbuf(gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
+    g_signal_connect(GTK_STATUS_ICON (klass->systray), "button-press-event", G_CALLBACK (aim_app_on_systray_press), klass->imwin);
 #endif
     //gdk_threads_add_timeout_seconds (3, aim_app_on_hide_imwin, imwin);
     gui_activate_callback(dsy);
@@ -145,6 +157,7 @@ printf("aim_app_activate\n");
 
 static void aim_app_class_init(AimAppClass *klass)
 {
+    G_APPLICATION_CLASS (klass)->startup  = aim_app_startup;
     G_APPLICATION_CLASS (klass)->activate = aim_app_activate;
     G_APPLICATION_CLASS (klass)->open     = aim_app_open;
     G_OBJECT_CLASS      (klass)->dispose  = aim_app_dispose;
@@ -265,7 +278,9 @@ gboolean aim_app_on_hide_hpwin(gpointer user_data)
 AimApp* aim_app_new(void)
 {
     //app = gtk_application_new ("org.gnome.example", G_APPLICATION_FLAGS_NONE);
-    return (AimApp*)g_object_new(AIM_APP_TYPE, /*"application-id", "aim",*/ NULL);
+    return (AimApp*)g_object_new(AIM_APP_TYPE,
+                                 "application-id", "org.gtk.aimapp",
+                                 NULL);
 }
 
 int aim_app_main(MessageQueue *q, fun_gui_activate_callback cb, int argc, char* argv[])

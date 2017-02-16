@@ -264,10 +264,11 @@ exit 0
 } # show_help
 
 _prefix=/usr/local
-_qttooldir=auto
-_qt5=auto
-_qt5extras="no"
+_qttooldir=no
+_qt5=no
+_qt5extras=no
 _gtk3=no
+_appinc3=no
 _little_endian=auto
 _debug=no
 _cc=cc
@@ -318,6 +319,8 @@ for ac_option do
   --disable-little-endian) _little_endian=no  ;;
   --enable-qt5)         _qt5=yes        ;;
   --disable-qt5)        _qt5=no         ;;
+  --enable-appinc3)     _appinc3=yes        ;;
+  --disable-appinc3)    _appinc3=no         ;;
   --enable-debug)      _debug=yes     ;;
       
   *)
@@ -573,7 +576,13 @@ else
   die "Please check and install xtrans"
 fi
 
+if test "$_appinc3" = "yes" ; then
+    libs_aim="$libs_aim  -lappindicator3"
+    extra_cflags="$extra_cflags -I/usr/include/libappindicator3-0.1"
+    CFLAGS="$CFLAGS -DHAS_APPINDICATOR3"
+fi
 
+if test "$_qt5" = "auto" ; then
 echocheck "QT5 header"
   _qt5_headers="no"
   inc_tmp=""
@@ -595,6 +604,7 @@ echocheck "QT5 header"
     done
   fi
 echores "$_qt5_headers"
+fi
 
 echocheck "QT5 libraries"
   if test "$_qt5" = "auto" ; then
@@ -656,7 +666,7 @@ if test $_qt5 = "no" ; then
   gtk_incs=`pkg-config --cflags gtk+-3.0`
   test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
   CFLAGS="$CFLAGS -DGTK3"
-  INCLUDES="$gtk_incs"
+  INCLUDES="$INCLUDES $gtk_incs"
   INCLUDES="$INCLUDES -I\$(TOPDIR)/gui/gtk"
   gtk_libs=`pkg-config --libs gtk+-3.0`
   test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
