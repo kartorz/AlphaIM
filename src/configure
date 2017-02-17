@@ -242,13 +242,14 @@ Installation directories:
                          data files (resources, dicts, etc) [PREFIX/share/aim]
 
 Optional features:
-  --enable-little-endian force byte order to big-endian  [autodetect]
-  --enable-qt5           force using QT5 for the GUI     [autodetect]
-  --enable-debug         compile a debugging application [disable]
+  --enable-little-endian force byte order to little-endian  [autodetect]
+  --enable-qt5           force using QT5 for the GUI        [disable]
+  --enable-debug         compile a debugging application    [disable]
+  --disable-show_imwin   show a im window when im activated [enable]
 
 Miscellaneous options:
   --with-install=PATH    path to a custom install program [install]
-  --with-qttool=PATH     Path to QT tools: moc uic rss, etc.[autodetect]
+  --with-qttool=PATH     Path to QT tools: moc uic rss, etc.[disable]
 
 Use these options if autodetection fails:
   --extra-cflags=FLAGS   extra CFLAGS
@@ -277,6 +278,7 @@ test "$CC" && _cc="$CC"
 _as=auto
 _nm=auto
 _install=install
+_show_imwin=yes
 
 option_value(){
   echo $(echo $* | cut -d '=' -f 2-)
@@ -321,8 +323,8 @@ for ac_option do
   --disable-qt5)        _qt5=no         ;;
   --enable-appinc3)     _appinc3=yes        ;;
   --disable-appinc3)    _appinc3=no         ;;
-  --enable-debug)      _debug=yes     ;;
-      
+  --enable-debug)       _debug=yes     ;;
+  --disable-show_imwin) _show_imwin=no ;;   
   *)
     echo "Unknown parameter: $ac_option"
     exit 1
@@ -665,7 +667,7 @@ if test $_qt5 = "no" ; then
   echocheck "gtk+-3.0"
   gtk_incs=`pkg-config --cflags gtk+-3.0`
   test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
-  CFLAGS="$CFLAGS -DGTK3"
+  extra_cflags="$extra_cflags -DGTK3"
   INCLUDES="$INCLUDES $gtk_incs"
   INCLUDES="$INCLUDES -I\$(TOPDIR)/gui/gtk"
   gtk_libs=`pkg-config --libs gtk+-3.0`
@@ -676,6 +678,13 @@ if test $_qt5 = "no" ; then
   echocheck "yes"
   echo ""
 fi
+
+if test $_show_imwin = "yes" ; then
+  extra_cflags="$extra_cflags  -DSHOW_IMWIN=true"
+else
+  extra_cflags="$extra_cflags  -DSHOW_IMWIN=false"
+fi
+
 #############################################################################
 echo "Creating config.mak"
 cat > config.mak << EOF
