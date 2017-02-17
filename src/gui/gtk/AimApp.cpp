@@ -123,7 +123,7 @@ printf("aim_app_activate\n");
     klass->systray_img_en =  gtk_image_new_from_file((icons_path + "/en.png").c_str());
     klass->systray_img_cn =  gtk_image_new_from_file((icons_path + "/cn.png").c_str());
 
-    klass->bshow_imwin = false;
+    klass->bshow_imwin = SHOW_IMWIN;
 
 #ifdef HAS_NOTIFICATION
     GNotification *notification = g_notification_new ("aim");
@@ -168,10 +168,11 @@ gboolean aim_app_on_active_im(gpointer user_data)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
 
-    gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
-    //gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
     if (klass->bshow_imwin) {
         aim_win_enable_im(klass->imwin, true);
+    } else {
+        gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
+        //gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
     }
     return false;
 }
@@ -195,12 +196,14 @@ gboolean aim_app_on_disactive_im(gpointer user_data)
 gboolean aim_app_on_switch_lan(gpointer user_data)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    bool is_cn = *((gboolean *)user_data);
-    if (is_cn)
-        gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
-    else
-        gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_en)));
 
+    bool is_cn = *((gboolean *)user_data);
+    if (!gtk_widget_get_mapped(GTK_WIDGET (klass->imwin))) {
+    	if (is_cn)
+            gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
+    	else
+            gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_en)));
+    }
     aim_win_switch_lan(klass->imwin, is_cn);
     return false;
 }
