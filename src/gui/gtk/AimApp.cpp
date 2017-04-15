@@ -74,7 +74,7 @@ static void aim_app_dispose(GObject *gobject)
 
 static void aim_app_finalize(GObject *gobject)
 {
-printf("aim_app_finalize\n");
+//printf("aim_app_finalize\n");
 }
 
 static void aim_app_open(GApplication  *app,
@@ -89,7 +89,7 @@ static void aim_app_activate (GApplication *app)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(app);
     GtkApplication *gtkapp = GTK_APPLICATION (app);
-printf("aim_app_activate\n");
+//printf("aim_app_activate\n");
     GdkScreen *gdk_screen = gdk_screen_get_default ();
     gint screen_w = gdk_screen_get_width(gdk_screen);
     gint screen_h = gdk_screen_get_height(gdk_screen);

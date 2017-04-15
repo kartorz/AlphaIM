@@ -268,6 +268,7 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 {
     PRINTF("handleForwardEvent\n");
     MutexLock lock(m_cs);  //Exclud handleUIMessage
+    static  CARD32 last_kevtime = 0;
 
     /* Lookup KeyPress Events only */
     int evtype = calldata->forwardevent.event.type;
@@ -282,12 +283,26 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
         return true;
     }
 
+    // Check if a infinite loop.
+    //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
+    //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
+    //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
+    XKeyEvent *kev = (XKeyEvent*)&((IMForwardEventStruct *)calldata)->event;
+    if (kev->time == last_kevtime)
+    {
+        PRINTF("A infinite loop, type:%d-->%d\n", kev->time, last_kevtime);
+        return true;
+    }
+    last_kevtime = kev->time;
+
+#ifdef AL_DEBUG
+//    log.d("handleForwardEvent, type:%d\n",  calldata->forwardevent.event.type);
+#endif
+
     char strbuf[KEVBUF_LEN];
     KeySym keysym;
-
-    XKeyEvent *kev = (XKeyEvent*)&((IMForwardEventStruct *)calldata)->event;
     XLookupString(kev, strbuf, KEVBUF_LEN, &keysym, NULL);
-    //printf("kev time: 0x%d type: %d state %d --> code %x --> %x \n", Util::getTimeMS(), evtype, kev->state, keysym, strbuf[0]);
+    //printf("kev time: 0x%d type: %d state %d --> code %x --> %x \n", kev->time, evtype, kev->state, keysym, strbuf[0]);
 
     XIMPriv priv;
     priv.ims = ims;
@@ -295,8 +310,10 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     this->opaque = &priv;
     int ret = ic->preedit.handleKey(keysym, kev->state, strbuf, evtype, this);
     if (ret == FORWARD_KEY) {
+        // Be careful, IMForwardEvent may be hanlded by this function again -- a infinite loop
         IMForwardEvent(ims, (XPointer)calldata);
     }
+    return true;
 }
 
 void XimSrv::handleUIMessage(int msg)

@@ -244,10 +244,10 @@ int Xicm::unsetICFocus(IMChangeFocusStruct *calldata)
     PRINTF("unsetICFocus %d, callid:%d\n", m_icFocus, calldata->icid);
     if (m_icFocus == calldata->icid) {
         m_icFocus = -1;
-        /*IC *ic = getIC(calldata->icid);
+        IC *ic = getIC(calldata->icid);
         if (ic != NULL) {
-            ic->preedit.close();
-        }*/
+            ic->preedit.reset();
+        }
     }
 }
 
