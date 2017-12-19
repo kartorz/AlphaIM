@@ -8,6 +8,7 @@
 #define USRPHTMP_ROUND_SIZE  512
 #define USRPHTMP_MAX_SZIE    USRPHTMP_ROUND_SIZE * 8
 #define USRPHFILE_MAX_SZIE   USRPHTMP_MAX_SZIE * 5
+#define USRPH_MAX_SIZE       16 // about four hans.
 
 using namespace std;
 

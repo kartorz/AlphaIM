@@ -13,7 +13,7 @@
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
 
-IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(50)
+IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(50),m_bUsrSelectCandidate(false)
 {
 }
 
@@ -254,9 +254,20 @@ void IMPreedit::close()
  */
 void IMPreedit::page(int pg)
 {
+    int maxItems = IM_ITEM_PAGE_SIZE;
+    int start, end;
+    IMItem  candiItem;
+
+    m_uiItems.clear();
+    m_bCandiItem = false;
+
     //if (m_candidate == "") // Maybe, there are ""s in db.
-    if (m_items.size() == 0)
+    if (m_items.size() == 0) {
+        candiItem.key = "";
+        candiItem.val = m_candidate;
+        m_uiItems.push_front(candiItem);
         return;
+    }
 
     if (pg < 1)
         pg = 1;
@@ -268,14 +279,8 @@ void IMPreedit::page(int pg)
     if (!bPgDown && m_pageWin[0] <= -1)
         return;
 
-    int maxItems = IM_ITEM_PAGE_SIZE;
-    int start, end;
-
     m_curPage = pg;
-    m_uiItems.clear();
-    m_bCandiItem = false;
 
-    IMItem  candiItem;
     if (pg == 1) {
 
         if (m_candidate != m_items[0].val) {
@@ -394,14 +399,23 @@ void IMPreedit::doClose()
 void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 {
     if (i >= 1 && i <= 9) {
+        if (i > 1) {
+            // Usr selected phrase manually, save it.
+            m_bUsrSelectCandidate = true;
+        }
+
         if (commit(i)) {
             // commit candidte string.
             string candidate = m_ci + m_candidate;
-            PRINTF("commit %s\n", candidate.c_str());
+            PRINTF("commit %s, %d\n", candidate.c_str(), i);
             callback->onCommit(callback->opaque, candidate);
 
             doClose();
-            im->addUserPhraseAsync(candidate);
+
+            if (m_bUsrSelectCandidate) {
+                m_bUsrSelectCandidate = false;
+                im->addUserPhraseAsync(candidate);
+            }
         }
     }
 }

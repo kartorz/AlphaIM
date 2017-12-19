@@ -123,6 +123,7 @@ protected:
     bool   m_bCN;
     bool   m_bCNPun;  //Chinese punctuation
     bool   m_bPreQuo;
+    bool   m_bUsrSelectCandidate;
 
     MutexCriticalSection m_cs;
 

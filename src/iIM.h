@@ -18,6 +18,10 @@ typedef struct {
     string key;
     string val;
     int    priority;
+
+    // Temp value for lookup..
+    int  off;
+    int  number;
 } IMItem;
 
 
