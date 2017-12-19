@@ -58,8 +58,8 @@ public:
 
 private:
     string lookup(const string& input, deque<IMItem>& items,  bool firstRound);
-    void lookupPhrase(string key, string input, deque<IMItem>& items);
-    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[6][MAX_PHRASE_LEN + 1]);
+    void lookupPhrase(string key, string input, deque<IMItem>& items, bool firstRound);
+    void lookupPhrase(string key, iIndexItem* item,  deque<IMItem> itemList[2], bool firstRound);
 
     bool lookupCache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
     void cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items);
@@ -68,6 +68,7 @@ private:
     void getHanItems(const string& py, inxtree_dataitem& d, deque<IMItem>& items);
     void sort(deque<IMItem>& items);
     void sort(IndexList& items);
+    void sortByOff(deque<IMItem>& items);
     void addToPhDB(const string& phrase, u8 priority);
     void trackUsrInput(const string phrase);
     void parseUsrInput(vector<string> &phrases);

@@ -111,7 +111,7 @@ string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
     string key = input;
     string ret = "";
     string validkey;
-    PRINTF("lookup1 %s\n", key.c_str());
+    PRINTF("================= lookup %s==================\n", key.c_str());
     if (!key.empty()) {
         //@ Start from a valid PY.
         int validlen = m_pyDB.validLen(key);
@@ -128,7 +128,7 @@ string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
 
         //@ Search phrase and filter
         if (validkey.length() < input.length()) {
-            lookupPhrase(validkey, input, items);
+            lookupPhrase(validkey, input, items, firstRound);
         }
 
        //PRINTF("lookup1 validkey: %s, rest: %s\n", validkey.c_str(), rest.c_str());  
@@ -149,24 +149,20 @@ string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
             ret  = items[0].val;  // Append to candidate string.
 
             // Contain partly invalid pinyin string, search slice by slice.
-            deque<IMItem> cacheItems;
-            ret += lookup(rest, cacheItems, false);
+            deque<IMItem> tempItems;
+            ret += lookup(rest, tempItems, false);
             return ret;
         }
     }
     return "";
 }
 
-void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
+void PY::lookupPhrase(string key, string input, deque<IMItem>& items, bool firstRound)
 {
-    /*      0: perfect match
-     * 1 -- 2: PY > key.
-     * 3 -- 4: key > PY.
-     *      5: other.
-     *
-     */
-    #define ITEMLIST_LEN  6
-
+    // The offset can accepted.
+    #define OFF_PAGE  2  // How many page for non-perfect match.
+    #define OFF_RANGE 3  // How many 'off' array
+    
     // Gets All phrases beging with 'key[0 .. -1]'.
     // Fix the 'dier' , 'wangu' issue.
     //    - dier: di'er  die'r
@@ -179,48 +175,84 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items)
         m_phDBs[i]->getIndexList(indexList, key, true);
     }
 
-    deque<IMItem> imitemList[ITEMLIST_LEN][MAX_PHRASE_LEN + 1];
+    int phyTotal = 0;
+    deque<IMItem> imitemList[OFF_RANGE+1][MAX_PHRASE_LEN + 1];
+
+    // After key and pinyin advanced, the two remainer:
+    //   0: key == "" &&  pinyin >= ""
+    //   1: key != "" &&  pinyin != ""
+    deque<IMItem> imitemTempList[2];
     vector<iIndexItem*>::iterator iter;
     for(iter = indexList.begin(); iter != indexList.end(); iter++) {
-        lookupPhrase(input, *iter, imitemList);
+        lookupPhrase(input, *iter, imitemTempList, firstRound);
     }
 
-    // Perfect match.
-    for (int j = 0; j < ITEMLIST_LEN - 1; j++) {
-        for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
-            if (imitemList[j][i].size() > 0) {
-                sort(imitemList[j][i]);
-                for (int ii = 0; ii < imitemList[j][i].size(); ii++) {
-                    items.push_back(imitemList[j][i].at(ii));
+    for (int i = 0; i < 2; i++) {
+    if (imitemTempList[i].size() > 0) {
+        sortByOff(imitemTempList[i]);
+
+        int offmin = imitemTempList[i].at(0).off;
+        int offcur = offmin;
+        int offset = offcur - offmin;
+        bool exit = false;
+        bool check = false;
+
+        for (int ii = 0; ii < imitemTempList[i].size(); ii++) {
+            IMItem& item = imitemTempList[i].at(ii);
+
+            offset = offset > OFF_RANGE ? OFF_RANGE : offset;
+            imitemList[offset][item.number].push_back(item);
+            phyTotal++;
+
+            if (offcur != item.off) {
+                // Advance to next offset.
+                PRINTF("{Next off}: cur:%d, next:%d, offset:%d \n", offcur, item.off, offset);
+                offcur = item.off;
+                offset = offcur - offmin ;
+                if (offset > OFF_RANGE)
+                    offset = OFF_RANGE;
+
+                // Don't put too many.
+                if (phyTotal > OFF_PAGE * IM_ITEM_PAGE_SIZE) {
+                    PRINTF("{Check} got enough exit\n");
+                    exit = true;
+                    break;
                 }
             }
         }
-    }
 
-    // Start from two hans
-//    for (int i = MAX_PHRASE_LEN; i > 1; i--) {
-    for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
-        if (imitemList[ITEMLIST_LEN-1][i].size() > 0) {
-            sort(imitemList[ITEMLIST_LEN-1][i]);
-            for (int ii = 0; ii < imitemList[ITEMLIST_LEN-1][i].size(); ii++) {
-                //printf("push_back %s, i:%d, size:%d\n",imitemList[j][i].at(ii).val.c_str(), i, imitemList[j][i].size());
-                items.push_back(imitemList[ITEMLIST_LEN-1][i].at(ii));
+        for (int off = 0; off <= OFF_RANGE; off++) {
+        for (int i = 2; i <= MAX_PHRASE_LEN; i++) {
+            if (imitemList[off][i].size() > 0) {
+                sort(imitemList[off][i]);
+                for (int ii = 0; ii < imitemList[off][i].size(); ii++) {
+                    items.push_back(imitemList[off][i].at(ii));
+                }
+
+                imitemList[off][i].clear(); //Reused.
             }
         }
+        }
+        if (exit)
+            break;
+    }
     }
 
     IndexTree::freeItems(indexList);
 }
 
-void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[6][MAX_PHRASE_LEN + 1])
+void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempList[2],  bool firstRound)
 {
     char han[10];
     int npos = 0;
     int len = 0;
     int number = 0;
 
-    /*      0: whole match
+    /*  Remainer of pinyin of han.
+     *      0: whole match
      *  other: the difference between key and py.
+     *         - key > py
+     *         - py  > key
      */
     int found;
     string imkey = "";
@@ -243,7 +275,7 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[6]
         int len = CharUtil::nextu8char(phstr + npos, han);
         if (len >= MIN_HAN_U8BYTES) {
             //printf("lookupPhrase %s --> %s,\n", imval.c_str(), phstr);
-            vector<inxtree_dataitem> pyitems;
+            vector<inxtree_dataitem> pyitems; // Multi-pingyin.
             m_hanDB.lookup(han, pyitems);
             int matchlen = 0;
             for (int i = 0; i < pyitems.size(); i++) {
@@ -253,15 +285,15 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[6]
                 if (len2 > 0 && matchlen < len2) {
                     matchlen = len2;
                     //found = matchlen == py.length() ? 2 : 1;
-                    found =  py.length() - matchlen;
-                    //printf("%s: py:%s, key:%s, len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), matchlen, found);
+                    found = py.length() - matchlen;
+                    //PRINTF("{lookup phrase[%s]}: py:%s, key:%s, match len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), matchlen, found);
                 }
             }
 
             if (matchlen > 0) {
                 imkey += key.substr(0, matchlen);
                 key = key.substr(matchlen);
-
+                //PRINTF("{lookup next key}:(%s)\n", key.c_str());
                 // Save this han for result.
                 //    phrase: 有线广播; key: youxian; result: 有线
                 imval += item->index.substr(npos, len);
@@ -278,37 +310,45 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemList[6]
 
     if (found > -1)
     {
-        if (number > MAX_PHRASE_LEN)
-            number = MAX_PHRASE_LEN;
-
         if (npos <  phstrlen) {
-            //printf("check if exist %s, npos:%d, phstrlen:%d\n", (prefix+imval).c_str(), npos, phstrlen);
+            // Part of a phrase, Maybe this part is  another phrase.
+            PRINTF("check if exist %s, npos:%d, phstrlen:%d\n", (prefix+imval).c_str(), npos, phstrlen);
             for (int i = 0; i < m_phDBsLen; i++) {                
                 if (m_phDBs[i]->isExist(prefix+imval)) /* Don't append the duplicate item.*/ 
                     return;
             }
         }
 
+        if (number > MAX_PHRASE_LEN)
+            number = MAX_PHRASE_LEN;
+
         IMItem imitem;
         imitem.key = imkey;
         imitem.val = imval;
         imitem.priority = item->d.buf[0];
-        //printf("found %s, priorid %d, match val:%s remain key: %s, imkey(%s) \n",
-        //       phstr, imitem.priority, imval.c_str(), key.c_str(), imkey.c_str());
+        imitem.number = number;
+
+        PRINTF("\n[FOUND] %s, priority %d, match val:%s remain key: %s, imkey(%s) \n",
+               phstr, imitem.priority, imval.c_str(), key.c_str(), imkey.c_str());
 
         // input: guojia
         // guo'jia   guo'ji
         if (key == "")  {
-            //printf("perfect match %s, number:%d\n", phstr, number);
-            if (found > 3) found = 5;
-            imitemList[found][number].push_back(imitem);
+            imitem.off = found;
+            imitemTempList[0].push_back(imitem);
+
+            PRINTF("[perfect match] %s, pinyin remained:%d, number:%d\n", phstr, found, number);
         } else {
-            int off =  found >= key.length() ? found : key.length();
-            off += 2;
-            //printf("off :%d, found:%d, keylen:%d\n", off, found, key.length());
-            if (off > 5) off = 5;
-            imitemList[off][number].push_back(imitem);
-        }
+            if (firstRound) {
+                imitem.off = key.length() + found;
+                imitemTempList[1].push_back(imitem);
+                PRINTF("[non-perfect] firstRound: offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
+            } else if (found == 0) {
+                imitem.off = key.length();
+                imitemTempList[1].push_back(imitem);
+                PRINTF("[non-perfect] non-firsetRound offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
+            }
+       }
     }
 }
 
@@ -326,6 +366,7 @@ bool PY::lookupCache(map<string, deque<IMItem> >& cache, const string& key, dequ
     return false;
 }
 
+// Cache pinyin items.
 void PY::cache(map<string, deque<IMItem> >& cache, const string& key, deque<IMItem>& items)
 {
     map<string, deque<IMItem> >::iterator iter = cache.find(key);
@@ -530,6 +571,32 @@ void PY::getHanItems(const string& py, inxtree_dataitem& d, deque<IMItem>& items
     }
 }
 
+void PY::sortByOff(deque<IMItem>& items)
+{
+    deque<IMItem> B(items.size());
+
+    int C[IM_INPUT_MAX];
+    memset(C, 0, sizeof(C));
+
+    for (int j = 0; j < items.size(); j++) {
+        int inx = items[j].off;
+        ++C[inx];
+    }
+
+    for (int j = 1; j < IM_INPUT_MAX; j++) {
+        C[j] += C[j-1];
+    }
+
+    for (int j = items.size() - 1; j >= 0; j--) {
+        int p = items[j].off;
+        int count = C[p];
+        B[count - 1] = items[j];
+        --C[p];
+    }
+
+    items = B;
+}
+
 void PY::sort(deque<IMItem>& items)
 {
     deque<IMItem> B(items.size());
@@ -659,8 +726,10 @@ void PY::addToUsrDB(const string& phrase)
 
 void PY::addUserPhraseAsync(const string& phrase)
 {
-    AddToUserDBTask* tsk = new AddToUserDBTask(this, phrase);
-    TaskManager::getInstance()->addTask(tsk);
+    if (phrase.length() <= USRPH_MAX_SIZE) {
+        AddToUserDBTask* tsk = new AddToUserDBTask(this, phrase);
+        TaskManager::getInstance()->addTask(tsk);
+    }
 }
 
 AddToUserDBTask::AddToUserDBTask(PY* owner, string phrase):
