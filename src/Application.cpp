@@ -12,6 +12,7 @@
 #include "PY.h"
 #include "Util.h"
 #include "Configure.h"
+#include "DBusDaemon.h"
 #include <boost/filesystem.hpp>
 using namespace boost::filesystem;
 
@@ -27,9 +28,8 @@ void SlowJob::doWork()
 Application::Application()
 {
 //    char *locale = "C,POSIX,POSIX,en_US.utf8"
-    pGuiMsgQ = new MessageQueue("gui");
-    pSysMsgQ = new MessageQueue("sys");
-    m_sysMsgr = new SysMessager(pSysMsgQ);
+    //pGuiMsgQ = new MessageQueue("gui");
+    m_sysMsgr = new SysMessager();
 
     TaskManager::getInstance()->start(MAX_WORK_THREAD);
     m_sysMsgr->start();
@@ -49,6 +49,11 @@ iIM* Application::newIM()
     return py;
 }
 
+MessageQueue* Application::getMessageQ()
+{
+	return m_sysMsgr->m_msgQ;
+}
+
 void Application::slowJob()
 {
     Configure::getRefrence().writeXml();
@@ -57,8 +62,6 @@ void Application::slowJob()
 Application::~Application()
 {
     log.d("~ Application start\n");
-    delete m_sysMsgr;
-    delete pGuiMsgQ;
-    delete pSysMsgQ;
+    //delete m_sysMsgr;
     log.d("~Application done\n");
 }

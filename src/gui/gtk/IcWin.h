@@ -35,10 +35,10 @@ extern GType   ic_win_get_type (void);
 extern IcWin*  ic_win_new      (void);
 
 extern void ic_win_refresh(IcWin *win,
-                    int x,
-                    int y,
-                    int w,
-                    int h,
-                    std::string& strInput,
-                    std::deque<IMItem> *items);
+                    gint32 x,
+                    gint32 y,
+                    gint32 w,
+                    gint32 h,
+					gchar *input,
+					gchar *items);
 #endif

@@ -29,7 +29,7 @@ public:
 
 protected:
     virtual void doWork() = 0;
-    virtual void onExit() { }
+    virtual void onExit() {}
     virtual void onStartup() {}
 
     pthread_t m_threadId;

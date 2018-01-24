@@ -422,7 +422,8 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 
 void IMPreedit::guiAction(int id)
 {
-    gApp->pGuiMsgQ->push(id);
+	PRINTF("IMPreedit::guiAction id: %d\n", id);
+	gApp->getMessageQ()->push(id);
 }
 
 void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
@@ -432,9 +433,11 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
         
         string input = m_ci + m_input;
         string candidate = m_ci + m_candidate;
-        deque<IMItem>& items = m_uiItems;
+        string items = "";
 
-        deque<IMItem> *pItems = new deque<IMItem>(items);
+		for (int i=0; i < m_uiItems.size(); i++) {
+			items += m_uiItems.at(i).val + " ";
+		}
 
         PRINTF("preEdit %s, %d, %d , %d %d\n", input.c_str(), rect.x, rect.y, rect.w, rect.h);
 
@@ -445,11 +448,11 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
         msg.fArg1   = rect.w;
         msg.fArg2   = rect.h;
         msg.strArg1 = input;
-        msg.pArg1 =   pItems;
+        msg.strArg2 = items;
 
-        gApp->pGuiMsgQ->push(msg);
+        gApp->getMessageQ()->push(msg);
     }
-    //gApp->pGuiMsgQ->push(MSG_IM_OFF);
+    //gApp->pSysMsgQ->push(MSG_IM_OFF);
 }
 
 void IMPreedit::guiReload(IMPreeditCallback *callback)

@@ -39,6 +39,7 @@ static void gui_messager_class_init(GuiMessagerClass *klass)
 
 static gpointer gui_messager_work(gpointer data)
 {
+	#if 0
     GuiMessagerClass* klass = GUI_MESSAGER_GET_CLASS((GuiMessager *)data);
     do{
         Message msg;
@@ -105,7 +106,7 @@ static gpointer gui_messager_work(gpointer data)
 
                 break;
             }
-                    
+
             case MSG_QUIT: {
                 klass->req_abort = true;
 
@@ -122,16 +123,19 @@ static gpointer gui_messager_work(gpointer data)
             break;
         }
     } while(!klass->req_abort);
+	#endif
 }
 
 void gui_messager_abort(GuiMessager *msgr)
 {
+	#if 0
     GuiMessagerClass* klass = GUI_MESSAGER_GET_CLASS(msgr);
 	if(klass->thd)
 	{
 	    klass->req_abort = true;
         klass->msg_queue->push(MSG_QUIT);
     }
+	#endif
 }
 
 GuiMessager *gui_messger_new(MessageQueue *q)

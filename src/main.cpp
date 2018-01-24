@@ -11,40 +11,21 @@
 #include "Application.h"
 #include "Util.h"
 #include "Configure.h"
-
-#ifdef GTK3
-#include <gdk/gdkx.h>
-#include "gui/gtk/AimApp.h"
-#endif
-
-#ifdef QT5
-extern int  aim_app_main(MessageQueue *q, fun_gui_activate_callback cb, int argc, char* argv[]);
-#endif
-
-std::string system_dir;
-std::string home_dir;
+#include "DBusDaemon.h"
 
 extern void init_singals();
 
 void cleanup(void)
 {
     if (gApp) {
-        log.d("app exit, cleanup in main\n");printf("cleanup\n");
+        log.d("app exit, cleanup in main\n");
+		DBusDaemon::getRefrence().stop();
         gApp->xim.close();
     //#ifdef AL_DEBUG
         gApp->sig.cleanup();
     //#endif
         delete gApp;
     }
-}
-
-static void gui_activate_callback(Display *dpy)
-{
-   //printf("joni:%x, %p\n", imwin, dpy);
-   log.d("setIM and open\n");
-
-   gApp->xim.setIM(gApp->newIM(), true);
-   gApp->xim.open(dpy);
 }
 
 static void run_as_daemon()
@@ -88,19 +69,20 @@ int main(int argc, char* argv[])
     run_as_daemon();
     atexit(cleanup);
 
+	if (DBusDaemon::getRefrence().setup() != 0) {
+		log.e("Can't register dbus daemon\n");
+		return -1;
+	}
+
+	DBusDaemon::getRefrence().start();
+
     Configure::getRefrence().initialization();
-    system_dir = Configure::getRefrence().m_dataDir;
-    home_dir = Configure::getRefrence().m_homeDir;
 
     gApp = new Application();
 //#ifdef AL_DEBUG
     gApp->sig.init();
 //#endif
-
-#if defined(GTK3) || defined(QT5)
-    return aim_app_main(gApp->pGuiMsgQ, gui_activate_callback, argc, argv);
-#else
-    
-    return 0;
-#endif
+	gApp->xim.setIM(gApp->newIM(), true);
+	gApp->xim.open();
+	gApp->xim.eventLoop();
 }

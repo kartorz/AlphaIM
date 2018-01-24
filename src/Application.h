@@ -38,10 +38,9 @@ public:
     ~Application();
     iIM* newIM();
     void slowJob();
+	MessageQueue* getMessageQ();
 
     XimSrv  xim;
-    MessageQueue *pGuiMsgQ; // Message being send to gui
-    MessageQueue *pSysMsgQ; // Message being send to sys
     Signal  sig;
 
 private:

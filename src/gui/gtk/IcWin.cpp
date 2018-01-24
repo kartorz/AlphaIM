@@ -17,40 +17,44 @@ static void ic_win_class_init(IcWinClass *klass)
 }
 
 void ic_win_refresh(IcWin *win,
-                    int x,
-                    int y,
-                    int w,
-                    int h,
-                    std::string& strInput,
-                    std::deque<IMItem> *items)
+                    gint32 x,
+                    gint32 y,
+                    gint32 w,
+                    gint32 h,
+					gchar *input,
+					gchar *items)
 {
     GtkWindow *icwin = GTK_WINDOW (win);
     IcWinClass *klass = IC_WIN_GET_CLASS(win);
 
     std::string markup = "<span foreground=\"blue\" size=\"x-large\">";
-    markup += "  " + strInput + "</span>";
+    markup += "  " + std::string(input) + "</span>";
     gtk_label_set_markup (GTK_LABEL (klass->input_label), markup.c_str());
     //gtk_label_set_text(GTK_LABEL (klass->input_label), strInput.c_str());
     int pi = 0;
-    if (items != NULL) {
-        int len = items->size() < PREEDIT_ITEMS_MAX ? items->size() : PREEDIT_ITEMS_MAX;
-        for (; pi < len ; pi++) {
-            std::string text = "  ";
-            char pichr = 0x31 + pi;
-            text += pichr;
-            text += ": ";
-            text += items->at(pi).val;
-            //gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), text.c_str());
-            if (pi == 0)
-                markup = "<span foreground=\"blue\" size=\"x-large\" background=\"green\">";
-            else
-                markup = "<span foreground=\"blue\" size=\"x-large\">";
-            markup += text +  "</span>";
-            gtk_label_set_markup (GTK_LABEL (klass->preedit_label[pi]), markup.c_str());
-        }
+	gchar ** itemArray = g_strsplit (items, " ", 0);
+	if (itemArray) {
+		for(gchar ** item = itemArray; *item; ++item) {
+			if (g_strcmp0(*item, "") == 0)
+				continue;
+			std::string text = "  ";
+			char pichr = 0x31 + pi;
+			text += pichr;
+			text += ": ";
+			text += *item;
+			//gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), text.c_str());
+			if (pi == 0)
+				markup = "<span foreground=\"blue\" size=\"x-large\" background=\"green\">";
+			else
+				markup = "<span foreground=\"blue\" size=\"x-large\">";
+			markup += text +  "</span>";
+			gtk_label_set_markup (GTK_LABEL (klass->preedit_label[pi]), markup.c_str());
+			if (++pi >= PREEDIT_ITEMS_MAX)
+				break;
+		}
 
-        delete items;
-    }
+		g_strfreev(itemArray);
+	}
 
     for (; pi < PREEDIT_ITEMS_MAX; pi++)
         gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), " ");

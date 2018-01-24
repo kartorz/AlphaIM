@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment[en_US]=Chinese input method.
+Comment=IM.
+Exec=AIMGui
+GenericName[en_US]=GUI client for AlphaIM.
+GenericName=GUI client for AlphaIM.
+Icon=
+MimeType=
+Name[en_US]=AIMGui
+Name=AIMGui
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

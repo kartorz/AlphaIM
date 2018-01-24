@@ -5,11 +5,12 @@
 #include <execinfo.h>
 
 #include "aim.h"
+#include "Configure.h"
 #include "Signal.h"
 
 static void signal_handler(int sig)
 {
-    std::string path = home_dir + "/dump";
+    std::string path = Configure::getRefrence().m_homeDir + "/dump";
     FILE* f = fopen(path.c_str(), "w+");
 
     //if (sig == SIGHUP) Signal::panic("FATAL: Program hanged up\n");

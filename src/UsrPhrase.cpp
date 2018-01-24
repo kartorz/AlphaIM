@@ -9,12 +9,13 @@
 #include "Util.h"
 #include "CharUtil.h"
 #include "Log.h"
+#include "Configure.h"
 
 #define USRPH_FILENAME "usrphrasetmp"
 
 UsrPhrase::UsrPhrase()
 {
-    string path = home_dir + "/" + USRPH_FILENAME;
+    string path = Configure::getRefrence().m_homeDir + "/" + USRPH_FILENAME;
     m_phraseFile = fopen(path.c_str(), "a+");
     m_fileCache = "";
     m_phraseTmp = "";
@@ -55,7 +56,7 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
                 parseUsrInput(ptr, phrases); // It may take a wile.
 
                 fclose(m_phraseFile);
-                string path = home_dir + "/" + USRPH_FILENAME;
+                string path = Configure::getRefrence().m_homeDir + "/" + USRPH_FILENAME;
                 m_phraseFile = fopen(path.c_str(), "w");
             }
         }

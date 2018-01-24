@@ -135,7 +135,7 @@ XimSrv::~XimSrv()
     }
 }
 
-bool XimSrv::open(Display *dpy)
+bool XimSrv::open()
 {
 #define check(fun)  \
     if ((fun) == NULL) {                                                \
@@ -150,8 +150,14 @@ bool XimSrv::open(Display *dpy)
     const char *imname = IM_NAME;
     XIMS ims;
     long filter_mask = KeyPressMask | KeyReleaseMask;
-    m_imwin = XCreateWindow(dpy,
-                            DefaultRootWindow(dpy),
+
+	if ((m_dpy = XOpenDisplay(NULL)) == NULL) {
+		log.e("{XimSrv} Can't Open Display:\n");
+		return false;
+	}
+
+    m_imwin = XCreateWindow(m_dpy,
+                            DefaultRootWindow(m_dpy),
                             0, 0, 1, 1, 0, 0,
                             InputOnly,
                             CopyFromParent,
@@ -164,10 +170,9 @@ bool XimSrv::open(Display *dpy)
 
     log.d("imlocale  %s\n", imlocale);
 
-    int screen_num = DefaultScreen(dpy);
-    m_dpy   = dpy;
-    m_dpyW  = DisplayWidth(dpy, screen_num);
-    m_dpyH  = DisplayHeight(dpy, screen_num);
+    int screen_num = DefaultScreen(m_dpy);
+    m_dpyW  = DisplayWidth(m_dpy, screen_num);
+    m_dpyH  = DisplayHeight(m_dpy, screen_num);
 
     check(input_styles = (XIMStyles *)malloc(sizeof(XIMStyles)));
     input_styles->count_styles = sizeof(supported_styles)/sizeof(XIMStyle) - 1;
@@ -181,7 +186,7 @@ bool XimSrv::open(Display *dpy)
     encodings->count_encodings = sizeof(zh_encodings)/sizeof(XIMEncoding) - 1;
     encodings->supported_encodings = zh_encodings;
 
-    ims = IMOpenIM(dpy,
+    ims = IMOpenIM(m_dpy,
 		   IMModifiers, "Xi18n",
 		   IMServerWindow, m_imwin,
 		   IMServerName, imname,
@@ -215,7 +220,17 @@ bool XimSrv::open(Display *dpy)
     //XSetErrorHandler(aim_err_handler);
    log.d("imopen\n");
 
-    return true;
+   return true;
+}
+
+void XimSrv::eventLoop()
+{
+	for (;;) {
+		XEvent event;
+		XNextEvent(m_dpy, &event);
+		if (XFilterEvent(&event, None) == True)
+			continue;
+	}
 }
 
 void XimSrv::close()
@@ -391,7 +406,7 @@ int XimSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 	/* Here, the start of preediting is notified from IMlibrary, which 
 	   is the only way to start preediting in case of Dynamic Event
 	   Flow, because ON key is mandatary for Dynamic Event Flow. */
-        gApp->pGuiMsgQ->push(MSG_IM_ON);
+	    gApp->getMessageQ()->push(MSG_IM_ON);
         return 1;
     }
 
@@ -443,13 +458,15 @@ void XimSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 	Display *display = ims->core.display;
 	char *text = (char *)candidate.c_str();
 	char lang[20];
-
+	//printf("XimSrv::commit %s\n", text);
 	//setlocale(LC_CTYPE, "");
-	XmbTextListToTextProperty(display, (char **)&text, 1,
-                              XCompoundTextStyle, &tp);
+	//XmbTextListToTextProperty(display, (char **)&text, 1, XCompoundTextStyle, &tp);
+	Xutf8TextListToTextProperty(display, (char **) &text, 1, XCompoundTextStyle, &tp);
 	((IMCommitStruct*)calldata)->flag |= XimLookupChars;
 	((IMCommitStruct*)calldata)->commit_string = (char *)tp.value;
 	IMCommitString(ims, (XPointer)calldata);
+
+	XFree(tp.value);
 }
 
 void XimSrv::setIM(iIM *im, bool en)

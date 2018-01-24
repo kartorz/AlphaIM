@@ -1,13 +1,14 @@
 #include <gtk/gtk.h>
 #include <string>
 
-#include "Application.h"
 #include "AimWin.h"
 #include "aim.h"
 
 G_DEFINE_TYPE(AimWin, aim_win, GTK_TYPE_WINDOW /*GTK_TYPE_APPLICATION_WINDOW*/);
 
+extern std::string  g_system_dir;
 extern gboolean aim_app_on_hide_hpwin(gpointer user_data);
+extern void aim_app_message_send(int action);
 
 static void aim_win_init(AimWin *win)
 {
@@ -19,15 +20,13 @@ static void aim_win_class_init(AimWinClass *klass)
 
 static void on_lanbutton_clicked (GtkButton *button, gpointer user_data)
 {
-    gApp->pSysMsgQ->push(MSG_UI_LAN);
-
+	aim_app_message_send(MSG_UI_LAN);
     gdk_threads_add_idle(aim_app_on_hide_hpwin, user_data);
 }
 
 static void on_punbutton_clicked (GtkButton *button, gpointer user_data)
 {
-    gApp->pSysMsgQ->push(MSG_UI_PUN);
-
+	aim_app_message_send(MSG_UI_PUN);
     gdk_threads_add_idle(aim_app_on_hide_hpwin, user_data);
 }
 
@@ -87,7 +86,7 @@ void aim_win_enable_im(AimWin *win, bool en)
 void aim_win_switch_pun(AimWin *win, bool is_cn)
 {
     AimWinClass *klass = AIM_WIN_GET_CLASS(win);
-    std::string icons_path = system_dir + "/" +  ICONS_PATH;
+    std::string icons_path = g_system_dir + "/" +  ICONS_PATH;
 
     if (gtk_widget_get_mapped(GTK_WIDGET (win))) {
         if (is_cn) {
@@ -103,7 +102,7 @@ void aim_win_switch_pun(AimWin *win, bool is_cn)
 void aim_win_switch_lan(AimWin *win, bool is_cn)
 {
     AimWinClass *klass = AIM_WIN_GET_CLASS(win);
-    std::string icons_path = system_dir + "/" +  ICONS_PATH;
+    std::string icons_path = g_system_dir + "/" +  ICONS_PATH;
     if (gtk_widget_get_mapped(GTK_WIDGET (win))) {
         if (is_cn) {
             GtkWidget *image_cn = gtk_image_new_from_file((icons_path + "/cn.png").c_str());
@@ -120,7 +119,7 @@ AimWin *aim_win_new(int x, int y)
     #define IMWIN_W  126
     #define IMWIN_H  40
     #define BTN_W    50
-    std::string icons_path = system_dir + "/" +  ICONS_PATH;
+    std::string icons_path = g_system_dir + "/" +  ICONS_PATH;
 
     GtkWidget *button;
     GtkWidget *image;
