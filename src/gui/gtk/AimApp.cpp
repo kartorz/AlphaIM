@@ -10,43 +10,31 @@
 #include "AimApp.h"
 #include "AimWin.h"
 #include "IcWin.h"
+#include "Util.h"
 
-void (*gui_activate_callback)(Display *dsy);
+std::string  g_system_dir;
+
+//void (*gui_activate_callback)(Display *dsy);
 static gboolean aim_app_on_hide_imwin(gpointer user_data);
 
 AimApp *aim_app_instance = NULL;
 
 G_DEFINE_TYPE(AimApp, aim_app, GTK_TYPE_APPLICATION);
 
-static void aim_app_on_action_systray_press(GSimpleAction *action,
-                                            GVariant      *parameter,
-                                            gpointer       user_data)
-{
-    //printf("joni aim_app_on_action_systray_press \n");
-    //AimWin *imwin = (AimWin *)user_data;
-    //aim_win_show_hide(imwin);
-
-    //AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    //if (klass->hpwin != NULL) {
-    //     help_win_hide(klass->hpwin);
-    //}
-}
-
-static GActionEntry app_actions[] = {
-    { "systray-press", aim_app_on_action_systray_press, NULL, NULL, NULL }
-};
-
 static void aim_app_init (AimApp *app)
 {
+	g_system_dir  = Util::execDir();
+    g_system_dir +=  "/system";
+    if (!Util::isDirExist(g_system_dir))
+        g_system_dir = DATADIR;
 }
 
+#if 0
 static void aim_app_startup(GApplication *app)
 {
     G_APPLICATION_CLASS (aim_app_parent_class)->startup (app);
-    g_action_map_add_action_entries (G_ACTION_MAP (app),
-                                     app_actions, G_N_ELEMENTS (app_actions),
-                                     app);
 }
+#endif
 
 gboolean aim_app_on_systray_press(GtkStatusIcon *status_icon,
                                   GdkEvent      *event,
@@ -68,8 +56,8 @@ static void aim_app_dispose(GObject *gobject)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(gobject);
 
-    gui_messager_abort(klass->gui_messager);
-    g_object_unref(klass->gui_messager);
+    //gui_messager_abort(klass->gui_messager);
+    //g_object_unref(klass->gui_messager);
 }
 
 static void aim_app_finalize(GObject *gobject)
@@ -89,56 +77,36 @@ static void aim_app_activate (GApplication *app)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(app);
     GtkApplication *gtkapp = GTK_APPLICATION (app);
-//printf("aim_app_activate\n");
     GdkScreen *gdk_screen = gdk_screen_get_default ();
-    gint screen_w = gdk_screen_get_width(gdk_screen);
-    gint screen_h = gdk_screen_get_height(gdk_screen);
+    klass->x = gdk_screen_get_width(gdk_screen) - 280;
+    klass->y = gdk_screen_get_height(gdk_screen) - 80;
 
     IcWin *icwin = ic_win_new();
     klass->icwin = icwin;
     gtk_application_add_window(gtkapp, GTK_WINDOW (icwin));
 
-    int x = screen_w - 280;
-    int y = screen_h - 80;
-    klass->x = x;
-    klass->y = y;
 
-    AimWin *imwin = aim_win_new(x, y);
+    AimWin *imwin = aim_win_new(klass->x, klass->y);
     klass->imwin = imwin;
     gtk_application_add_window(gtkapp, GTK_WINDOW (imwin));
 
-    //klass->hpwin = help_win_new(x, y);
-    //gtk_application_add_window(gtkapp, GTK_WINDOW (klass->hpwin));
     klass->hpwin = NULL;
-    //GdkWindow *gdk_imwin = gtk_widget_get_window(GTK_WIDGET (imwin));
-    //Window   xid = gdk_x11_window_get_xid(gdk_imwin);  
-    Display *dsy = gdk_x11_get_default_xdisplay();
 
     //GtkIconTheme *icons = gtk_icon_theme_get_default();
     //gtk_icon_theme_append_search_path(icons, "system/theme");
     //printf ("joni debug has icon: %d\n", gtk_icon_theme_has_icon(icons, "setting"));
 
-    klass->systray_img_app =  gtk_image_new_from_file((system_dir + "/"  + "app.png").c_str());
-    std::string icons_path = system_dir + "/" +  ICONS_PATH;
+#if 1
+    klass->systray_img_app =  gtk_image_new_from_file((g_system_dir + "/"  + "app.png").c_str());
+    std::string icons_path = g_system_dir + "/" +  ICONS_PATH;
     klass->systray_img_en =  gtk_image_new_from_file((icons_path + "/en.png").c_str());
     klass->systray_img_cn =  gtk_image_new_from_file((icons_path + "/cn.png").c_str());
-
+    klass->systray = gtk_status_icon_new_from_pixbuf(gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
+    //g_signal_connect(GTK_STATUS_ICON (klass->systray), "button-press-event", G_CALLBACK (aim_app_on_systray_press), klass->imwin);
+#endif
     klass->bshow_imwin = SHOW_IMWIN;
 
-#ifdef HAS_NOTIFICATION
-    GNotification *notification = g_notification_new ("aim");
-    GFile *file = g_file_new_for_path ((system_dir + "/"  + "app.png").c_str());
-    GIcon *icon = g_file_icon_new (file);
-    g_notification_set_icon (notification,G_ICON (icon));
-    g_object_unref (icon);
-    g_object_unref (file);
-	g_application_send_notification (app, "app-systray-press", notification);
-    g_notification_add_button_with_target (notification, "label", "app.systray-press", "s", "bla");
-    g_notification_set_default_action (notification, "app.systray-press");
-    //g_notification_add_button (notification, "5 minutes", "app.reply-5-minutes");
-
-    g_object_unref(notification);
-#elif defined(HAS_APPINDICATOR3)
+#ifdef HAS_APPINDICATOR3
     /* Indicator */
     AppIndicator *indicator = app_indicator_new ("org.gtk.aimapp",
                                    "virtualbox",
@@ -146,18 +114,20 @@ static void aim_app_activate (GApplication *app)
     app_indicator_set_status (indicator, APP_INDICATOR_STATUS_ACTIVE);
     app_indicator_set_attention_icon (indicator, "virtualbox");
     app_indicator_set_icon(indicator, "virtualbox");
-     g_object_unref(indicator);
-#else
-    klass->systray = gtk_status_icon_new_from_pixbuf(gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
-    g_signal_connect(GTK_STATUS_ICON (klass->systray), "button-press-event", G_CALLBACK (aim_app_on_systray_press), klass->imwin);
+	g_object_unref(indicator);
 #endif
-    //gdk_threads_add_timeout_seconds (3, aim_app_on_hide_imwin, imwin);
-    gui_activate_callback(dsy);
+
+#if 0
+	if ( klass->bshow_imwin) {
+		aim_win_show_hide(klass->imwin);
+		//gdk_threads_add_timeout_seconds (5, aim_app_on_hide_imwin, imwin);
+		}
+#endif
 }
 
 static void aim_app_class_init(AimAppClass *klass)
 {
-    G_APPLICATION_CLASS (klass)->startup  = aim_app_startup;
+    //G_APPLICATION_CLASS (klass)->startup  = aim_app_startup;
     G_APPLICATION_CLASS (klass)->activate = aim_app_activate;
     G_APPLICATION_CLASS (klass)->open     = aim_app_open;
     G_OBJECT_CLASS      (klass)->dispose  = aim_app_dispose;
@@ -170,17 +140,16 @@ gboolean aim_app_on_active_im(gpointer user_data)
 
     if (klass->bshow_imwin) {
         aim_win_enable_im(klass->imwin, true);
-    } else {
-        gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
-        //gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
     }
+
+	gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
+
     return false;
 }
 
 gboolean aim_app_on_disactive_im(gpointer user_data)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
 
     gtk_widget_hide(GTK_WIDGET (klass->icwin));
 
@@ -190,21 +159,24 @@ gboolean aim_app_on_disactive_im(gpointer user_data)
          help_win_hide(klass->hpwin);
     }
 
+	gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_app)));
+
     return false;
 }
 
 gboolean aim_app_on_switch_lan(gpointer user_data)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
+    bool is_cn = *((gboolean *)user_data);	
 
-    bool is_cn = *((gboolean *)user_data);
-    if (!gtk_widget_get_mapped(GTK_WIDGET (klass->imwin))) {
-    	if (is_cn)
-            gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
-    	else
-            gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_en)));
-    }
-    aim_win_switch_lan(klass->imwin, is_cn);
+	if (is_cn)
+		gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_cn)));
+	else
+		gtk_status_icon_set_from_pixbuf(klass->systray, gtk_image_get_pixbuf(GTK_IMAGE (klass->systray_img_en)));
+
+	aim_win_switch_lan(klass->imwin, is_cn);
+
+	g_free(user_data);
     return false;
 }
 
@@ -213,28 +185,29 @@ gboolean aim_app_on_switch_pun(gpointer user_data)
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
 
     aim_win_switch_pun(klass->imwin, *((gboolean *)user_data));
+
+	g_free(user_data);
     return false;
 }
 
 gboolean aim_app_on_show_icwin(gpointer user_data)
 {
-    Message *pmsg = (Message*)user_data;
-    int x = pmsg->iArg1;
-    int y = pmsg->iArg2;
-    int w = (int)pmsg->fArg1;
-    int h = (int)pmsg->fArg2;
-    std::string strInput = pmsg->strArg1;
-    std::deque<IMItem> *items = (std::deque<IMItem> *)(pmsg->pArg1);
+	GVariant *parameters = (GVariant*)user_data;
+	gint32 x, y, w, h;
+	gchar *input;
+	gchar *items;
 
-    //PRINTF("aim_app_on_show_icwin %d, %d ,%d ,%d\n", x,y,w,h);
-    //printf("aim_app_on_show_icwin %d, %d ,%d ,%d\n", x,y,w,h);
+	g_variant_get(parameters, "(iiiiiss)", NULL, &x, &y, &w, &h, &input, &items);
+
+    PRINTF("aim_app_on_show_icwin %d, %d ,%d ,%d\n", x,y,w,h);
 
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    ic_win_refresh(klass->icwin, x, y, w, h, strInput, items);
+    ic_win_refresh(klass->icwin, x, y, w, h, input, items);
 
-    //delete items;
-    delete pmsg;
+	g_free(input);
+	g_free(items);
 
+	g_variant_unref(parameters);
     return false;
 }
 
@@ -278,24 +251,154 @@ gboolean aim_app_on_hide_hpwin(gpointer user_data)
     return false;
 }
 
+static void aim_app_message_action(int action)
+{
+	//printf("aim_app_message_action: action:%d\n", action);
+	switch (action) {
+	case MSG_IM_ON: {
+		//g_signal_emit(data, klass->active_im_id, 0);
+		gdk_threads_add_idle(aim_app_on_active_im, NULL);	
+		break;
+	}
+
+	case MSG_IM_OFF: {
+		gdk_threads_add_idle(aim_app_on_disactive_im, NULL);	
+		break;
+	}
+
+	case MSG_IM_CLOSE: {
+		gdk_threads_add_idle(aim_app_on_hide_icwin, NULL);
+		break;
+	}
+
+	case MSG_IM_COMMIT: {
+		gdk_threads_add_idle(aim_app_on_hide_icwin, NULL);
+		break;
+	}
+
+	case MSG_IM_CN: {
+		gboolean *is_cn = (gboolean *) g_malloc(sizeof(gboolean));
+		*is_cn = true;
+		gdk_threads_add_idle(aim_app_on_switch_lan, is_cn);
+		
+		break;
+	}
+
+	case MSG_IM_EN: {
+		gboolean *is_cn = (gboolean *) g_malloc(sizeof(gboolean));
+		*is_cn = false;
+		gdk_threads_add_idle(aim_app_on_switch_lan, is_cn);
+		
+		break;
+	}
+		
+	case MSG_IM_CPUN: {
+		gboolean *is_cn = (gboolean *) g_malloc(sizeof(gboolean));
+		*is_cn = true;
+		gdk_threads_add_idle(aim_app_on_switch_pun, is_cn);		
+		break;
+	}
+		
+	case MSG_IM_EPUN: {
+		gboolean *is_cn = (gboolean *) g_malloc(sizeof(gboolean));
+		*is_cn = false;
+		gdk_threads_add_idle(aim_app_on_switch_pun, is_cn);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+static void aim_app_on_signal (GDBusProxy *proxy,
+							   gchar      *sender_name,
+							   gchar      *signal_name,
+							   GVariant   *parameters,
+							   gpointer    user_data)
+{
+	if (g_variant_check_format_string(parameters, "(iiiiiss)", FALSE)) {
+		int i1, i2, i3, i4, i5;
+		gchar *s1;
+		gchar *s2;
+		g_variant_get(parameters, "(iiiiiss)", &i1, &i2, &i3, &i4, &i5, &s1, &s2);
+
+		GVariant *user_data = g_variant_new ("(iiiiiss)", i1, i2, i3, i4, i5, s1, s2);
+		gdk_threads_add_idle(aim_app_on_show_icwin, (gpointer) user_data);
+
+		g_free(s1);
+		g_free(s2);
+	} else {
+		gint32 msgid;
+		g_variant_get (parameters, "(i)", &msgid);
+		aim_app_message_action(msgid);
+	}
+}
+
+void aim_app_message_send(int action)
+{
+	AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
+	g_dbus_proxy_call_sync (klass->dbus_proxy, "GuiMessage",
+							g_variant_new ("(i)", action), G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL);			
+}
+
 AimApp* aim_app_new(void)
 {
     //app = gtk_application_new ("org.gnome.example", G_APPLICATION_FLAGS_NONE);
-    return (AimApp*)g_object_new(AIM_APP_TYPE,
+    return  (AimApp*)g_object_new(AIM_APP_TYPE,
                                  "application-id", "org.gtk.aimapp",
                                  NULL);
 }
 
-int aim_app_main(MessageQueue *q, fun_gui_activate_callback cb, int argc, char* argv[])
+int main(int argc, char* argv[])
 {
-    gui_activate_callback = cb;
-
+	GError *error;
     aim_app_instance = aim_app_new();
 
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    klass->gui_messager = gui_messger_new(q);
 
-    int status = g_application_run(G_APPLICATION(GTK_APPLICATION(aim_app_instance)), argc, argv);
-    g_object_unref(aim_app_instance);
+	GDBusProxy *proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                         G_DBUS_PROXY_FLAGS_NONE,
+                                         NULL, /* GDBusInterfaceInfo */
+                                         AIM_SRV_NAME,
+                                         AIM_NOTIFY_PATH,
+                                         AIM_NOTIFY_INTF,
+                                         NULL, /* GCancellable */
+                                         &error);
+	if (proxy == NULL) {
+		g_printerr ("Error creating proxy: %s\n", error->message);
+		g_error_free (error);
+		g_object_unref (proxy);
+		return -1;
+    }
+
+	g_signal_connect (proxy,
+					  "g-signal",
+					  G_CALLBACK (aim_app_on_signal),
+					  NULL);
+
+
+	klass->dbus_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+									    G_DBUS_PROXY_FLAGS_NONE,
+										NULL,
+										AIM_SRV_NAME,
+										AIM_SRV_PATH,
+										AIM_SRV_INTF,
+										NULL,
+										&error);
+
+	if (proxy == NULL) {
+		g_printerr ("Error creating proxy: %s\n", error->message);
+		g_error_free (error);
+		g_object_unref (proxy);
+		return -2;
+    }
+
+	int status = g_application_run(G_APPLICATION(GTK_APPLICATION(aim_app_instance)), argc, argv);
+
+	g_object_unref (proxy);
+	g_object_unref (klass->dbus_proxy);
+	g_object_unref(aim_app_instance);
+	
     return status;
 }
+

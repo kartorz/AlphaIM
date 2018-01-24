@@ -32,7 +32,9 @@ SRCS_ALPHAIM += main.cpp      \
 			 IMPreedit.cpp    \
 	         X11IMPreedit.cpp \
              UsrPhrase.cpp \
-             Configure.cpp
+             Configure.cpp \
+             DBusDaemon.cpp
+
 
 #ifeq ($(DEBUG), yes)
 SRCS_ALPHAIM += Signal.cpp
@@ -45,12 +47,13 @@ SRCS_AIMTOOL += SpinLock.cpp  \
 				CharUtil.cpp  \
                 TDFParser.cpp
 
+SRCS_GUI-yes += Util.cpp
+
 OBJS_TINYXML := $(SRCS_TINYXML:%.cpp=%.o)
 OBJS_INDEXTREE := $(SRCS_INDEXTREE:%.cpp=%.o) 
 OBJS_ALPHAIM := $(SRCS_ALPHAIM:%.cpp=%.o)
 
-OBJS_ALPHAIM += $(OBJS_GUI) \
-				$(OBJS_XIM) \
+OBJS_ALPHAIM +=	$(OBJS_XIM) \
                 lib/tinyxml2/libtinyxml2.a \
 				lib/indextree/libindextree.a \
 				lib/IMdkit/Ximd/Ximd.a
@@ -59,12 +62,16 @@ OBJS_AIMTOOL := $(SRCS_AIMTOOL:%.cpp=%.o)
 OBJS_AIMTOOL += lib/tinyxml2/libtinyxml2.a \
 			    lib/indextree/libindextree.a
 
+OBJS_GUI := $(SRCS_GUI-yes:%.cpp=%.o)
+
+
 DEPS := $(SRCS_ALPHAIM:%.cpp=%.d)
 DEPS += $(SRCS_AIMTOOL:%.cpp=%.d)
+DEPS += $(SRCS_GUI-yes:%.cpp=%.d)
 
 EXTRALIBS_ALPHAIM += $(EXTRALIBS)
 
-INSTALL_TARGETS-yes = install-system install-AlphaIM install-AIMTool
+INSTALL_TARGETS-yes = install-system install-AlphaIM install-AIMTool install-AIMGui
 
 DIRS = .  \
     tool  \
@@ -80,7 +87,7 @@ ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
 ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
 
-a11: IMdkit AlphaIM  AIMTool
+a11: IMdkit AlphaIM  AIMTool  AIMGui
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
 	$(AR) -r $@  $^
@@ -92,17 +99,19 @@ IMdkit:
 	$(MAKE) -C lib/IMdkit
 
 AlphaIM: $(OBJS_ALPHAIM)
-	$(CC) $^ $(EXTRALIBS_ALPHAIM) -lstdc++  -o $@
+	$(CXX) $^ $(EXTRALIBS) -lstdc++  -o $@
 
 AIMTool: $(OBJS_AIMTOOL)
-	$(CC) $^ $(EXTRALIBS) -lstdc++ -o $@ 
+	$(CXX) $^ $(EXTRALIBS) -lstdc++ -o $@ 
 
+AIMGui: $(OBJS_GUI)
+	$(CXX) $^ $(EXTRALIBS_ALPHAIM) -lstdc++ -o $@ 
 
 #%.d : %.cpp
 #	$(CC) -MM $< -o $@
 
 %.o : %.cpp
-	$(CC) $(CFLAGS) $(CXXFLAGS)  -c $< -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS)  -c $< -o $@
 
 %.o : %.c
 	$(CC) $(CFLAGS)  -c $< -o $@

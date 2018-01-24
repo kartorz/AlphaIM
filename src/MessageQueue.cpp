@@ -151,8 +151,9 @@ void MessageQueue::push(int id, int arg1, void *arg2, void *arg3)
 void MessageQueue::onProduce(void *v)
 {
     SpinLock m_lock(m_crs);
-    if (v != NULL)
+    if (v != NULL) {
         m_queue.push_back(*((Message *)v));
+	}
 }
 
 bool MessageQueue::pop(Message& msg, bool bwait)

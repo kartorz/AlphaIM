@@ -4,11 +4,6 @@
 #include <string>
 #include "config.h"
 
-#ifdef X11
-#include <X11/Xlib.h>
-typedef void (*fun_gui_activate_callback)(Display *dpy);
-#endif
-
 #define ICONS_PATH  "theme/hicolor/32x32"
 #define MAX_WORK_THREAD  2
 #define MAX_PREEDIT_PAGE 5
@@ -19,7 +14,35 @@ typedef void (*fun_gui_activate_callback)(Display *dpy);
 /* i in [0 .. c-1] */
 #define LOOP(size)  for (int i=0; i<size; i++)
 
-extern std::string system_dir;
-extern std::string home_dir;
+#define AIM_SRV_PATH  "/org/freedesktop/AlphaIM"
+#define AIM_SRV_INTF  "org.freedesktop.AlphaIM"
+#define AIM_SRV_NAME  "org.freedesktop.AlphaIM"
+
+#define AIM_NOTIFY_PATH  "/org/freedesktop/AlphaIM/Event"
+#define AIM_NOTIFY_INTF  "org.freedesktop.AlphaIM.Event"
+#define AIM_NOTIFY_MESSAGE     "Message"
+
+enum {
+    // [iArg1 .. fArg2]: rect.
+    // strArg1:          input.
+    // pArg1:            items: item being ""  - Don't set keeping the value.
+    //                               being " " - clear the old value.
+
+    MSG_IM_INPUT = 0,
+
+    MSG_IM_ON,
+    MSG_IM_OFF,
+    MSG_IM_CN,
+    MSG_IM_EN,
+    MSG_IM_CPUN,
+    MSG_IM_EPUN,
+    MSG_IM_CLOSE,
+    MSG_IM_COMMIT,
+
+    MSG_UI_LAN,
+    MSG_UI_PUN,
+
+    MSG_QUIT,
+};
 
 #endif

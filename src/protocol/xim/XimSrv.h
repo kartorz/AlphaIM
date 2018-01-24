@@ -27,8 +27,9 @@ public:
     XimSrv();
     ~XimSrv();
 
-    bool open(Display *dpy);
+    bool open();
     void close();
+	void eventLoop();
     int handleIMOpen(XIMS ims, IMProtocol *calldata);
     int handleIMCreateIC(XIMS ims, IMProtocol *calldata);
     int handleIMDestroyIC(XIMS ims, IMProtocol *calldata);

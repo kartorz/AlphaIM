@@ -278,7 +278,7 @@ test "$CC" && _cc="$CC"
 _as=auto
 _nm=auto
 _install=install
-_show_imwin=no
+_show_imwin=yes
 
 option_value(){
   echo $(echo $* | cut -d '=' -f 2-)
@@ -324,7 +324,7 @@ for ac_option do
   --enable-appinc3)     _appinc3=yes        ;;
   --disable-appinc3)    _appinc3=no         ;;
   --enable-debug)       _debug=yes     ;;
-  --enable-show_imwin) _show_imwin=yes ;;   
+  --enable-show_imwin) _show_imwin=yes ;;
   *)
     echo "Unknown parameter: $ac_option"
     exit 1
@@ -578,11 +578,28 @@ else
   die "Please check and install xtrans"
 fi
 
-if test "$_appinc3" = "yes" ; then
-    libs_aim="$libs_aim  -lappindicator3"
-    extra_cflags="$extra_cflags -I/usr/include/libappindicator3-0.1"
-    CFLAGS="$CFLAGS -DHAS_APPINDICATOR3"
-fi
+#if test "$_appinc3" = "yes" ; then
+#    libs_aim="$libs_aim  -lappindicator3"
+#    extra_cflags="$extra_cflags -I/usr/include/libappindicator3-0.1"
+#    CFLAGS="$CFLAGS -DHAS_APPINDICATOR3"
+#fi
+
+echocheck "systemd"
+_systemd=no
+ld_tmp="-lsystemd"
+cat > $TMPC  <<EOF
+#include <systemd/sd-bus.h>
+int main(void) {
+static sd_bus* bus;
+sd_bus_default_user(&bus);
+return 0;
+}
+EOF
+
+cc_check $ld_tmp  && 
+  extra_ldflags="$extra_ldflags -lsystemd" _systemd=yes
+echores "$_systemd"
+test "$_systemd" = no && die "Please check and install libsystemd-dev"
 
 if test "$_qt5" = "auto" ; then
 echocheck "QT5 header"

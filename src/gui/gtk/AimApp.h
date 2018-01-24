@@ -37,6 +37,7 @@ struct _AimAppClass
     GtkWidget           *systray_img_app;
     bool                bshow_imwin;
     int                 x,y;
+	GDBusProxy          *dbus_proxy;
 };
 
 #ifdef __cplusplus
@@ -45,7 +46,7 @@ extern "C" {
 
 extern GType   aim_app_get_type       (void);
 extern AimApp* aim_app_new            (void);
-extern int     aim_app_main           (MessageQueue *q, fun_gui_activate_callback cb, int argc, char* argv[]);
+extern int     aim_app_main           (int argc, char* argv[]);
 
 #ifdef __cplusplus
 }

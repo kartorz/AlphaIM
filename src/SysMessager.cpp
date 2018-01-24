@@ -1,10 +1,16 @@
 #include "Application.h"
 #include "SysMessager.h"
 #include "Log.h"
+#include "DBusDaemon.h"
 
 SysMessager::SysMessager(MessageQueue* queue): Thread(0)
 {
     m_msgQ = queue;
+}
+
+SysMessager::SysMessager(): Thread(0)
+{
+    m_msgQ = new MessageQueue("sys");
 }
 
 SysMessager::~SysMessager()
@@ -12,6 +18,7 @@ SysMessager::~SysMessager()
     if (!m_stop) {
         stop();
     }
+	delete m_msgQ;
 }
 
 void SysMessager::stop()
@@ -44,18 +51,13 @@ void SysMessager::processMessage()
         return;
     }
     //log(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
-    if (msg.id >= MSG_UI_LAN  && msg.id <= MSG_UI_PUN)
-        gApp->xim.handleUIMessage(msg.id);
-    else {
-        switch (msg.id) {
-	    case MSG_QUIT: {
-            abort();
-            break;
-        }
-
-        default:
-            break;
-        }
-    }
+	switch (msg.id) {
+		case MSG_QUIT:
+			abort();
+			break;
+		default:
+			DBusDaemon::getRefrence().notify(msg);
+			break;
+	}
 	//printf("Message done\n");
 }

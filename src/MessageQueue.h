@@ -23,29 +23,6 @@ public:
     MessageQueue *owner;
 };
 
-enum {
-    // [iArg1 .. fArg2]: rect.
-    // strArg1:          input.
-    // pArg1:            items: item being ""  - Don't set keeping the value.
-    //                               being " " - clear the old value.
-
-    MSG_IM_INPUT = 0,
-
-    MSG_IM_ON,
-    MSG_IM_OFF,
-    MSG_IM_CN,
-    MSG_IM_EN,
-    MSG_IM_CPUN,
-    MSG_IM_EPUN,
-    MSG_IM_CLOSE,
-    MSG_IM_COMMIT,
-
-    MSG_UI_LAN,
-    MSG_UI_PUN,
-
-    MSG_QUIT,
-};
-
 /* [@1]:  specifies 'iArg1' dones't matter.
  * [@2]:  specifies Sender is responsible for the pointer pArg1.
  * [@3]:  specifies Receiver is responsible for the pointer pArg1

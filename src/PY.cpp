@@ -25,27 +25,27 @@ int PY::initialization()
 {
     int ret = 0;
 
-    string phPath = home_dir + "/phrase-utf8.imdb";
+    string phPath = Configure::getRefrence().m_homeDir + "/phrase-utf8.imdb";
     if (!Util::isFileExist(phPath)) {
         log.d("copy phrase db to home\n");
-        string phPathOri = system_dir + "/phrase-utf8.imdb";
+        string phPathOri = Configure::getRefrence().m_dataDir + "/phrase-utf8.imdb";
         boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
     }
     ret += m_phDB.load(phPath, 0xB4B3);
 
-    string hanPath = home_dir + "/han-utf8.imdb";
+    string hanPath = Configure::getRefrence().m_homeDir + "/han-utf8.imdb";
     if (!Util::isFileExist(hanPath)) {
         log.d("copy han db to home\n");
-        string hanPathOri = system_dir + "/han-utf8.imdb";
+        string hanPathOri = Configure::getRefrence().m_dataDir + "/han-utf8.imdb";
         boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
         //permissions(file_path, add_perms|owner_write|group_write|others_write);
     }
     ret += m_hanDB.load(hanPath, 0xB4B3);
 
-    string pyPath = system_dir + "/pinyin-utf8.imdb";
+    string pyPath = Configure::getRefrence().m_dataDir + "/pinyin-utf8.imdb";
     ret += m_pyDB.load(pyPath, 0xB4B3);
 
-    string usrPhPath = home_dir + "/user_phrase-utf8.imdb";
+    string usrPhPath = Configure::getRefrence().m_homeDir + "/user_phrase-utf8.imdb";
     string usrPhPathOk = usrPhPath + "_ok";
     if (!m_usrPhDB.load(usrPhPath, 0xB4B3, true)) {
         bool load =  false;
