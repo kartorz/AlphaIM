@@ -37,7 +37,8 @@ struct _AimAppClass
     GtkWidget           *systray_img_app;
     bool                bshow_imwin;
     int                 x,y;
-	GDBusProxy          *dbus_proxy;
+	GDBusProxy          *im_proxy;
+	GDBusProxy          *event_proxy;
 };
 
 #ifdef __cplusplus
