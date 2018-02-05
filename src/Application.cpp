@@ -45,7 +45,7 @@ iIM* Application::newIM()
 
     PY *py = new PY(); // XimSrv will delete this.
     int ret = py->initialization();
-    log.i("newIM:  result of PY init: %d\n", ret);
+    log.i("newIM:  result of PY init\n");
     return py;
 }
 

@@ -23,27 +23,33 @@ m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
 
 int PY::initialization()
 {
-    int ret = 0;
-
     string phPath = Configure::getRefrence().m_homeDir + "/phrase-utf8.imdb";
+	string phPathOri = Configure::getRefrence().m_dataDir + "/phrase-utf8.imdb";
     if (!Util::isFileExist(phPath)) {
         log.d("copy phrase db to home\n");
-        string phPathOri = Configure::getRefrence().m_dataDir + "/phrase-utf8.imdb";
         boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
     }
-    ret += m_phDB.load(phPath, 0xB4B3);
+
+    if (!m_phDB.load(phPath, 0xB4B3)) {
+		log.d("load phrase failure, copy db to home and reload\n");
+        boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
+		m_phDB.load(phPath, 0xB4B3);
+	}
 
     string hanPath = Configure::getRefrence().m_homeDir + "/han-utf8.imdb";
+	string hanPathOri = Configure::getRefrence().m_dataDir + "/han-utf8.imdb";
     if (!Util::isFileExist(hanPath)) {
         log.d("copy han db to home\n");
-        string hanPathOri = Configure::getRefrence().m_dataDir + "/han-utf8.imdb";
         boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
         //permissions(file_path, add_perms|owner_write|group_write|others_write);
     }
-    ret += m_hanDB.load(hanPath, 0xB4B3);
+    if (!m_hanDB.load(hanPath, 0xB4B3)) {
+		boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
+		m_hanDB.load(hanPath, 0xB4B3);
+	}
 
     string pyPath = Configure::getRefrence().m_dataDir + "/pinyin-utf8.imdb";
-    ret += m_pyDB.load(pyPath, 0xB4B3);
+    m_pyDB.load(pyPath, 0xB4B3);
 
     string usrPhPath = Configure::getRefrence().m_homeDir + "/user_phrase-utf8.imdb";
     string usrPhPathOk = usrPhPath + "_ok";
@@ -77,7 +83,7 @@ int PY::initialization()
 
     m_selCnt = Configure::getRefrence().readSelcnt();
 
-    return ret;
+    return 0;
 }
 
 PY::~PY()
