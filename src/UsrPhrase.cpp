@@ -16,7 +16,8 @@
 UsrPhrase::UsrPhrase()
 {
     string path = Configure::getRefrence().m_homeDir + "/" + USRPH_FILENAME;
-    m_phraseFile = fopen(path.c_str(), "a+");
+	const char* mode = Configure::getRefrence().readSelcnt() ? "a+" : "w";
+    m_phraseFile = fopen(path.c_str(), mode);
     m_fileCache = "";
     m_phraseTmp = "";
     m_roundBase = 0;
