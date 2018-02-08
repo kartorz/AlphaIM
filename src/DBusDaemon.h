@@ -23,6 +23,7 @@ public:
 	int setup();
 	void listen();
 	int notify(Message& msg);
+	int qimCommit(std::string& candidate);
 	int signal(int id);
 	void finish();
 	int  callGuiMessage(int id);

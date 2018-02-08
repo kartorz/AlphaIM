@@ -31,7 +31,7 @@ void* thread_loop(void *v)
 
 Thread::Thread(int sleep, bool once)
 :m_threadId(-1), 
- m_stop(false)
+ m_stop(true)
 {
     m_sleepTimeMs = sleep;
     m_reqAbort = once;
@@ -45,20 +45,18 @@ Thread::~Thread()
 
 void Thread::start()
 {
-    bool ret = false;
 #ifdef _LINUX
     if (pthread_create(&m_threadId, NULL, &thread_loop, this) == 0)
-        ret = true; 
+		m_stop = false;
+
 #elif defined(WIN32)
     m_thrdHandle = (HANDLE)_beginthreadex(NULL, 0, &thread_loop, this, 0, &m_threadId);
     if (m_thrdHandle)
-        ret = true;
+		m_stop = false;
 #endif
 
-    if (ret == false) {
-        m_stop = true;
-        printf("{Thread} create thread failure ret(%d)\n", ret);
-    }
+    if (m_stop)
+        printf("{Thread} create thread failure\n");
 }
 
 void Thread::stop()

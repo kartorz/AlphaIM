@@ -11,12 +11,14 @@
 #define _APPLICATION_H_
 
 #include "config.h"
-#include "XimSrv.h"
+#include "XIMSrv.h"
+#include "QIMSrv.h"
 #include "Log.h"
 #include "MessageQueue.h"
 #include "SysMessager.h"
 #include "Signal.h"
 #include "iIM.h"
+#include "PY.h"
 
 class Application;
 
@@ -36,15 +38,17 @@ friend class SlowJob;
 public:
     Application();
     ~Application();
-    iIM* newIM();
+    iIM* curIM();
     void slowJob();
 	MessageQueue* getMessageQ();
 
-    XimSrv  xim;
+    XIMSrv  xim;
+	QIMSrv  qim;
     Signal  sig;
 
 private:
     SysMessager  *m_sysMsgr;
+	PY py;
 };
 
 extern Application*  gApp;

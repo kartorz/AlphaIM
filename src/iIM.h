@@ -7,8 +7,6 @@
 
 // Page range [1..n]
 #define IM_ITEM_PAGE_SIZE  9
-#define ICWIN_W  768
-#define ICWIN_H  64
 #define IM_INPUT_MAX  40
 
 
@@ -24,8 +22,6 @@ typedef struct {
     int  number;
 } IMItem;
 
-
-
 class iIM {
 public:
     // 'input' : pinyin string of user input.
@@ -34,7 +30,7 @@ public:
     virtual string lookup(const string& input, deque<IMItem>& items) = 0;
 
     //
-    virtual void usrCommit(const IMItem& imitem) = 0;
+    virtual void onCommit(const IMItem& imitem) = 0;
 
     // Add phrase to user db.
     virtual void addUserPhrase(const string& phrase) = 0;

@@ -67,7 +67,7 @@ AlphaIM在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布.
 ubuntu14.04:
     sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev 
              libx11-dev  libgtk-3-dev  libsystemd-dev
-sudo apt-get install libqt5qml5 libqt5quick5  qtdeclarative5-dev
+sudo apt-get install libqt5qml5 libqt5quick5  qtdeclarative5-dev qtbase5-private-dev 
 libappindicator3-dev
 
 

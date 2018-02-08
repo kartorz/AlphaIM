@@ -6,7 +6,7 @@ SRCS_GUI-$(GTK3) := gui/gtk/AimApp.cpp \
 
 
 
-SRCS_GUI-$(QT5) := gui/qt/AimApp.cpp \
+SRCS_GUI-$(QTGUI) := gui/qt/AimApp.cpp \
                    gui/qt/GuiMessager.cpp \
                    gui/qt/moc_GuiMessager.cpp \
                    gui/qt/aimwin.cpp  \

@@ -132,19 +132,19 @@ bool PreeditAttributes::check(XICAttribute *xattr, bool r)
     return false;
 }
 
-IC::IC(int icid)
+XIMIC::XIMIC()
 {
-    id = icid;
     pre_attr.spot_location.x = -1;/*a check condition*/
     client_win = 0;
     focus_win = 0;
+	preedit = new X11IMPreedit();
 }
 
-IC::~IC()
+XIMIC::~XIMIC()
 {
 }
 
-void IC::set(IMChangeICStruct *calldata)
+void XIMIC::set(IMChangeICStruct *calldata)
 {
     XICAttribute *xattr = calldata->ic_attr;
     int num = calldata->ic_attr_num;
@@ -163,7 +163,7 @@ void IC::set(IMChangeICStruct *calldata)
     sts_attr.set(calldata->status_attr, calldata->status_attr_num);
 }
 
-void IC::get(IMChangeICStruct *calldata)
+void XIMIC::get(IMChangeICStruct *calldata)
 {
     XICAttribute *xattr = calldata->ic_attr;
     int num = calldata->ic_attr_num;
@@ -182,98 +182,3 @@ void IC::get(IMChangeICStruct *calldata)
     sts_attr.get(calldata->status_attr, calldata->status_attr_num);
 }
 
-Xicm::Xicm(): m_icid(0), m_icFocus(-1)
-{
-
-}
-
-Xicm::~Xicm()
-{
-    log.d("~Xicm\n");
-    std::map<int, IC*>::iterator iter;
-    for (iter = m_ics.begin(); iter != m_ics.end(); iter++)
-        delete(iter->second);
-}
-
-int Xicm::createIC(IMChangeICStruct *calldata, iIM *im)
-{
-    IC *ic = new IC(++m_icid);
-    calldata->icid = ic->id;
-    ic->set(calldata);
-    ic->preedit.im = im;
-
-    m_ics[ic->id] =  ic;
-    return 0;
-}
-
-int Xicm::destroyIC(IMChangeICStruct *calldata)
-{
-    int id = calldata->icid;
-    std::map<int, IC*>::iterator iter = m_ics.find(id);
-    if(iter != m_ics.end()) {
-        delete iter->second;
-        m_ics.erase(id);
-    }
-}
-
-int Xicm::setICValues(IMChangeICStruct *calldata)
-{
-    std::map<int, IC*>::iterator iter = m_ics.find(calldata->icid);
-    if(iter != m_ics.end()) {
-        iter->second->set(calldata);
-    }
-}
-
-int Xicm::getICValues(IMChangeICStruct *calldata)
-{
-    std::map<int, IC*>::iterator iter = m_ics.find(calldata->icid);
-    if(iter != m_ics.end()) {
-        iter->second->get(calldata);
-    }
-}
-
-int Xicm::setICFocus(IMChangeFocusStruct *calldata)
-{
-    m_icFocus = calldata->icid;
-    PRINTF("setICFocus %d\n", m_icFocus);
-    return 0;
-}
-
-int Xicm::unsetICFocus(IMChangeFocusStruct *calldata)
-{
-    PRINTF("unsetICFocus %d, callid:%d\n", m_icFocus, calldata->icid);
-    if (m_icFocus == calldata->icid) {
-        m_icFocus = -1;
-        IC *ic = getIC(calldata->icid);
-        if (ic != NULL) {
-            ic->preedit.reset();
-        }
-    }
-}
-
-int Xicm::resetICFocus(IMChangeFocusStruct *calldata)
-{
-    PRINTF("resetICfocus %d icid %d \n",m_icFocus, calldata->icid);
-    IC *ic = getIC(calldata->icid);
-    if (ic != NULL && m_icFocus == calldata->icid ) {
-        ic->preedit.reset();
-    }
-}
-
-void Xicm::closeIC(int focus)
-{
-    IC *ic = getIC(focus);
-    if (ic != NULL) {
-        ic->preedit.close();
-    }
-}
-
-IC* Xicm::getIC(int focus)
-{
-    int id =  focus == -1 ? m_icFocus : focus;
-    std::map<int, IC*>::iterator iter = m_ics.find(id);
-    if(iter != m_ics.end()) {
-        return iter->second;
-    }
-    return NULL;
-}
