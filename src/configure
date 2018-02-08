@@ -58,9 +58,9 @@ compile_check() {
   echo >> "$TMPLOG"
   cat "$source" >> "$TMPLOG"
   echo >> "$TMPLOG"
-  echo "$_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS $source $extra_cflags $ld_static $extra_ldflags $libs_aim  -o $TMPEXE $@" >> "$TMPLOG"
+  echo "$_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS $source $cflags $cxxflags $ld_static $ldflags  -o $TMPEXE $@" >> "$TMPLOG"
   rm -f "$TMPEXE"
-  $_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS "$source" $extra_cflags $ld_static $extra_ldflags $libs_aim  -o "$TMPEXE" "$@"  >> "$TMPLOG" 2>&1
+  $_cc $WARNFLAGS $WARN_CFLAGS $CFLAGS "$source" $cflags $ld_static $ldflags  -o "$TMPEXE" "$@"  >> "$TMPLOG" 2>&1
   TMPRES="$?"
   echo >> "$TMPLOG"
   echo >> "$TMPLOG"
@@ -265,10 +265,11 @@ exit 0
 } # show_help
 
 _prefix=/usr/local
-_qttooldir=no
-_qt5=no
+_qtdir=auto
+_qt5=auto
 _qt5extras=no
 _gtk3=no
+_qtgui=no
 _appinc3=no
 _little_endian=auto
 _debug=no
@@ -303,7 +304,7 @@ for ac_option do
     _bindir=$(option_value $ac_option)
     ;;
   --with-qttool=*)
-    _qttooldir=$(option_value $ac_option)
+    _qtdir=$(option_value $ac_option)
     ;;
   --with-install=*)
     _install=$(option_value $ac_option)
@@ -319,10 +320,10 @@ for ac_option do
     ;;
   --enable-little-endian)  _little_endian=yes ;;
   --disable-little-endian) _little_endian=no  ;;
-  --enable-qt5)         _qt5=yes        ;;
-  --disable-qt5)        _qt5=no         ;;
-  --enable-appinc3)     _appinc3=yes        ;;
-  --disable-appinc3)    _appinc3=no         ;;
+#  --enable-qt5)         _qtgui=yes        ;;
+#  --disable-qt5)        _qtgui=no         ;;
+#  --enable-appinc3)     _appinc3=yes        ;;
+#  --disable-appinc3)    _appinc3=no         ;;
   --enable-debug)       _debug=yes     ;;
   --enable-show_imwin) _show_imwin=yes ;;
   *)
@@ -498,31 +499,32 @@ echores "$_byte_order"
 
 _install_strip="-s"
 if test -z "$CFLAGS" ; then
-  CFLAGS="-MMD -fPIC $CFLAGS"
-  if test $_debug = 'yes' ; then
-    CFLAGS="-g -O0 $CFLAGS -DAL_DEBUG"
-    _install_strip=
-  else
-    CFLAGS="-O0 $CFLAGS"
-  fi
+  cflags="-MMD -fPIC"
 else
   warn_cflags=yes
 fi
 
+if test $_debug = 'yes' ; then
+  cflags="-g -O0 $cflags -DAL_DEBUG"
+  _install_strip=
+else
+  cflags="-O2 $cflags"
+fi
+
 if test $system_name = Linux ; then
-  CFLAGS="$CFLAGS -D_LINUX"
+  cflags="$cflags -D_LINUX"
 fi
 
 #if test "$cc_vendor" = "gnu" ; then
 #  cflag_check -std=gnu99 && WARN_CFLAGS="-std=gnu99 $WARN_CFLAGS"
 #fi
-extra_ldflags="-lpthread -lrt $extra_ldflags"
+ldflags="-lpthread -lrt $extra_ldflags"
 if test -n "$LDFLAGS" ; then
-  extra_ldflags="$extra_ldflags $LDFLAGS"
+  ldflags="$ldflags $LDFLAGS"
   warn_cflags=yes
 fi
 if test -n "$CPPFLAGS" ; then
-  extra_cflags="$extra_cflags $CPPFLAGS"
+  cxxflags="$CPPFLAGS"
   warn_cflags=yes
 fi
 
@@ -540,7 +542,7 @@ return 0;
 }
 EOF
 cxx_check $ld_tmp  && 
-  extra_ldflags="$extra_ldflags -lboost_system  -lboost_filesystem" _boost=yes
+  ldflags="$ldflags -lboost_system  -lboost_filesystem" _boost=yes
 echores "$_boost"
 test "$_boost" = no && die "Please check and install libboost above ver 1.5"
 
@@ -556,12 +558,12 @@ return 0;
 EOF
 
 cc_check $ld_tmp  && 
-  extra_ldflags="$extra_ldflags -lX11" _xlib=yes
+  ldflags="$ldflags -lX11" _xlib=yes
 echores "$_xlib"
 test "$_xlib" = no && die "Please check and install xlib (libx11-dev)"
-CFLAGS="$CFLAGS -DX11"
+cflags="$cflags -DX11"
 
-echocheck "Xtrans"
+#echocheck "Xtrans"
 #header_check(X11/Xtrans/transport.c) 
 
 #cat > $TMPC  <<EOF
@@ -597,7 +599,7 @@ return 0;
 EOF
 
 cc_check $ld_tmp  && 
-  extra_ldflags="$extra_ldflags -lsystemd" _systemd=yes
+  ldflags="$ldflags -lsystemd" _systemd=yes
 echores "$_systemd"
 test "$_systemd" = no && die "Please check and install libsystemd-dev"
 
@@ -615,7 +617,7 @@ echocheck "QT5 header"
     for I in $(echo $extra_cflags | sed s/-I//g) /usr/include  /usr/include/x86_64-linux-gnu \
       /usr/include/i386-linux-gnu /usr/local/include; do
       if test -f "$I/qt5/QtWidgets/QMainWindow" ; then
-        inc_tmp="-I$I/qt5 -I$I/qt5/QtWidgets"
+        inc_tmp="-I$I/qt5 -I$I/qt5/QtWidgets -I$I/qt5/QtGui  -I$I/qt5/QtCore  -I$I/qt5/QtDBus -I$I/qt5/QtGui/5.5.1/QtGui "
         res_comment=""
         _qt5_headers="yes"
         break
@@ -633,16 +635,17 @@ echocheck "QT5 libraries"
         if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
           def_qt5='#define CONFIG_QT5 1'
           ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
-          libs_aim="$libs_aim $ld_tmp"
-          extra_cflags="$inc_tmp $extra_cflags"
-          CFLAGS="$CFLAGS -DQT5"
+          qt_libs="$ld_tmp"
+          includes="$inc_tmp"
+		  qt_includes="$inc_tmp"
+          cflags="$cflags -DQT5"
           _qt5="yes"
         fi
 
         if test -f "$I/libQt5X11Extras.so" -o -L "$I/libQt5X11Extras.so" ; then
           ld_tmp="-L$I -lQt5X11Extras  -lX11"
           def_qt5extras='#define CONFIG_QT5EXTRAS 1'
-          libs_aim="$libs_aim $ld_tmp"
+          qt_libs="$qt_libs $ld_tmp"
           _qt5extras="yes"
         fi
 
@@ -655,15 +658,15 @@ echocheck "QT5 libraries"
 echores "$_qt5"
 
 echocheck "QT tools"
-if test $_qttooldir = "auto" ; then
+if test $_qtdir = "auto" ; then
   if test $_qt5 = "yes" ; then
     for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
       if test -f "$I/qt5/bin/moc" ; then
-        _qttooldir=$I/qt5/bin
+        _qtdir=$I/qt5
         break 
       fi
       if test -f "$I/qt5/bin/moc" ; then
-        _qttooldir=$I/qt4/bin
+        _qtdir=$I/qt4
         break
       fi
     done
@@ -677,29 +680,31 @@ if test $_qttooldir = "auto" ; then
     #  fi
     #fi
   fi
-  echores "$_qttooldir"
+  echores "$_qtdir"
 fi
 
-if test $_qt5 = "no" ; then
+if test $_qtgui = "no" ; then
   echocheck "gtk+-3.0"
   gtk_incs=`pkg-config --cflags gtk+-3.0`
   test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
-  extra_cflags="$extra_cflags -DGTK3"
-  INCLUDES="$INCLUDES $gtk_incs"
-  INCLUDES="$INCLUDES -I\$(TOPDIR)/gui/gtk"
+  cflags="$cflags -DGTK3"
+  includes="$includes $gtk_incs"
+  includes="$includes -I\$(TOPDIR)/gui/gtk"
   gtk_libs=`pkg-config --libs gtk+-3.0`
   test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
-  libs_aim="$libs_aim  $gtk_libs"
+  ldflags="$ldflags  $gtk_libs"
 
   _gtk3=yes
   echocheck "yes"
   echo ""
+else
+  ldflags="$ldflags $qt_libs"
 fi
 
 if test $_show_imwin = "yes" ; then
-  extra_cflags="$extra_cflags  -DSHOW_IMWIN=true"
+  cflags="$cflags  -DSHOW_IMWIN=true"
 else
-  extra_cflags="$extra_cflags  -DSHOW_IMWIN=false"
+  cflags="$cflags  -DSHOW_IMWIN=false"
 fi
 
 #############################################################################
@@ -728,21 +733,23 @@ INSTALLSTRIP =$_install_strip
 
 TOPDIR  := \$(abspath .)
 MAKEFLAGS = CC=gcc CXX=g++ AR=ar
-CFLAGS   = $WARNFLAGS $WARN_CFLAGS $CFLAGS $extra_cflags $INCLUDES
-CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib  -I\$(TOPDIR)/lib/IMdkit/  -I\$(TOPDIR)/protocol/xim
-CXXFLAGS = $WARNFLAGS $CXXFLAGS $extra_cxxflags
+CFLAGS   = $cflags $includes
+CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib -I\$(TOPDIR)/lib/IMdkit/ -I\$(TOPDIR)/protocol -I\$(TOPDIR)/protocol/xim -I\$(TOPDIR)/protocol/qt
+CXXFLAGS = $cxxflags
 CC_DEPFLAGS = $DEPFLAGS
-
-EXTRALIBS          = $extra_ldflags $ld_static $timer_libs $extra_libs
-EXTRALIBS_ALPHAIM  = $libs_aim
+QTINCLUDES = $qt_includes
+QTLIBS = $qt_libs
+LIBS  = $ldflags $ld_static  $extra_libs
 
 DEBUG=$_debug
 GTK3=$_gtk3
 QT5=$_qt5
 
-MOC="$_qttooldir/moc"
-UIC="$_qttooldir/uic"
-RCC="$_qttooldir/rcc"
+QT_PLUGIN= libalphaimplatforminputcontextplugin.so
+QTDIR=$_qtdir
+MOC="$_qtdir/bin/moc"
+UIC="$_qtdir/bin/uic"
+RCC="$_qtdir/bin/rcc"
 
 EOF
 

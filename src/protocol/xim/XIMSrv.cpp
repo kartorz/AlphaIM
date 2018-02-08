@@ -18,11 +18,10 @@
 #include "aim.h"
 #include "Application.h"
 #include "CharUtil.h"
-#include "XimSrv.h"
+#include "XIMSrv.h"
 #include "Log.h"
 #include "Util.h"
 
-#define IM_NAME "aim"
 #define KEVBUF_LEN 64
 
 #undef PRINTF
@@ -121,21 +120,21 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
     return 1;
 }
 
-XimSrv::XimSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0), m_preModKey(0), m_im(NULL)
+XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0), m_preModKey(0)
 {
+	IC* ic = new IC(); // Add a dumpy IC, So don't need check if IC exists every time.
+	ic->preedit = new IMPreedit();
+	ic->id = 0;
+	m_icManager.add(ic, 0);
 }
 
-XimSrv::~XimSrv()
+XIMSrv::~XIMSrv()
 {
-    PRINTF("~XimSrv\n");
+    PRINTF("~XIMSrv\n");
     close();
-    if (m_im != NULL) {
-        printf("delete m_im\n");
-        delete m_im;
-    }
 }
 
-bool XimSrv::open()
+bool XIMSrv::open()
 {
 #define check(fun)  \
     if ((fun) == NULL) {                                                \
@@ -152,7 +151,7 @@ bool XimSrv::open()
     long filter_mask = KeyPressMask | KeyReleaseMask;
 
 	if ((m_dpy = XOpenDisplay(NULL)) == NULL) {
-		log.e("{XimSrv} Can't Open Display:\n");
+		log.e("{XIMSrv} Can't Open Display:\n");
 		return false;
 	}
 
@@ -171,8 +170,8 @@ bool XimSrv::open()
     log.d("imlocale  %s\n", imlocale);
 
     int screen_num = DefaultScreen(m_dpy);
-    m_dpyW  = DisplayWidth(m_dpy, screen_num);
-    m_dpyH  = DisplayHeight(m_dpy, screen_num);
+    IC::dpyW  = DisplayWidth(m_dpy, screen_num);
+    IC::dpyH  = DisplayHeight(m_dpy, screen_num);
 
     check(input_styles = (XIMStyles *)malloc(sizeof(XIMStyles)));
     input_styles->count_styles = sizeof(supported_styles)/sizeof(XIMStyle) - 1;
@@ -196,8 +195,8 @@ bool XimSrv::open()
 		   NULL);
 
     if (ims == (XIMS)NULL) {
-        fprintf(stderr, "{XimSrv} Can't Open Input Method Service:\n");
-        log.e("{XimSrv} Can't Open Input Method Service:\n\n");
+        fprintf(stderr, "{XIMSrv} Can't Open Input Method Service:\n");
+        log.e("{XIMSrv} Can't Open Input Method Service:\n\n");
         close();
         return false;
     }
@@ -223,7 +222,7 @@ bool XimSrv::open()
    return true;
 }
 
-void XimSrv::eventLoop()
+void XIMSrv::eventLoop()
 {
 	for (;;) {
 		XEvent event;
@@ -233,53 +232,61 @@ void XimSrv::eventLoop()
 	}
 }
 
-void XimSrv::close()
+void XIMSrv::close()
 {
     if (m_imwin > 0) {
-        PRINTF("{XimSrv} close: XDestroyWindow\n");
-        log.d("{XimSrv} close: XDestroyWindow\n");
+        PRINTF("{XIMSrv} close: XDestroyWindow\n");
+        log.d("{XIMSrv} close: XDestroyWindow\n");
         XDestroyWindow(m_dpy, m_imwin);
         m_imwin = 0;
     }
 
     if (m_ims != (XIMS)NULL) {
-        PRINTF("{XimSrv} close:  im\n");
-        log.d("{XimSrv} close:  im\n");
+        PRINTF("{XIMSrv} close:  im\n");
+        log.d("{XIMSrv} close:  im\n");
         IMCloseIM(m_ims);
         m_ims = (XIMS)NULL;
     }
 }
 
-int XimSrv::handleIMOpen(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleIMOpen(XIMS ims, IMProtocol *calldata)
 {
     return true;
 }
 
-int XimSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.createIC((IMChangeICStruct *)calldata, m_im);
+    IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
+	XIMIC *ic = new XIMIC();
+	caller->icid = m_icManager.add(ic);
+	//printf("caller id:%d, ic id:%d\n", caller->icid, ic->id);
+	ic->set(caller);
     return true;
 }
 
-int XimSrv::handleIMDestroyIC(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleIMDestroyIC(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.destroyIC((IMChangeICStruct *)calldata);
+    m_icManager.destroy(((IMChangeICStruct *)calldata)->icid);
     return true;
 }
 
-int XimSrv::handleIMSetICValues(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleIMSetICValues(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.setICValues((IMChangeICStruct *)calldata);
+	IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
+	XIMIC *ic = (XIMIC *)m_icManager.get(caller->icid);
+	ic->set(caller);
     return true;
 }
 
-int XimSrv::handleGetICValues(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleGetICValues(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.getICValues((IMChangeICStruct *)calldata);
+	IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
+	XIMIC *ic = (XIMIC *)m_icManager.get(caller->icid);
+	ic->get(caller);
     return true;
 }
 
-int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 {
     PRINTF("handleForwardEvent\n");
     MutexLock lock(m_cs);  //Exclud handleUIMessage
@@ -292,8 +299,8 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
         return true;
     }
 
-    IC* ic = m_icMgr.getIC();
-    if (ic == NULL) {
+    IC* ic = m_icManager.get();
+    if (ic->id == 0) {
         IMForwardEvent(ims, (XPointer)calldata);
         return true;
     }
@@ -303,8 +310,7 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
     XKeyEvent *kev = (XKeyEvent*)&((IMForwardEventStruct *)calldata)->event;
-    if (kev->time == last_kevtime)
-    {
+    if (kev->time == last_kevtime || kev->time == 0) {
         PRINTF("A infinite loop, type:%d-->%d\n", kev->time, last_kevtime);
         return true;
     }
@@ -318,12 +324,15 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     KeySym keysym;
     XLookupString(kev, strbuf, KEVBUF_LEN, &keysym, NULL);
     //printf("kev time: 0x%d type: %d state %d --> code %x --> %x \n", kev->time, evtype, kev->state, keysym, strbuf[0]);
+	if (keysym == 0) {
+		return true;
+	}
 
     XIMPriv priv;
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    int ret = ic->preedit.handleKey(keysym, kev->state, strbuf, evtype, this);
+    int ret = ic->preedit->handleKey(keysym, kev->state, strbuf, evtype, this);
     if (ret == FORWARD_KEY) {
         // Be careful, IMForwardEvent may be hanlded by this function again -- a infinite loop
         IMForwardEvent(ims, (XPointer)calldata);
@@ -331,79 +340,65 @@ int XimSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     return true;
 }
 
-void XimSrv::handleUIMessage(int msg)
+void XIMSrv::handleUIMessage(int msg)
 {
     MutexLock lock(m_cs);
-
-    IC* ic = m_icMgr.getIC();
-    if (ic != NULL) {
-        ic->preedit.handleMessage(msg);
-    }
+    m_icManager.get()->preedit->handleMessage(msg);
 }
 
-int XimSrv::doModifierKeyEvent(XIMS ims, IMProtocol *calldata)
+int XIMSrv::doModifierKeyEvent(XIMS ims, IMProtocol *calldata)
 {
 }
 
-void XimSrv::onIMOff(void *priv)
+void XIMSrv::onIMOff(void *priv)
 {
     XIMPriv* pri = (XIMPriv*) priv;
     IMPreeditEnd(pri->ims, (XPointer)(pri->calldata));
 }
 
-void XimSrv::onCommit(void *priv, string candidate)
+void XIMSrv::onCommit(void *priv, string candidate)
 {
     XIMPriv* pri = (XIMPriv*) priv;
     commit(pri->ims, (IMForwardEventStruct *)(pri->calldata), candidate);
 }
 
-ICRect XimSrv::onGetRect(void* priv)
+ICRect XIMSrv::onGetRect()
 {
-    XRectangle rect = getICWinRect();
-
-    ICRect r;
-    r.x = rect.x;
-    r.y = rect.y;
-    r.w = rect.width;
-    r.h = rect.height;
-
-    return r;
+    return getICWinRect();
 }
 
-int XimSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.setICFocus((IMChangeFocusStruct *)calldata);
+    m_icManager.focusIn(((IMChangeFocusStruct *)calldata)->icid);
 
-    IC* ic = m_icMgr.getIC();
-    if (ic != NULL) {
-        XIMPriv priv;
-        priv.ims = ims;
-        priv.calldata = calldata;
-        this->opaque = &priv;
-
-        ic->preedit.guiReload(this);
-    }
+	XIMPriv priv;
+	priv.ims = ims;
+	priv.calldata = calldata;
+	this->opaque = &priv;
+	m_icManager.get()->preedit->guiReload(this);
 
     return true;
 }
 
-int XimSrv::handleUnsetICFocusEvent(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleUnsetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.unsetICFocus((IMChangeFocusStruct *)calldata);
+    //focusOut((IMChangeFocusStruct *)calldata->icid);
+	m_icManager.focusOut();
     return true;
 }
 
-int XimSrv::handleResetICEvent(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleResetICEvent(XIMS ims, IMProtocol *calldata)
 {
-    m_icMgr.resetICFocus((IMChangeFocusStruct *)calldata);
+	//((IMChangeFocusStruct *)calldata)->icid
+    m_icManager.get()->reset();
     return true;
 }
 
-int XimSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 {
     IMTriggerNotifyStruct *notify = (IMTriggerNotifyStruct *)calldata;
     if (notify->flag == 0) {	/* on key */
-	/* Here, the start of preediting is notified from IMlibrary, which 
+	/* Here, the start of preediting is notified from IMlibrary, which
 	   is the only way to start preediting in case of Dynamic Event
 	   Flow, because ON key is mandatary for Dynamic Event Flow. */
 	    gApp->getMessageQ()->push(MSG_IM_ON);
@@ -416,7 +411,7 @@ int XimSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 	   has been registered by IMOpenIM or IMSetIMValues, otherwise,
 	   the end of preediting must be notified from the IMserver to the
 	   IMlibrary. */
-        m_icMgr.closeIC();
+        m_icManager.get()->close();
         return 1;
     }
 
@@ -424,19 +419,19 @@ int XimSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 	return 0;
 }
 
-int XimSrv::handlePreeditStartReply(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handlePreeditStartReply(XIMS ims, IMProtocol *calldata)
 {
     PRINTF("handlePreeditStartReply\n");
     return true;
 }
 
-int XimSrv::handlePreeditCaretReply(XIMS ims, IMProtocol *calldata)
+int XIMSrv::handlePreeditCaretReply(XIMS ims, IMProtocol *calldata)
 {
     PRINTF("handlePreeditCaretReply\n");
     return true;
 }
 
-/*bool XimSrv::isMatchKeys(KeySym& keysym, XKeyEvent *kev, XIMTriggerKey *trigger)
+/*bool XIMSrv::isMatchKeys(KeySym& keysym, XKeyEvent *kev, XIMTriggerKey *trigger)
 {
     int i;
     int modifier;
@@ -452,13 +447,13 @@ int XimSrv::handlePreeditCaretReply(XIMS ims, IMProtocol *calldata)
     return False;
 }*/
 
-void XimSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
+void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 {
 	XTextProperty tp;
 	Display *display = ims->core.display;
 	char *text = (char *)candidate.c_str();
-	char lang[20];
-	//printf("XimSrv::commit %s\n", text);
+	//char lang[20];
+	printf("XIMSrv::commit %s\n", text);
 	//setlocale(LC_CTYPE, "");
 	//XmbTextListToTextProperty(display, (char **)&text, 1, XCompoundTextStyle, &tp);
 	Xutf8TextListToTextProperty(display, (char **) &text, 1, XCompoundTextStyle, &tp);
@@ -469,19 +464,12 @@ void XimSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 	XFree(tp.value);
 }
 
-void XimSrv::setIM(iIM *im, bool en)
+ICRect XIMSrv::getICWinRect()
 {
-    m_im = im;
-}
-
-XRectangle XimSrv::getICWinRect()
-{
-    XRectangle ret = {0,0, ICWIN_W, ICWIN_H};
-
-    IC *ic = m_icMgr.getIC();
-    if (ic != NULL) {
+    XIMIC *ic = (XIMIC *) m_icManager.get();
+    if (ic->id > 0) {
         int x = 0;
-        int y = m_dpyH;
+        int y = IC::dpyH;
         int w,h;
         XWindowAttributes clientwin_attr;
         Window win, wid;
@@ -531,21 +519,9 @@ The error was 'BadWindow (invalid Window parameter)'.
             w = ICWIN_W;/*clientwin_attr.width < ICWIN_W ? ICWIN_W : clientwin_attr.width;*/
             h = ICWIN_H;
         }
-
-        if (x + w > m_dpyW - 20) {
-            x = m_dpyW - ICWIN_W - 20;
-        }
-         
-        if (y + h > m_dpyH - 10) {
-            y = y - 2*h;
-        }
-        //PRINTF("getICWin (%d, %d, %d, %d)\n",  x, y, w, h);
-        ret.x = x;
-        ret.y = y;
-        ret.width = w;
-        ret.height = h;
-        return ret;
+		return IC::adjRect(x, y, w, h);    
     }
-
+    ICRect ret = {0,0, ICWIN_W, ICWIN_H};
     return ret;
 }
+

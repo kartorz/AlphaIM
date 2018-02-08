@@ -1,4 +1,9 @@
-SRCS_XIM := protocol/xim/XimSrv.cpp \
-            protocol/xim/XIC.cpp
+SRCS_PROTOCOL := protocol/IC.cpp \
+		    protocol/xim/XIMSrv.cpp \
+            protocol/xim/XIC.cpp  \
+			protocol/qt/QIMSrv.cpp
 
-OBJS_XIM := $(SRCS_XIM:%.cpp=%.o)
+OBJS_PROTOCOL := $(SRCS_PROTOCOL:%.cpp=%.o)
+
+DEPS += $(SRCS_PROTOCOL:%.cpp=%.d)
+

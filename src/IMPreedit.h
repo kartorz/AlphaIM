@@ -68,8 +68,8 @@ public:
     IMPreeditCallback(void* priv=NULL): opaque(priv) {};
     virtual void onIMOn(void* priv) {};
     virtual void onIMOff(void* priv) {};
-    virtual void onCommit(void* priv, string candiate) = 0;
-    virtual ICRect onGetRect(void* priv) = 0;
+    virtual void onCommit(void* priv, string candidate) = 0;
+    virtual ICRect onGetRect() = 0;
     void *opaque;
 };
 
@@ -77,7 +77,8 @@ class IMPreedit {
 public:
     IMPreedit();
     virtual ~IMPreedit();
-    virtual int handleKey(int keycode, int modifier, char *key, IMPreeditCallback *callback) {return NONE_KEY;};
+    virtual int handleKey(unsigned int keycode, unsigned int modifier, char *key, int evtype, IMPreeditCallback *callback) {return NONE_KEY;}
+	virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback) {return NONE_KEY;}
     virtual void handleMessage(int msg);
 
     void guiReload(IMPreeditCallback *callback);
@@ -85,11 +86,10 @@ public:
     void close();
     void reset();
 
-    iIM  *im;
     bool bRefreshWin;
 
 protected:
-    void add(char *key);
+    void add(char key);
     void del();
     void page(int pg);
     bool commit(int i);
@@ -98,7 +98,7 @@ protected:
     void doSwitchCEPun();
     void doPageup();
     void doPagedown();
-    bool doInput(char *key);
+    bool doInput(char key);
     void doClose();
     void doCommit(int i, IMPreeditCallback *callback);
 
@@ -106,8 +106,8 @@ protected:
     void guiShowCandidate(IMPreeditCallback *callback);
 
     bool isMatchKeys(int keycode, int modifier, TriggerKey *trigger);
-    u32  mapCNPun(char *key);
-    string  mapCNPunToU8Str(char *key);
+    u32  mapCNPun(char key);
+    string  mapCNPunToU8Str(char key);
     string  lookup(string input);
 
     bool m_bStart;

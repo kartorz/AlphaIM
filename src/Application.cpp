@@ -35,18 +35,14 @@ Application::Application()
     m_sysMsgr->start();
 
     TaskManager::getInstance()->addTask(new SlowJob(this), 0);
+	py.initialization();
 
     log.d("start Application ...\n");
 }
 
-iIM* Application::newIM()
+iIM*  Application::curIM()
 {
-    //const char *locale = "C,POSIX,POSIX,en_US.utf8,zh_CN.UTF-8";
-
-    PY *py = new PY(); // XimSrv will delete this.
-    int ret = py->initialization();
-    log.i("newIM:  result of PY init\n");
-    return py;
+	return &py;
 }
 
 MessageQueue* Application::getMessageQ()
@@ -64,4 +60,5 @@ Application::~Application()
     log.d("~ Application start\n");
     //delete m_sysMsgr;
     log.d("~Application done\n");
+
 }

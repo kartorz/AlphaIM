@@ -47,7 +47,7 @@ public:
 
     virtual ~PY();
     virtual string lookup(const string& input, deque<IMItem>& items);
-    virtual void usrCommit(const IMItem& imitem);
+    virtual void onCommit(const IMItem& imitem);
 
     virtual void addUserPhrase(const string& phrase);
     virtual void addUserPhraseAsync(const string& phrase);

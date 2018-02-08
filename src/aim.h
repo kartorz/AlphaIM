@@ -4,6 +4,8 @@
 #include <string>
 #include "config.h"
 
+#define IM_NAME "AlphaIM"
+
 #define ICONS_PATH  "theme/hicolor/32x32"
 #define MAX_WORK_THREAD  2
 #define MAX_PREEDIT_PAGE 5
@@ -14,13 +16,16 @@
 /* i in [0 .. c-1] */
 #define LOOP(size)  for (int i=0; i<size; i++)
 
+#define AIM_SRV_NAME  "org.freedesktop.AlphaIM"
 #define AIM_SRV_PATH  "/org/freedesktop/AlphaIM"
 #define AIM_SRV_INTF  "org.freedesktop.AlphaIM"
-#define AIM_SRV_NAME  "org.freedesktop.AlphaIM"
 
 #define AIM_NOTIFY_PATH  "/org/freedesktop/AlphaIM/Event"
 #define AIM_NOTIFY_INTF  "org.freedesktop.AlphaIM.Event"
 #define AIM_NOTIFY_MESSAGE     "Message"
+
+#define AIM_SRV_QIM_PATH  "/org/freedesktop/AlphaIM/qim"
+#define AIM_SRV_QIM_INTF   "org.freedesktop.AlphaIM.InputContext"
 
 enum {
     // [iArg1 .. fArg2]: rect.
