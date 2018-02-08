@@ -457,7 +457,7 @@ void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
     log(LOG_INFO, "refreshPhrasePriority\n");
 }
 
-void PY::usrCommit(const IMItem& imitem)
+void PY::onCommit(const IMItem& imitem)
 {
     if (imitem.priority < MAX_PRIORITY) {
         vector<string> phkeys;

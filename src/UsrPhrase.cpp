@@ -78,6 +78,8 @@ void UsrPhrase::parseUsrInput(string usrph, vector<string> &phrases)
     u32 *u32str = NULL;
     size_t total = CharUtil::utf8StrToUcs4Str(usrph.c_str(),  &u32str);
     map<u32, vector<int> > prefixMap;
+	map<u32, vector<int> >::iterator iterPrefixMap;
+
     for (int i = 0; i < total; i++) {
         prefixMap[ u32str[i] ].push_back(i);
     }
@@ -179,7 +181,9 @@ void UsrPhrase::parseUsrInput(string usrph, vector<string> &phrases)
             }
         }
 
-        prefixMap.erase(u32str[i]);
+		iterPrefixMap = prefixMap.find(u32str[i]);
+		if(iterPrefixMap != prefixMap.end())
+			prefixMap.erase(iterPrefixMap);
     }
 
     if (u32str != NULL)

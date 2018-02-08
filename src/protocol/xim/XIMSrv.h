@@ -20,12 +20,12 @@
 
 using namespace std;
 
-class XimSrv : public IMPreeditCallback
+class XIMSrv : public IMPreeditCallback
 {
 friend class ModifierKeyEventTask;
 public:
-    XimSrv();
-    ~XimSrv();
+    XIMSrv();
+    ~XIMSrv();
 
     bool open();
     void close();
@@ -43,32 +43,26 @@ public:
     int handlePreeditStartReply(XIMS ims, IMProtocol *calldata);
     int handlePreeditCaretReply(XIMS ims, IMProtocol *calldata);
     int doModifierKeyEvent(XIMS ims, IMProtocol *calldata);
-
-    void setIM(iIM *im, bool en);
     void handleUIMessage(int msg);
 
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candiate);
-    virtual ICRect onGetRect(void* priv);
+    virtual ICRect onGetRect();
 
 private:
-    void closeIC(IC* ic);
     void commit(XIMS ims, IMForwardEventStruct* calldata, string candidate);
-    XRectangle getICWinRect();
-
-    Xicm m_icMgr;
-    iIM  *m_im;
+    ICRect getICWinRect();
 
     XIMS m_ims;
     Window   m_imwin;
     Display* m_dpy;
-    int      m_dpyW;
-    int      m_dpyH;
+    //int      m_dpyW;
+    //int      m_dpyH;
 
     bool m_bDynamicEvent;
     int m_preModKey;
-    //ModifierKeyEventTask*  m_modifierKeyTask[2];
 
+	ICManager m_icManager;
     MutexCriticalSection m_cs;
 };
 

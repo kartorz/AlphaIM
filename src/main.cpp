@@ -4,9 +4,6 @@
 #include <sys/stat.h>
 #include <cstdlib>
 
-#include "iIM.h"
-#include "PY.h"
-
 #include "aim.h"
 #include "Application.h"
 #include "Util.h"
@@ -68,7 +65,6 @@ int main(int argc, char* argv[])
 {
     run_as_daemon();
     atexit(cleanup);
-
 	if (DBusDaemon::getRefrence().setup() != 0) {
 		log.e("Can't register dbus daemon\n");
 		return -1;
@@ -82,7 +78,6 @@ int main(int argc, char* argv[])
 //#ifdef AL_DEBUG
     gApp->sig.init();
 //#endif
-	gApp->xim.setIM(gApp->newIM(), true);
 	gApp->xim.open();
 	gApp->xim.eventLoop();
 }

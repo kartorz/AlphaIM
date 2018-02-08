@@ -12,16 +12,13 @@
 
 #include <X11/Xlib.h>
 #include <string>
-#include <map>
 #include <vector>
 
 #include "Ximd/IMdkit.h"
 #include "Ximd/Xi18n.h"
-#include "iIM.h"
-#include "X11IMPreedit.h"
-#include "MutexLock.h"
+#include "IC.h"
 
-#define MAX_PY_SLICE  50
+//#define MAX_PY_SLICE  50
 
 using namespace  std;
 
@@ -54,14 +51,13 @@ public:
     XPoint		spot_location;
 };
 
-class  IC {
+class XIMIC : public IC {
 public:
-    IC(int icid);
-    ~IC();
+    XIMIC();
+    virtual ~XIMIC();
     void set(IMChangeICStruct *calldata);
     void get(IMChangeICStruct *calldata);
 
-    CARD16	id;		/* ic id */
     INT32	input_style;	/* input style */
     Window	client_win;	/* client window */
     Window	focus_win;	/* focus window */
@@ -69,31 +65,6 @@ public:
     char	*resource_class; /* resource class */
     PreeditAttributes pre_attr; /* preedit attributes */
     StatusAttributes sts_attr; /* status attributes */
-    X11IMPreedit  preedit;
-};
-
-class Xicm {
-public:
-    Xicm();
-    ~Xicm();
-
-    int createIC(IMChangeICStruct *calldata, iIM *im);
-    int destroyIC(IMChangeICStruct *calldata);
-    int setICValues(IMChangeICStruct *calldata);
-    int getICValues(IMChangeICStruct *calldata);
-    int setICFocus(IMChangeFocusStruct *calldata);
-    int unsetICFocus(IMChangeFocusStruct *calldata);
-    int resetICFocus(IMChangeFocusStruct *calldata);
-    void closeIC(int focus = -1);
-    IC* getIC(int focus = -1);
-
-private:
-    std::map<int, IC*> m_ics;
-    int m_icid;
-    int m_icFocus;
-
-    MutexCriticalSection m_cs;
-
 };
 
 #endif

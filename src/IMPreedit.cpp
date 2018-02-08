@@ -13,7 +13,8 @@
 //#define PRINTF(fmt, args...)  printf(fmt, ##args)
 #define PRINTF(fmt, args...)
 
-IMPreedit::IMPreedit():m_bTrigger(false), m_curPage(0),m_uiStringMax(50),m_bUsrSelectCandidate(false)
+IMPreedit::IMPreedit():m_bTrigger(false), m_bCN(false),
+m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 {
 }
 
@@ -32,7 +33,7 @@ bool IMPreedit::commit(int i)
     {
         //printf("commit candidate %s\n", m_items[i].val.c_str());
         if (m_items.size() > 0)
-            im->usrCommit(m_items[i]);
+			gApp->curIM()->onCommit(m_items[i]);
         return true;
     }
 
@@ -40,7 +41,7 @@ bool IMPreedit::commit(int i)
     //printf("commit: i: %d, size: %d\n", i, m_items.size());
     if(m_items.size() > i) {
         IMItem item = m_items[i];
-        im->usrCommit(item);
+        gApp->curIM()->onCommit(item);
 
         int key_pos = m_input.find(item.key, 0);
         if (key_pos != string::npos) {
@@ -73,9 +74,9 @@ bool IMPreedit::commit(int i)
     return false;
 }
 
-u32 IMPreedit::mapCNPun(char *key)
+u32 IMPreedit::mapCNPun(char key)
 {
-    switch (*key) {
+    switch (key) {
     case '.':
         return 0x3002;
     case '?':
@@ -85,7 +86,7 @@ u32 IMPreedit::mapCNPun(char *key)
     case ',':
         return 0xFF0C;
     case '`':
-        return 0x3001;
+        return 0xFF40;
     case ';':
         return 0xFF1B;
     case ':':
@@ -106,17 +107,23 @@ u32 IMPreedit::mapCNPun(char *key)
         return 0x3010;
     case ']':
         return 0x3011;
+	case '-':
+        return 0xFF0D;
     case '_':
-        return 0x2014;
+        return 0xFF3F;
     case '<':
         return 0x300A;
     case '>':
         return 0x300B;
+	case '{':
+        return 0xFF5B;
+    case '}':
+        return 0xFF5D;
     }
     return 0;
 }
 
-string IMPreedit::mapCNPunToU8Str(char *key)
+string IMPreedit::mapCNPunToU8Str(char key)
 {
     string ret = "";
     u32 CNPunUnicode = mapCNPun(key);
@@ -127,10 +134,11 @@ string IMPreedit::mapCNPunToU8Str(char *key)
         ret += ub;
         free(ub);
     }
+	PRINTF("mapCNPunToU8Str, %c --> %s\n", key, ret.c_str());
     return ret;
 }
 
-void IMPreedit::add(char *key)
+void IMPreedit::add(char key)
 {
     m_bStart = true;
     if (m_input.length() < IM_INPUT_MAX) {
@@ -193,8 +201,10 @@ void IMPreedit::del()
         m_input = it.key + m_input;
     }
 
-    m_candidate = lookup(m_input);
-    page(1);
+	if (m_input != "") {
+		m_candidate = lookup(m_input);
+		page(1);
+	}
 #endif
 }
 
@@ -207,7 +217,7 @@ string IMPreedit::lookup(string input)
     m_candidate = "";
 
     m_items.clear(); 
-    ret = im->lookup(input, m_items);
+    ret = gApp->curIM()->lookup(input, m_items);
     return ret;
 }
 
@@ -228,14 +238,14 @@ void IMPreedit::clear()
 void IMPreedit::reset()
 {
     guiAction(MSG_IM_OFF);
-    im->reset();
+    gApp->curIM()->reset();
 }
 
 void IMPreedit::close()
 {
     clear();
     guiAction(MSG_IM_OFF);
-    im->close();
+    gApp->curIM()->close();
 }
 
 /*
@@ -375,9 +385,9 @@ void IMPreedit::doPagedown()
     page(m_curPage+1);
 }
 
-bool IMPreedit::doInput(char *key)
+bool IMPreedit::doInput(char key)
 {
-    if (*key == (XK_BackSpace & 0xff)) {
+    if (key == (XK_BackSpace & 0xff)) {
         del();
         if (m_input != "") {
             return true;
@@ -414,7 +424,7 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 
             if (m_bUsrSelectCandidate) {
                 m_bUsrSelectCandidate = false;
-                im->addUserPhraseAsync(candidate);
+                gApp->curIM()->addUserPhraseAsync(candidate);
             }
         }
     }
@@ -429,7 +439,7 @@ void IMPreedit::guiAction(int id)
 void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
 {
     if (m_bStart && m_uiItems.size() > 0) {
-        ICRect rect = callback->onGetRect(callback->opaque);
+        ICRect rect = callback->onGetRect();
         
         string input = m_ci + m_input;
         string candidate = m_ci + m_candidate;
