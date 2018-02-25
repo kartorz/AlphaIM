@@ -9,6 +9,8 @@ QT_CXXFLAGS= -O2 -fPIC $(QT_DEFINES)
 
 include ../../../config.mak
 
+SRCS=
+
 a11: $(QT_PLUGIN)
 
 moc_qaiminputcontextproxy.cpp: qaiminputcontextproxy.h
@@ -23,6 +25,7 @@ moc_qaimplatforminputcontext.cpp: qaimplatforminputcontext.h
 main.moc: main.cpp
 	$(MOC) $(QTINCLUDES)  main.cpp -o  main.moc
 
+ifeq ($(QT5), yes)
 SRCS := main.cpp \
 	qaimplatforminputcontext.cpp \
 	qaiminputcontextproxy.cpp \
@@ -30,6 +33,7 @@ SRCS := main.cpp \
 	moc_qaiminputcontextproxy.cpp \
 	moc_qaimproxy.cpp \
 	moc_qaimplatforminputcontext.cpp
+endif
 
 OBJS := $(SRCS:%.cpp=%.o)
 

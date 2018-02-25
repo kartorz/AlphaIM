@@ -1,5 +1,3 @@
-#include <QCursor>
-
 #include "QIMSrv.h"
 #include "Application.h"
 #include "DBusDaemon.h"

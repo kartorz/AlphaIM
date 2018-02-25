@@ -71,7 +71,11 @@ DEPS += $(SRCS_ALPHAIM:%.cpp=%.d)
 DEPS += $(SRCS_AIMTOOL:%.cpp=%.d)
 DEPS += $(SRCS_GUI-yes:%.cpp=%.d)
 
-INSTALL_TARGETS-yes = install-system install-AlphaIM install-AIMTool install-AIMGui install-QtPlugin
+INSTALL_TARGETS-yes = install-system install-AlphaIM install-AIMTool install-AIMGui
+
+ifeq ($(QT5), yes)
+INSTALL_TARGETS-yes += install-QtPlugin
+endif
 
 DIRS = .  \
     tool  \
@@ -144,7 +148,8 @@ install-system: install-dirs
 	install -m 0666  system/phrase-utf8.imdb       "$(DATADIR)/"
 	install -m 0666  system/han-utf8.imdb          "$(DATADIR)/"
 	install -m 0755  system/app.png                "$(DATADIR)/"
-	cp     -av       system/theme/*                "$(DATADIR)/theme/"
+	cp      -av      system/theme/*                "$(DATADIR)/theme/"
+	install -m 0646  system/AlphaIM.desktop        "$(HOME)/.config/autostart/"
 
 install-QtPlugin:
 	$(INSTALL) -m 0644 protocol/qt/plugin/$(QT_PLUGIN)  "$(QTDIR)/plugins/platforminputcontexts/$(QT_PLUGIN)"
@@ -166,6 +171,8 @@ distclean: clean
 	-@rm -rf config.*
 
 echo:
-	@echo $(DEPS)
+#	@echo $(DEPS)
+	@echo $(INSTALL_TARGETS-yes)
+
 
 .PHONY : IMdkit install uninstall clean distclean  echo

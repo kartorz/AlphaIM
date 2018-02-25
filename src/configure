@@ -243,7 +243,7 @@ Installation directories:
 
 Optional features:
   --enable-little-endian force byte order to little-endian  [autodetect]
-  --enable-qt5           force using QT5 for the GUI        [disable]
+  --enable-qtgui         force using QT5 for the GUI        [disable]
   --enable-debug         compile a debugging application    [disable]
   --disable-show_imwin   show a im window when im activated [enable]
 
@@ -265,7 +265,7 @@ exit 0
 } # show_help
 
 _prefix=/usr/local
-_qtdir=auto
+_qtdir=
 _qt5=auto
 _qt5extras=no
 _gtk3=no
@@ -658,7 +658,7 @@ echocheck "QT5 libraries"
 echores "$_qt5"
 
 echocheck "QT tools"
-if test $_qtdir = "auto" ; then
+if test -z $_qtdir ; then
   if test $_qt5 = "yes" ; then
     for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
       if test -f "$I/qt5/bin/moc" ; then
@@ -681,6 +681,18 @@ if test $_qtdir = "auto" ; then
     #fi
   fi
   echores "$_qtdir"
+fi
+
+if test $_qt5 = "yes" ; then
+qt_plugin=libalphaimplatforminputcontextplugin.so
+moc="$_qtdir/bin/moc"
+uic="$_qtdir/bin/uic"
+rcc="$_qtdir/bin/rcc"
+else
+qt_plugin=
+moc=
+uic=
+rcc=
 fi
 
 if test $_qtgui = "no" ; then
@@ -745,11 +757,12 @@ DEBUG=$_debug
 GTK3=$_gtk3
 QT5=$_qt5
 
-QT_PLUGIN= libalphaimplatforminputcontextplugin.so
+
 QTDIR=$_qtdir
-MOC="$_qtdir/bin/moc"
-UIC="$_qtdir/bin/uic"
-RCC="$_qtdir/bin/rcc"
+MOC=$moc
+UIC=$uic
+RCC=$rcc
+QT_PLUGIN=$qt_plugin
 
 EOF
 
