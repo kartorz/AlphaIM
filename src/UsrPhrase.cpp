@@ -16,7 +16,7 @@
 UsrPhrase::UsrPhrase()
 {
     string path = Configure::getRefrence().m_homeDir + "/" + USRPH_FILENAME;
-	const char* mode = Configure::getRefrence().readSelcnt() ? "a+" : "w";
+    const char* mode = Configure::getRefrence().readSelcnt() ? "a+" : "w";
     m_phraseFile = fopen(path.c_str(), mode);
     m_fileCache = "";
     m_phraseTmp = "";
@@ -38,7 +38,7 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
     if (m_phraseTmp.length() - m_roundBase >=  USRPHTMP_ROUND_SIZE) {
         m_roundBase = m_phraseTmp.length();
         //printf("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
-        log.d("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
+        logger.d("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
         parseUsrInput(m_phraseTmp, phrases);
 
         if (m_phraseTmp.length() >= USRPHTMP_MAX_SZIE) {
@@ -50,10 +50,10 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
             m_fileCache.clear();
 
             if (ftello(m_phraseFile)  >=  USRPHFILE_MAX_SZIE) {
-                log.d("clear phrase file\n");
+                logger.d("clear phrase file\n");
 
                 util::ReadFile read;
-                const char *ptr = (const char *)read(m_phraseFile, -1);               
+                const char *ptr = (const char *)read(m_phraseFile, -1);
                 parseUsrInput(ptr, phrases); // It may take a wile.
 
                 fclose(m_phraseFile);
@@ -78,7 +78,7 @@ void UsrPhrase::parseUsrInput(string usrph, vector<string> &phrases)
     u32 *u32str = NULL;
     size_t total = CharUtil::utf8StrToUcs4Str(usrph.c_str(),  &u32str);
     map<u32, vector<int> > prefixMap;
-	map<u32, vector<int> >::iterator iterPrefixMap;
+    map<u32, vector<int> >::iterator iterPrefixMap;
 
     for (int i = 0; i < total; i++) {
         prefixMap[ u32str[i] ].push_back(i);
@@ -181,9 +181,9 @@ void UsrPhrase::parseUsrInput(string usrph, vector<string> &phrases)
             }
         }
 
-		iterPrefixMap = prefixMap.find(u32str[i]);
-		if(iterPrefixMap != prefixMap.end())
-			prefixMap.erase(iterPrefixMap);
+        iterPrefixMap = prefixMap.find(u32str[i]);
+        if(iterPrefixMap != prefixMap.end())
+            prefixMap.erase(iterPrefixMap);
     }
 
     if (u32str != NULL)

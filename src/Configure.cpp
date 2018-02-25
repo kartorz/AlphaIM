@@ -43,9 +43,9 @@ Configure::~Configure()
 int Configure::initialization()
 {
     int ret = 0;
-    m_homeDir = Util::usrProfileDir("AlphaIM");
+    m_homeDir = Util::usrProfileDir("aim");
     m_configFile = m_homeDir + "/configure.xml";
-    log(LOG_INFO, "home direcotry:(%s)\n", m_homeDir.c_str());
+    logger(LOG_INFO, "home direcotry:(%s)\n", m_homeDir.c_str());
 
     m_dataDir = Util::execDir();
     m_dataDir +=  "/system";
@@ -54,20 +54,20 @@ int Configure::initialization()
     if (!Util::isDirExist(m_dataDir))
         m_dataDir = DATADIR;
 #endif
-    log(LOG_INFO, "system dir :(%s)\n", m_dataDir.c_str());
+    logger(LOG_INFO, "system dir :(%s)\n", m_dataDir.c_str());
 
     if (!Util::isDirExist(m_homeDir)) {
          if (Util::createDir(m_homeDir)) {
              Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
          } else {
-             log.e("can't create home direcotry\n");
+             logger.e("can't create home direcotry\n");
              return -1;
          }
     }
 
     if (!Util::isFileExist(m_configFile)) {
         if (Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile) == false) {
-            log.e("{Configure} can't copy cofigure.xml.in \n");
+            logger.e("{Configure} can't copy cofigure.xml.in \n");
             return -2;
         }
     }
@@ -77,7 +77,7 @@ int Configure::initialization()
         // Reload configure file
         Util::copyFile(m_dataDir + "/configure.xml.in", m_configFile);
         ret = load(m_configFile);
-        log.w("{Configure} load configure.xml failure, restore to default setting\n");
+        logger.w("{Configure} load configure.xml failure, restore to default setting\n");
     }
 
     return ret;
@@ -86,13 +86,13 @@ int Configure::initialization()
 int Configure::load(const string& xmlpath)
 {
     if (m_doc.LoadFile(xmlpath.c_str()) != XML_NO_ERROR) {
-        log.e("{Configure} can't load xml %s\n", xmlpath.c_str());
+        logger.e("{Configure} can't load xml %s\n", xmlpath.c_str());
         return -1;
     }
 
     XMLElement* rootElement = m_doc.RootElement();
     if (rootElement == NULL) {
-        log.e("{Configure} can't get root element %s\n", xmlpath.c_str());
+        logger.e("{Configure} can't get root element %s\n", xmlpath.c_str());
         return -2;    
     }
 

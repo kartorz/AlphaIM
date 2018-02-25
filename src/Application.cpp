@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -35,19 +35,19 @@ Application::Application()
     m_sysMsgr->start();
 
     TaskManager::getInstance()->addTask(new SlowJob(this), 0);
-	py.initialization();
+    py.initialization();
 
-    log.d("start Application ...\n");
+    logger.d("start Application ...\n");
 }
 
 iIM*  Application::curIM()
 {
-	return &py;
+    return &py;
 }
 
 MessageQueue* Application::getMessageQ()
 {
-	return m_sysMsgr->m_msgQ;
+    return m_sysMsgr->m_msgQ;
 }
 
 void Application::slowJob()
@@ -57,8 +57,8 @@ void Application::slowJob()
 
 Application::~Application()
 {
-    log.d("~ Application start\n");
+    logger.d("~ Application start\n");
     //delete m_sysMsgr;
-    log.d("~Application done\n");
+    logger.d("~Application done\n");
 
 }

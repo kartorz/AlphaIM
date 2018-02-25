@@ -1,12 +1,6 @@
 #! /bin/sh
 # 
-# Copyright (C) 2014 joni <joni.kartorz.lee@gmail.com>
-#
-# We use compiling framework of mplayer that is a popular open source software,
-# Here is the website: http://www.mplayerhq.hu/
-#
-# Original version (C) 2000 Pontscho/fresh!mindworkz
-#                      pontscho@makacs.poliod.hu
+# Copyright (C) 2014 joni <joni_lee@outlook.com>
 #
 # This configure script is *not* autoconf-based and has different semantics.
 # It attempts to autodetect all settings and options where possible. It is
@@ -107,93 +101,6 @@ EOF
   compile_check $TMPC $@
 }
 
-return_check() {
-  cat > $TMPC << EOF
-#include <$1>
-int main(void) { return $2; }
-EOF
-  shift 2
-  compile_check $TMPC $@
-}
-
-statement_check() {
-  cat > $TMPC << EOF
-#include <$1>
-int main(void) { $2; return 0; }
-EOF
-  shift
-  shift
-  compile_check $TMPC $@
-}
-
-define_statement_check() {
-  cat > $TMPC << EOF
-#define $1
-#include <$2>
-int main(void) { $3; return 0; }
-EOF
-  shift 3
-  compile_check $TMPC $@
-}
-
-return_statement_check() {
-  cat > $TMPC << EOF
-#include <$1>
-int main(void) { $2; return $3; }
-EOF
-  shift 3
-  compile_check $TMPC $@
-}
-
-inline_asm_check() {
-  cat > $TMPC << EOF
-int main(void) { __asm__ volatile ($1); return 0; }
-EOF
-  shift
-  compile_check $TMPC $@
-}
-
-# The following checks are special and should only be used with broken and
-# non-self-sufficient headers that do not include all of their dependencies.
-
-header_check_broken() {
-  cat > $TMPC << EOF
-#include <$1>
-#include <$2>
-int main(void) { return 0; }
-EOF
-  shift
-  shift
-  compile_check $TMPC $@
-}
-
-statement_check_broken() {
-  cat > $TMPC << EOF
-#include <$1>
-#include <$2>
-int main(void) { $3; return 0; }
-EOF
-  shift 3
-  compile_check $TMPC $@
-}
-
-yasm_check() {
-  echo >> "$TMPLOG"
-  cat "$TMPS" >> "$TMPLOG"
-  echo >> "$TMPLOG"
-  echo "$_yasm $YASMFLAGS -o $TMPEXE $TMPS $@" >> "$TMPLOG"
-  rm -f "$TMPEXE"
-  $_yasm $YASMFLAGS -o "$TMPEXE" "$TMPS" "$@" >> "$TMPLOG" 2>&1
-  TMPRES="$?"
-  echo >> "$TMPLOG"
-  echo >> "$TMPLOG"
-  return "$TMPRES"
-}
-
-tmp_run() {
-  "$TMPEXE" >> "$TMPLOG" 2>&1
-}
-
 # Display error message, flush temporary file, exit.
 die () {
   echo
@@ -238,19 +145,15 @@ Configuration:
 Installation directories:
   --prefix=DIR           prefix directory for installation [/usr/local]
   --bindir=DIR           directory for installing binaries [PREFIX/bin]
-  --datadir=DIR          directory for installing machine independent
-                         data files (resources, dicts, etc) [PREFIX/share/aim]
+  --datadir=DIR          directory for installing data [PREFIX/share/alphaim]
 
 Optional features:
   --enable-little-endian force byte order to little-endian  [autodetect]
-  --enable-qt5           force using QT5 for the GUI        [disable]
   --enable-debug         compile a debugging application    [disable]
-  --disable-show_imwin   show a im window when im activated [enable]
+  --with-gui=MODE        choose GUI frontend: gtk or qt     [gtk]
 
 Miscellaneous options:
   --with-install=PATH    path to a custom install program [install]
-  --with-qttool=PATH     Path to QT tools: moc uic rss, etc.[disable]
-
 Use these options if autodetection fails:
   --extra-cflags=FLAGS   extra CFLAGS
   --extra-ldflags=FLAGS  extra LDFLAGS
@@ -265,12 +168,8 @@ exit 0
 } # show_help
 
 _prefix=/usr/local
-_qtdir=auto
-_qt5=auto
-_qt5extras=no
-_gtk3=no
-_qtgui=no
 _appinc3=no
+_gui=gtk
 _little_endian=auto
 _debug=no
 _cc=cc
@@ -279,7 +178,6 @@ test "$CC" && _cc="$CC"
 _as=auto
 _nm=auto
 _install=install
-_show_imwin=yes
 
 option_value(){
   echo $(echo $* | cut -d '=' -f 2-)
@@ -297,17 +195,14 @@ for ac_option do
   --prefix=*)
     _prefix=$(option_value $ac_option)
     ;;
-  --datadir=*)
-    _datadir=$(option_value $ac_option)
-    ;;
   --bindir=*)
     _bindir=$(option_value $ac_option)
     ;;
-  --with-qttool=*)
-    _qtdir=$(option_value $ac_option)
-    ;;
   --with-install=*)
     _install=$(option_value $ac_option)
+    ;;
+  --with-gui=*)
+    _gui=$(option_value $ac_option)
     ;;
   --extra-cflags=*)
     extra_cflags=$(option_value $ac_option)
@@ -320,12 +215,7 @@ for ac_option do
     ;;
   --enable-little-endian)  _little_endian=yes ;;
   --disable-little-endian) _little_endian=no  ;;
-#  --enable-qt5)         _qtgui=yes        ;;
-#  --disable-qt5)        _qtgui=no         ;;
-#  --enable-appinc3)     _appinc3=yes        ;;
-#  --disable-appinc3)    _appinc3=no         ;;
   --enable-debug)       _debug=yes     ;;
-  --enable-show_imwin) _show_imwin=yes ;;
   *)
     echo "Unknown parameter: $ac_option"
     exit 1
@@ -334,8 +224,16 @@ for ac_option do
   esac
 done
 
+case "$_gui" in
+gtk|qt) ;;
+*)
+  echo "Error: --with-gui must be one of: gtk, qt" >&2
+  exit 1
+  ;;
+esac
+
 test -z "$_bindir"  && _bindir="$_prefix/bin"
-test -z "$_datadir" && _datadir="$_prefix/share/aim"
+test -z "$_datadir" && _datadir="$_prefix/share/alphaim"
 
 for tmpdir in "$TMPDIR" "$TEMPDIR" "/tmp" ; do
   test "$tmpdir" && break
@@ -385,86 +283,16 @@ for _cc in gcc cc ; do
 done
 test "$cc_fail" = yes && die "unsupported compiler version"
 
-# Determine our OS name and CPU architecture
 if test -z "$_target" ; then
   # OS name
   system_name=$(uname -s 2>&1)
   case "$system_name" in
-  Linux|FreeBSD|NetBSD|OpenBSD|DragonFly|BSD/OS|Darwin|SunOS|QNX|GNU|MorphOS|AIX|AmigaOS|Haiku)
-    ;;
-  IRIX*)
-    system_name=IRIX
-    ;;
-  GNU/kFreeBSD)
-    system_name=FreeBSD
-    ;;
-  HP-UX*)
-    system_name=HP-UX
-    ;;
-  [cC][yY][gG][wW][iI][nN]*)
-    system_name=CYGWIN
-    ;;
-  MINGW32*)
-    system_name=MINGW32
-    ;;
-  OS/2*)
-    system_name=OS/2
+  Linux)
     ;;
   *)
     system_name="$system_name-UNKNOWN"
     ;;
   esac
-  cpp_condition_check '' 'defined(__MINGW32__)' && system_name=MINGW32
-
-
-  # host's CPU/instruction set
-  set_host_arch() {
-  case "$1" in
-      x86_64|amd64|i[3-9]86*|i86pc|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686) host_arch=i386 ;;
-      ia64) host_arch=ia64 ;;
-      macppc|ppc*|Power*) host_arch=ppc ;;
-      alpha) host_arch=alpha ;;
-      sun4*|sparc*) host_arch=sparc ;;
-      parisc*|hppa*|9000*) host_arch=hppa ;;
-      arm*|zaurus|cats) host_arch=arm ;;
-      sh3|sh4|sh4a) host_arch=sh ;;
-      s390) host_arch=s390 ;;
-      s390x) host_arch=s390x ;;
-      *mips*) host_arch=mips ;;
-      nios2) host_arch=nios2 ;;
-      vax) host_arch=vax ;;
-      xtensa*) host_arch=xtensa ;;
-      *) host_arch=UNKNOWN ;;
-  esac
-  }
-  set_host_arch "$(uname -m 2>&1)"
-  if test "$host_arch" = UNKNOWN ; then
-    set_host_arch "$(uname -p 2>&1)"
-  fi
-else # if test -z "$_target"
-  for component in 3 2; do
-    system_name=$(echo $_target | cut -d '-' -f $component)
-    case "$(echo $system_name | tolower)" in
-      linux) system_name=Linux ;;
-      freebsd) system_name=FreeBSD ;;
-      gnu/kfreebsd) system_name=FreeBSD ;;
-      netbsd) system_name=NetBSD ;;
-      bsd/os) system_name=BSD/OS ;;
-      openbsd) system_name=OpenBSD ;;
-      dragonfly) system_name=DragonFly ;;
-      sunos) system_name=SunOS ;;
-      qnx) system_name=QNX ;;
-      morphos) system_name=MorphOS ;;
-      amigaos) system_name=AmigaOS ;;
-      mingw32*) system_name=MINGW32 ;;
-      wine) system_name=Wine ;;
-    esac
-  done
-  # We need to convert underscores so that values like k6-2 and pentium-mmx can be passed
-  host_arch=$(echo $_target | cut -d '-' -f 1)
-  if test $(echo $host_arch) != "x86_64" ; then
-    host_arch=$(echo $host_arch | tr '_' '-')
-  fi
 fi
 
 # endian testing
@@ -505,7 +333,7 @@ else
 fi
 
 if test $_debug = 'yes' ; then
-  cflags="-g -O0 $cflags -DAL_DEBUG"
+  cflags="-g -O0 $cflags"
   _install_strip=
 else
   cflags="-O2 $cflags"
@@ -563,28 +391,12 @@ echores "$_xlib"
 test "$_xlib" = no && die "Please check and install xlib (libx11-dev)"
 cflags="$cflags -DX11"
 
-#echocheck "Xtrans"
-#header_check(X11/Xtrans/transport.c) 
-
-#cat > $TMPC  <<EOF
-#//#include <X11/Xtrans/Xtrans.h>
-#include <X11/Xtrans/transport.c>
-#int main(void) {
-#return 0;
-#}
-#EOF
-
+echocheck "Xtrans"
 if header_check X11/Xtrans/transport.c ; then
     echores "yes"
 else
   die "Please check and install xtrans"
 fi
-
-#if test "$_appinc3" = "yes" ; then
-#    libs_aim="$libs_aim  -lappindicator3"
-#    extra_cflags="$extra_cflags -I/usr/include/libappindicator3-0.1"
-#    CFLAGS="$CFLAGS -DHAS_APPINDICATOR3"
-#fi
 
 echocheck "systemd"
 _systemd=no
@@ -603,109 +415,94 @@ cc_check $ld_tmp  &&
 echores "$_systemd"
 test "$_systemd" = no && die "Please check and install libsystemd-dev"
 
-if test "$_qt5" = "auto" ; then
-echocheck "QT5 header"
-  _qt5_headers="no"
-  inc_tmp=""
-  ld_tmp=""
-  res_comment="check if the qt5 dev(el) packages are installed"
+for gtk_major in 4 3 ; do
+  gtk_pkg=
+  gtk_module_dir=
+  case "$gtk_major" in
+  4)
+    gtk_pkg=gtk4
+    gtk_module_dir=gtk-4.0
+    ;;
+  3)
+    gtk_pkg=gtk+-3.0
+    gtk_module_dir=gtk-3.0
+    ;;
+  esac
 
-  if header_check  QtWidgets/QMainWindow ; then
-    res_comment=""
-    _qt5_headers="yes"
+  echocheck "$gtk_pkg"
+  if pkg-config --exists "$gtk_pkg" ; then
+    gtkincludes=`pkg-config --cflags "$gtk_pkg"`
+    gtklibs=`pkg-config --libs "$gtk_pkg"`
+    includes="$includes $gtkincludes"
+    includes="$includes -I\$(TOPDIR)/gui/gtk"
+    ldflags="$ldflags  $gtklibs"
+    echores "yes (gtk$gtk_major)"
+    gtk=yes
+    break
+  fi
+  echores "no"
+done
+
+test "$gtk" = yes || die "Please check and install gtk development files"
+
+echocheck "ayatana-appindicator3"
+if pkg-config --exists ayatana-appindicator3-0.1 ; then
+  appindicator_incs=`pkg-config --cflags ayatana-appindicator3-0.1`
+  appindicator_libs=`pkg-config --libs ayatana-appindicator3-0.1`
+  cflags="$cflags -DHAS_AYATANA_APPINDICATOR3"
+  includes="$includes $appindicator_incs"
+  ldflags="$ldflags $appindicator_libs"
+  _appinc3=yes
+  echores "yes (ayatana-appindicator3-0.1)"
+else
+  echores "no"
+fi
+
+for qt_major in 6 5 ; do
+  qt_prefix="Qt${qt_major}"
+  qt_pkg="${qt_prefix}Core ${qt_prefix}Gui ${qt_prefix}Widgets ${qt_prefix}DBus"
+
+  if [ "$qt_major" -eq 6 ]; then
+      qtbin_var="libexecdir"
   else
-    for I in $(echo $extra_cflags | sed s/-I//g) /usr/include  /usr/include/x86_64-linux-gnu \
-      /usr/include/i386-linux-gnu /usr/local/include; do
-      if test -f "$I/qt5/QtWidgets/QMainWindow" ; then
-        inc_tmp="-I$I/qt5 -I$I/qt5/QtWidgets -I$I/qt5/QtGui  -I$I/qt5/QtCore  -I$I/qt5/QtDBus -I$I/qt5/QtGui/5.5.1/QtGui "
-        res_comment=""
-        _qt5_headers="yes"
-        break
-      fi
-    done
-  fi
-echores "$_qt5_headers"
-fi
-
-echocheck "QT5 libraries"
-  if test "$_qt5" = "auto" ; then
-    _qt5="no";
-    if test "$_qt5_headers" = "yes" ; then
-      for I in "" /usr/lib/x86_64-linux-gnu   /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
-        if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
-          def_qt5='#define CONFIG_QT5 1'
-          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
-          qt_libs="$ld_tmp"
-          includes="$inc_tmp"
-		  qt_includes="$inc_tmp"
-          cflags="$cflags -DQT5"
-          _qt5="yes"
-        fi
-
-        if test -f "$I/libQt5X11Extras.so" -o -L "$I/libQt5X11Extras.so" ; then
-          ld_tmp="-L$I -lQt5X11Extras  -lX11"
-          def_qt5extras='#define CONFIG_QT5EXTRAS 1'
-          qt_libs="$qt_libs $ld_tmp"
-          _qt5extras="yes"
-        fi
-
-        if test $_qt5 = "yes" -a $_qt5extras = "yes" ; then
-          break
-        fi
-      done
+      qtbin_var="host_bins"
     fi
-  fi
-echores "$_qt5"
 
-echocheck "QT tools"
-if test $_qtdir = "auto" ; then
-  if test $_qt5 = "yes" ; then
-    for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
-      if test -f "$I/qt5/bin/moc" ; then
-        _qtdir=$I/qt5
-        break 
-      fi
-      if test -f "$I/qt5/bin/moc" ; then
-        _qtdir=$I/qt4
-        break
-      fi
+  echocheck "qt$qt_major"
+
+  if pkg-config --exists "$qt_pkg" ; then
+    qt_version=`pkg-config --modversion "${qt_prefix}Core"`
+    qt_includes=`pkg-config --cflags "$qt_pkg"`
+    qt_libs=`pkg-config --libs "$qt_pkg"`
+    qt_include_dir=`pkg-config --variable=includedir "$qt_pkg"`
+    qt_private_includes=""
+    for qt_private_dir in \
+      "$qt_include_dir/QtGui/$qt_version" \
+      "$qt_include_dir/QtGui/$qt_version/QtGui" \
+      "$qt_include_dir/QtCore/$qt_version" \
+      "$qt_include_dir/QtCore/$qt_version/QtCore"; do
+      test -d "$qt_private_dir" && qt_private_includes="$qt_private_includes -I$qt_private_dir"
     done
 
-    #if test -z "$_moc" ; then    
-    #  ver_tmp=$(moc -v 2>&1 | tail -n 1 | cut -d ' ' -f 6)
-    #  if test $ver_tmp != "" ; then
-    #    _moc=moc
-    #    _uic=uic
-    #    _rcc=rcc
-    #  fi
-    #fi
+    includes="$includes $qt_includes"
+    includes="$includes -Iqt_include_dir $qt_private_includes"
+    ldflags="$ldflags $qt_libs"
+
+    MOC=`pkg-config --variable=$qtbin_var "${qt_prefix}Core"`/moc
+    UIC=`pkg-config --variable=$qtbin_var "${qt_prefix}Core"`/uic
+    RCC=`pkg-config --variable=$qtbin_var "${qt_prefix}Core"`/rcc
+
+    echores "yes (Qt$qt_major)"
+    qt=yes
+    break
   fi
-  echores "$_qtdir"
+  echores "no"
+done
+
+if test "$_gui" = qt && test "$qt" != yes ; then
+  die "Qt GUI requested but Qt development files were not found"
 fi
 
-if test $_qtgui = "no" ; then
-  echocheck "gtk+-3.0"
-  gtk_incs=`pkg-config --cflags gtk+-3.0`
-  test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
-  cflags="$cflags -DGTK3"
-  includes="$includes $gtk_incs"
-  includes="$includes -I\$(TOPDIR)/gui/gtk"
-  gtk_libs=`pkg-config --libs gtk+-3.0`
-  test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
-  ldflags="$ldflags  $gtk_libs"
-
-  _gtk3=yes
-  echocheck "yes"
-  echo ""
-else
-  ldflags="$ldflags $qt_libs"
-fi
-
-if test $_show_imwin = "yes" ; then
-  cflags="$cflags  -DSHOW_IMWIN=true"
-else
-  cflags="$cflags  -DSHOW_IMWIN=false"
-fi
 
 #############################################################################
 echo "Creating config.mak"
@@ -734,24 +531,21 @@ INSTALLSTRIP =$_install_strip
 TOPDIR  := \$(abspath .)
 MAKEFLAGS = CC=gcc CXX=g++ AR=ar
 CFLAGS   = $cflags $includes
-CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib -I\$(TOPDIR)/lib/IMdkit/ -I\$(TOPDIR)/protocol -I\$(TOPDIR)/protocol/xim -I\$(TOPDIR)/protocol/qt
+CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib -I\$(TOPDIR)/lib/IMdkit/ -I\$(TOPDIR)/protocol -I\$(TOPDIR)/protocol/xim
 CXXFLAGS = $cxxflags
 CC_DEPFLAGS = $DEPFLAGS
-QTINCLUDES = $qt_includes
-QTLIBS = $qt_libs
 LIBS  = $ldflags $ld_static  $extra_libs
 
 DEBUG=$_debug
-GTK3=$_gtk3
-QT5=$_qt5
+GUI=$_gui
 
-QT_PLUGIN= libalphaimplatforminputcontextplugin.so
-QTDIR=$_qtdir
-MOC="$_qtdir/bin/moc"
-UIC="$_qtdir/bin/uic"
-RCC="$_qtdir/bin/rcc"
+MOC=$MOC
+UIC=$UIC
+RCC=$RCC
 
 EOF
+
+
 
 
 echo "Creating config.h"
@@ -809,8 +603,7 @@ skipping autodetection. This behavior is unlike what you may be used to from
 autoconf-based configure scripts that can decide to override you. This greater
 level of control comes at a price. You may have to provide the correct compiler
 and linker flags yourself.
-If you used one of these options (except --enable-qt5 and similar ones that
-turn on gui features) and experience a compilation or linking failure,
+If you used one of these options and experience a compilation or linking failure,
 make sure you have passed the necessary compiler/linker flags to configure.
 
 If you suspect a bug, please read README text.
@@ -832,6 +625,3 @@ You can use --extra-*flags to add custom flags if necessary.
 
 EOF
 fi
-
-# Last move:
-cleanup

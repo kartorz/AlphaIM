@@ -10,10 +10,6 @@
 #include "indextree_item.h"
 #include "Configure.h"
 
-#undef PRINTF
-//#define PRINTF(fmt, args...)  printf(fmt, ##args)
-#define PRINTF(fmt, args...)
-
 using namespace boost::filesystem;
 
 PY::PY(): m_addCnt(0), m_selCnt(0),
@@ -24,29 +20,29 @@ m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
 int PY::initialization()
 {
     string phPath = Configure::getRefrence().m_homeDir + "/phrase-utf8.imdb";
-	string phPathOri = Configure::getRefrence().m_dataDir + "/phrase-utf8.imdb";
+    string phPathOri = Configure::getRefrence().m_dataDir + "/phrase-utf8.imdb";
     if (!Util::isFileExist(phPath)) {
-        log.d("copy phrase db to home\n");
-        boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
+        logger.d("copy phrase db to home\n");
+        boost::filesystem::copy_file(phPathOri, phPath, copy_options::overwrite_existing);
     }
 
     if (!m_phDB.load(phPath, 0xB4B3)) {
-		log.d("load phrase failure, copy db to home and reload\n");
-        boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
-		m_phDB.load(phPath, 0xB4B3);
-	}
+        logger.d("load phrase failure, copy db to home and reload\n");
+        boost::filesystem::copy_file(phPathOri, phPath, copy_options::overwrite_existing);
+        m_phDB.load(phPath, 0xB4B3);
+    }
 
     string hanPath = Configure::getRefrence().m_homeDir + "/han-utf8.imdb";
-	string hanPathOri = Configure::getRefrence().m_dataDir + "/han-utf8.imdb";
+    string hanPathOri = Configure::getRefrence().m_dataDir + "/han-utf8.imdb";
     if (!Util::isFileExist(hanPath)) {
-        log.d("copy han db to home\n");
-        boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
+        logger.d("copy han db to home\n");
+        boost::filesystem::copy_file(hanPathOri, hanPath, copy_options::overwrite_existing);
         //permissions(file_path, add_perms|owner_write|group_write|others_write);
     }
     if (!m_hanDB.load(hanPath, 0xB4B3)) {
-		boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
-		m_hanDB.load(hanPath, 0xB4B3);
-	}
+        boost::filesystem::copy_file(hanPathOri, hanPath, copy_options::overwrite_existing);
+        m_hanDB.load(hanPath, 0xB4B3);
+    }
 
     string pyPath = Configure::getRefrence().m_dataDir + "/pinyin-utf8.imdb";
     m_pyDB.load(pyPath, 0xB4B3);
@@ -56,11 +52,11 @@ int PY::initialization()
     if (!m_usrPhDB.load(usrPhPath, 0xB4B3, true)) {
         bool load =  false;
 
-        log.d("Load usr phd, failure. check backup file. \n");
+        logger.d("Load usr phd, failure. check backup file. \n");
         if (Util::isFileExist(usrPhPathOk)) {
-            boost::filesystem::copy_file(usrPhPathOk, usrPhPath, copy_option::overwrite_if_exists);
+            boost::filesystem::copy_file(usrPhPathOk, usrPhPath, copy_options::overwrite_existing);
             load = m_usrPhDB.load(usrPhPath, 0xB4B3, true);
-            log.d("Load backup user phrase : %d \n", load);
+            logger.d("Load backup user phrase : %d \n", load);
         }
 
         if (!load) {
@@ -74,7 +70,7 @@ int PY::initialization()
             inxtree_write_u16(m_usrPhDB.m_header.i_size, 1);
         }
     } else {
-        copy_file(usrPhPath, usrPhPathOk, copy_option::overwrite_if_exists);
+        copy_file(usrPhPath, usrPhPathOk, copy_options::overwrite_existing);
     }
 
     m_phDBs[0] = &m_phDB;
@@ -88,7 +84,7 @@ int PY::initialization()
 
 PY::~PY()
 {
-    log(LOG_INFO, "~PY write userphd\n");
+    logger(LOG_INFO, "~PY write userphd\n");
     if (m_addCnt > 0) {
         m_addCnt = 0;
         m_usrPhDB.write();
@@ -121,7 +117,7 @@ string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
     if (!key.empty()) {
         //@ Start from a valid PY.
         int validlen = m_pyDB.validLen(key);
- 
+
        // A whole invlid pinyin, delete the first char, search again.
         if (validlen == 0) {
             string rest = key.substr(1);
@@ -137,7 +133,7 @@ string PY::lookup(const string& input, deque<IMItem>& items, bool firstRound)
             lookupPhrase(validkey, input, items, firstRound);
         }
 
-       //PRINTF("lookup1 validkey: %s, rest: %s\n", validkey.c_str(), rest.c_str());  
+       //PRINTF("lookup1 validkey: %s, rest: %s\n", validkey.c_str(), rest.c_str());
         //@ Check if appending PinYin items
         if (firstRound || (items.size() == 0)) {
             if (!lookupCache(m_InputMap, validkey, items)) {
@@ -168,7 +164,7 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items, bool first
     // The offset can accepted.
     #define OFF_PAGE  2  // How many page for non-perfect match.
     #define OFF_RANGE 3  // How many 'off' array
-    
+
     // Gets All phrases beging with 'key[0 .. -1]'.
     // Fix the 'dier' , 'wangu' issue.
     //    - dier: di'er  die'r
@@ -319,8 +315,8 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempLis
         if (npos <  phstrlen) {
             // Part of a phrase, Maybe this part is  another phrase.
             PRINTF("check if exist %s, npos:%d, phstrlen:%d\n", (prefix+imval).c_str(), npos, phstrlen);
-            for (int i = 0; i < m_phDBsLen; i++) {                
-                if (m_phDBs[i]->isExist(prefix+imval)) /* Don't append the duplicate item.*/ 
+            for (int i = 0; i < m_phDBsLen; i++) {
+                if (m_phDBs[i]->isExist(prefix+imval)) /* Don't append the duplicate item.*/
                     return;
             }
         }
@@ -395,7 +391,7 @@ int PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
-            log(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han);
+            logger(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han);
             return 0;
         }
 
@@ -405,7 +401,7 @@ int PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
 
         for (int i = 0; i < pyitems.size(); i++) {
             HanItem hani(pyitems[i].ptr);
-            string key = hani.py + SEP_CHAR + phrase; 
+            string key = hani.py + SEP_CHAR + phrase;
             phkeys.push_back(key);
         }
         return 1;
@@ -435,7 +431,7 @@ void PY::refreshHanPriority(IndexTreeWriter& hanDB)
     if (buf != NULL)
         free(buf);
 
-    log(LOG_INFO, "refreshHanPriority\n");
+    logger(LOG_INFO, "refreshHanPriority\n");
 }
 
 // Reresh prprity by decreasing -1.
@@ -454,7 +450,7 @@ void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
     if (buf != NULL)
         free(buf);
 
-    log(LOG_INFO, "refreshPhrasePriority\n");
+    logger(LOG_INFO, "refreshPhrasePriority\n");
 }
 
 void PY::onCommit(const IMItem& imitem)
@@ -506,7 +502,7 @@ void PY::getPYItems(const string& py, deque<IMItem>& items)
     int size = m_pyDB.getIndexList(indexList, py, INXTREE_LOAD);
     for (int i = 0; i < size; i++) {
         inxtree_dataitem& d = indexList[i]->d;
-        if (indexList[i]->index.length() == py.length()) {  // perfect match. 
+        if (indexList[i]->index.length() == py.length()) {  // perfect match.
             //printf("perfect match %s\n", indexList[i]->index.c_str());
             pyItems[0].push_back(d);
         } else
@@ -673,7 +669,7 @@ void PY::addToUsrDB(const string& phrase)
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
-            log(LOG_INFO, "addToUsrDB: no py with han(%s), return.\n", han);
+            logger(LOG_INFO, "addToUsrDB: no py with han(%s), return.\n", han);
             return;
         }
 
@@ -701,13 +697,13 @@ void PY::addToUsrDB(const string& phrase)
 
             m_addCnt = 0;
 
-            log(LOG_INFO, "addToUsrDB: > MAX_USRDB_ENTRY, clean up user db. \n");
+            logger(LOG_INFO, "addToUsrDB: > MAX_USRDB_ENTRY, clean up user db. \n");
         }
 
         for (int i = 0; i < pyitems.size(); i++) {
             HanItem hani(pyitems[i].ptr);
-            string key = hani.py + SEP_CHAR + phrase; 
-            for (int i = 0; i < m_phDBsLen; i++) {                
+            string key = hani.py + SEP_CHAR + phrase;
+            for (int i = 0; i < m_phDBsLen; i++) {
                 if (m_phDBs[i]->isExist(key))
                     return;
             }
@@ -726,7 +722,7 @@ void PY::addToUsrDB(const string& phrase)
             }
         }
     } else {
-        log(LOG_ERROR, "addUserPhrase: got a invalid phrase(%s).\n",phrase.c_str()); 
+        logger(LOG_ERROR, "addUserPhrase: got a invalid phrase(%s).\n",phrase.c_str());
     }
 }
 

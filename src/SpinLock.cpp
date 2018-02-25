@@ -9,10 +9,10 @@
 SpinLock::SpinLock(SpinCriticalSection &scs)
 :m_criticalSection(scs)
 {
-	m_criticalSection.lock();
+    m_criticalSection.lock();
 }
 
 SpinLock::~SpinLock()
 {
-	m_criticalSection.unlock();
+    m_criticalSection.unlock();
 }

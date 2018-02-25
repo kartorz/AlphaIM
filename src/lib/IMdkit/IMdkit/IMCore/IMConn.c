@@ -22,10 +22,12 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <X11/Xlib.h>
+#include <stdlib.h>
+#include <string.h>
 #include "IMdkit.h"
 #if NeedVarargsPrototypes
 # include <stdarg.h>
@@ -49,8 +51,8 @@ _IMCountVaList(var, total_count)
     *total_count = 0;
 
     for (attr = va_arg(var, char*); attr; attr = va_arg(var, char*)) {
-	va_arg(var, XIMArg*);
-	++(*total_count);
+    va_arg(var, XIMArg*);
+    ++(*total_count);
     }
 }
 
@@ -68,8 +70,8 @@ _IMVaToNestedList(var, max_count, args_return)
     char   *attr;
 
     if (max_count <= 0) {
-	*args_return = (XIMArg *)NULL;
-	return;
+    *args_return = (XIMArg *)NULL;
+    return;
     }
 
     args = (XIMArg *)malloc((unsigned)(max_count + 1) * sizeof(XIMArg));
@@ -77,9 +79,9 @@ _IMVaToNestedList(var, max_count, args_return)
     if (!args) return;
 
     for (attr = va_arg(var, char*); attr; attr = va_arg(var, char*)) {
-	args->name = attr;
-	args->value = va_arg(var, XPointer);
-	args++;
+    args->name = attr;
+    args->value = va_arg(var, XPointer);
+    args++;
     }
     args->name = (char*)NULL;
 }
@@ -95,12 +97,12 @@ XIMArg *args;
     char *modifiers;
 
     while (args->name) {
-	if (!strcmp(args->name, IMModifiers)) {
-	    modifiers = args->value;
-	    return modifiers;
-	} else {
-	    args++;
-	}
+    if (!strcmp(args->name, IMModifiers)) {
+        modifiers = args->value;
+        return modifiers;
+    } else {
+        args++;
+    }
     }
     return NULL;
 }
@@ -120,19 +122,19 @@ char *modifiers;
 #endif
 
     if ((ims = (XIMS)malloc(sizeof(XIMProtocolRec))) == (XIMS)NULL) {
-	return((XIMS)NULL);
+    return((XIMS)NULL);
     }
     memset(ims, 0, sizeof(XIMProtocolRec));
 
     if (!*modifiers || !modifiers || !strcmp(modifiers, "Xi18n")) {
-	ims->methods = &Xi18n_im_methods;
+    ims->methods = &Xi18n_im_methods;
 #ifdef Use_Ximp
     } else if (!strcmp(modifiers, "XIMP")) {
-	ims->methods = &Ximp_im_methods;
+    ims->methods = &Ximp_im_methods;
 #endif
     } else {
-	XFree(ims);
-	return (XIMS)NULL;
+    XFree(ims);
+    return (XIMS)NULL;
     }
     return ims;
 }
@@ -171,13 +173,13 @@ va_dcl
 
     ims->protocol = (*ims->methods->setup)(display, args);
     if (ims->protocol == (void *)NULL) {
-	XFree(ims);
-	return (XIMS)NULL;
+    XFree(ims);
+    return (XIMS)NULL;
     }
     ret = (ims->methods->openIM)(ims);
     if (ret == False) {
-	XFree(ims);
-	return (XIMS)NULL;
+    XFree(ims);
+    return (XIMS)NULL;
     }
     return (XIMS)ims;
 }

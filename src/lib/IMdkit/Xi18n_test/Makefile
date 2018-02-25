@@ -1,3 +1,7 @@
+empty :=
+space := $(empty) $(empty)
+.RECIPEPREFIX := $(space)
+
 IMDLIB =  -lX11
 DEPLIBS = $(DEPXONLYLIB)
 INCLUDES = -I.. -I../Ximd
@@ -10,12 +14,12 @@ CC = gcc
 PROGRAM : sampleIM i18n_input
 
 sampleIM: $(OBJS) ../Ximd/Ximd.a
-	$(CC) $(CDEBUGFLAGS) $^  $(LOCAL_LIBRARIES)  -o $@
+    $(CC) $(CDEBUGFLAGS) $^  $(LOCAL_LIBRARIES)  -o $@
 
 %.o: %.c
-	$(CC) $(CDEBUGFLAGS) $(INCLUDES) -c $<  -o $@
+    $(CC) $(CDEBUGFLAGS) $(INCLUDES) -c $<  -o $@
 
 i18n_input: i18n_input.c
-	$(CC) -g  -o  $@  i18n_input.c   libX11-xcb.a libX11.a  -lxcb
-#	$(CC)  -o $@ i18n_input.c   -lX11
+    $(CC) -g  -o  $@  i18n_input.c   libX11-xcb.a libX11.a  -lxcb
+#    $(CC)  -o $@ i18n_input.c   -lX11
 

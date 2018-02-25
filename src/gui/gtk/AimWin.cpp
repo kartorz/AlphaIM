@@ -20,13 +20,13 @@ static void aim_win_class_init(AimWinClass *klass)
 
 static void on_lanbutton_clicked (GtkButton *button, gpointer user_data)
 {
-	aim_app_message_send(MSG_UI_LAN);
+    aim_app_message_send(MSG_UI_LAN);
     gdk_threads_add_idle(aim_app_on_hide_hpwin, user_data);
 }
 
 static void on_punbutton_clicked (GtkButton *button, gpointer user_data)
 {
-	aim_app_message_send(MSG_UI_PUN);
+    aim_app_message_send(MSG_UI_PUN);
     gdk_threads_add_idle(aim_app_on_hide_hpwin, user_data);
 }
 

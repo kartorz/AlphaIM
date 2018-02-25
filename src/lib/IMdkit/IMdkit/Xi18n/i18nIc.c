@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <X11/Xlib.h>
 #include "IMdkit.h"
@@ -35,7 +35,7 @@ Author:
 static void
 #if NeedFunctionPrototypes
 SetCardAttribute(XICAttribute *value_ret, char *p, XICAttr *ic_attr,
-		 int value_length, int need_swap)
+         int value_length, int need_swap)
 #else
 SetCardAttribute(value_ret, p, ic_attr, value_length, need_swap)
 XICAttribute *value_ret;
@@ -52,27 +52,27 @@ int need_swap;
       return;
 
     if (value_length == sizeof(CARD8)) {
-	memmove(buf, p, value_length);
+    memmove(buf, p, value_length);
     } else if (value_length == sizeof(CARD16)) {
-	INT16 value;
-	extern XimFrameRec short_fr[];
-	/* create FrameMgr */
-	fm = FrameMgrInit(short_fr, (char *)p, need_swap);
-	/* get data */
-	FrameMgrGetToken(fm, value);
-	/* free FrameMgr */
-	FrameMgrFree(fm);
-	memmove(buf, &value, value_length);
+    INT16 value;
+    extern XimFrameRec short_fr[];
+    /* create FrameMgr */
+    fm = FrameMgrInit(short_fr, (char *)p, need_swap);
+    /* get data */
+    FrameMgrGetToken(fm, value);
+    /* free FrameMgr */
+    FrameMgrFree(fm);
+    memmove(buf, &value, value_length);
     } else if (value_length == sizeof(CARD32)) {
-	INT32 value;
-	extern XimFrameRec long_fr[];
-	/* create FrameMgr */
-	fm = FrameMgrInit(long_fr, (char *)p, need_swap);
-	/* get data */
-	FrameMgrGetToken(fm, value);
-	/* free FrameMgr */
-	FrameMgrFree(fm);
-	memmove(buf, &value, value_length);
+    INT32 value;
+    extern XimFrameRec long_fr[];
+    /* create FrameMgr */
+    fm = FrameMgrInit(long_fr, (char *)p, need_swap);
+    /* get data */
+    FrameMgrGetToken(fm, value);
+    /* free FrameMgr */
+    FrameMgrFree(fm);
+    memmove(buf, &value, value_length);
     }
 
     value_ret->attribute_id = ic_attr->attribute_id;
@@ -88,7 +88,7 @@ int need_swap;
 static void
 #if NeedFunctionPrototypes
 SetFontAttribute(XICAttribute *value_ret, char *p, XICAttr *ic_attr,
-		 int value_length, int need_swap)
+         int value_length, int need_swap)
 #else
 SetFontAttribute(value_ret, p, ic_attr, value_length, need_swap)
 XICAttribute *value_ret;
@@ -128,7 +128,7 @@ int need_swap;
 static void
 #if NeedFunctionPrototypes
 SetPointAttribute(XICAttribute *value_ret, char *p, XICAttr *ic_attr,
-		  int value_length, int need_swap)
+          int value_length, int need_swap)
 #else
 SetPointAttribute(value_ret, p, ic_attr, value_length, need_swap)
 XICAttribute *value_ret;
@@ -169,7 +169,7 @@ int need_swap;
 static void
 #if NeedFunctionPrototypes
 SetRectAttribute(XICAttribute *value_ret, char *p, XICAttr *ic_attr,
-		  int value_length, int need_swap)
+          int value_length, int need_swap)
 #else
 SetRectAttribute(value_ret, p, ic_attr, value_length, need_swap)
 XICAttribute *value_ret;
@@ -208,7 +208,7 @@ int need_swap;
 static void
 #if NeedFunctionPrototypes
 SetHotKeyAttribute(XICAttribute *value_ret, char *p, XICAttr *ic_attr,
-		    int value_length, int need_swap)
+            int value_length, int need_swap)
 #else
 SetHotKeyAttribute(value_ret, p, ic_attr, value_length, need_swap)
 XICAttribute *value_ret;
@@ -280,25 +280,25 @@ int need_swap;
     recp += sizeof(CARD16) * 2;
 
     if (list->value_length == sizeof(CARD8)) {
-	memmove(recp, list->value, list->value_length);
+    memmove(recp, list->value, list->value_length);
     } else if (list->value_length == sizeof(CARD16)) {
-	INT16 *value = (INT16 *)list->value;
-	extern XimFrameRec short_fr[];
-	/* create FrameMgr */
-	fm = FrameMgrInit(short_fr, (char *)recp, need_swap);
-	/* put data */
-	FrameMgrPutToken(fm, *value);
-	/* free FrameMgr */
-	FrameMgrFree(fm);
+    INT16 *value = (INT16 *)list->value;
+    extern XimFrameRec short_fr[];
+    /* create FrameMgr */
+    fm = FrameMgrInit(short_fr, (char *)recp, need_swap);
+    /* put data */
+    FrameMgrPutToken(fm, *value);
+    /* free FrameMgr */
+    FrameMgrFree(fm);
     } else if (list->value_length == sizeof(CARD32)) {
-	INT32 *value = (INT32 *)list->value;
-	extern XimFrameRec long_fr[];
-	/* create FrameMgr */
-	fm = FrameMgrInit(long_fr, (char *)recp, need_swap);
-	/* put data */
-	FrameMgrPutToken(fm, *value);
-	/* free FrameMgr */
-	FrameMgrFree(fm);
+    INT32 *value = (INT32 *)list->value;
+    extern XimFrameRec long_fr[];
+    /* create FrameMgr */
+    fm = FrameMgrInit(long_fr, (char *)recp, need_swap);
+    /* put data */
+    FrameMgrPutToken(fm, *value);
+    /* free FrameMgr */
+    FrameMgrFree(fm);
     }
     return;
 }
@@ -390,10 +390,10 @@ int need_swap;
 static int
 #if NeedFunctionPrototypes
 ReadICValue(Xi18n i18n_core, CARD16 icvalue_id, int value_length, void *p,
-	    XICAttribute *value_ret, CARD16 *number_ret,int need_swap)
+        XICAttribute *value_ret, CARD16 *number_ret,int need_swap)
 #else
 ReadICValue(i18n_core, icvalue_id, value_length, p,
-	    value_ret, number_ret, need_swap)
+        value_ret, number_ret, need_swap)
 Xi18n i18n_core;
 CARD16 icvalue_id;
 int value_length;
@@ -409,76 +409,76 @@ int need_swap;
     *number_ret = (CARD16)0;
 
     for (i = 0; i < i18n_core->address.ic_attr_num; i++, ic_attr++) {
-	if (ic_attr->attribute_id == icvalue_id) {
-	    break;
-	}
+    if (ic_attr->attribute_id == icvalue_id) {
+        break;
+    }
     }
     switch (ic_attr->type) {
       case XimType_NEST:
-	{
-	    int total_length = 0;
-	    CARD16 attribute_ID;
-	    INT16 attribute_length;
-	    unsigned char *p1 = (unsigned char *) p;
-	    CARD16 ic_len = 0;
-	    CARD16 number;
-	    FrameMgr fm;
-	    extern XimFrameRec attr_head_fr[];
+    {
+        int total_length = 0;
+        CARD16 attribute_ID;
+        INT16 attribute_length;
+        unsigned char *p1 = (unsigned char *) p;
+        CARD16 ic_len = 0;
+        CARD16 number;
+        FrameMgr fm;
+        extern XimFrameRec attr_head_fr[];
 
-	    while (total_length < value_length) {
-		/* create FrameMgr */
-		fm = FrameMgrInit(attr_head_fr, (char *)p1, need_swap);
-		/* get data */
-		FrameMgrGetToken(fm, attribute_ID);
-		FrameMgrGetToken(fm, attribute_length);
-		/* free FrameMgr */
-		FrameMgrFree(fm);
-		p1 += sizeof(CARD16) * 2;
-		ReadICValue(i18n_core,
-			    attribute_ID, attribute_length,
-			    p1, (value_ret + ic_len), &number, need_swap);
-		ic_len++;
-		*number_ret += number;
-		p1 += attribute_length;
-		p1 += IMPAD(attribute_length);
-		total_length += (CARD16)sizeof(CARD16) * 2
-				  + (INT16)attribute_length
-				  + IMPAD(attribute_length);
-	    }
-	    return ic_len;
-	}
+        while (total_length < value_length) {
+        /* create FrameMgr */
+        fm = FrameMgrInit(attr_head_fr, (char *)p1, need_swap);
+        /* get data */
+        FrameMgrGetToken(fm, attribute_ID);
+        FrameMgrGetToken(fm, attribute_length);
+        /* free FrameMgr */
+        FrameMgrFree(fm);
+        p1 += sizeof(CARD16) * 2;
+        ReadICValue(i18n_core,
+                attribute_ID, attribute_length,
+                p1, (value_ret + ic_len), &number, need_swap);
+        ic_len++;
+        *number_ret += number;
+        p1 += attribute_length;
+        p1 += IMPAD(attribute_length);
+        total_length += (CARD16)sizeof(CARD16) * 2
+                  + (INT16)attribute_length
+                  + IMPAD(attribute_length);
+        }
+        return ic_len;
+    }
       case XimType_CARD8:
       case XimType_CARD16:
       case XimType_CARD32:
       case XimType_Window:
-	SetCardAttribute(value_ret, p, ic_attr, value_length, need_swap);
-	*number_ret = (CARD16)1;
-	return *number_ret;
+    SetCardAttribute(value_ret, p, ic_attr, value_length, need_swap);
+    *number_ret = (CARD16)1;
+    return *number_ret;
       case XimType_XFontSet:
-	SetFontAttribute(value_ret, p, ic_attr, value_length, need_swap);
-	*number_ret = (CARD16)1;
-	return *number_ret;
+    SetFontAttribute(value_ret, p, ic_attr, value_length, need_swap);
+    *number_ret = (CARD16)1;
+    return *number_ret;
       case XimType_XRectangle:
-	SetRectAttribute(value_ret, p, ic_attr, value_length, need_swap);
-	*number_ret = (CARD16)1;
-	return *number_ret;
+    SetRectAttribute(value_ret, p, ic_attr, value_length, need_swap);
+    *number_ret = (CARD16)1;
+    return *number_ret;
       case XimType_XPoint:
-	SetPointAttribute(value_ret, p, ic_attr, value_length, need_swap);
-	*number_ret = (CARD16)1;
-	return *number_ret;
+    SetPointAttribute(value_ret, p, ic_attr, value_length, need_swap);
+    *number_ret = (CARD16)1;
+    return *number_ret;
 #if 0
       case XimType_XIMHotKeyTriggers:
-	SetHotKeyAttribute(value_ret, p, ic_attr, value_length, need_swap);
+    SetHotKeyAttribute(value_ret, p, ic_attr, value_length, need_swap);
 #endif
       default:
-	return 0;
+    return 0;
     }
 }
 
 static XICAttribute *
 #if NeedFunctionPrototypes
 CreateNestedList(CARD16 attr_id, XICAttribute *list,
-		 int number, int need_swap)
+         int number, int need_swap)
 #else
 CreateNestedList(attr_id, list, number, need_swap)
 CARD16 attr_id;
@@ -494,9 +494,9 @@ int need_swap;
 
     if (number == 0) return NULL;
     for (i = 0; i < number; i++) {
-	value_length += sizeof(CARD16) * 2;
-	value_length += list[i].value_length;
-	value_length += IMPAD(list[i].value_length);
+    value_length += sizeof(CARD16) * 2;
+    value_length += list[i].value_length;
+    value_length += IMPAD(list[i].value_length);
     }
     if ((values = (char *)malloc(value_length)) == NULL)
       return NULL;
@@ -504,33 +504,33 @@ int need_swap;
 
     valuesp = values;
     for (i = 0; i < number; i++) {
-	switch (list[i].type) {
-	  case XimType_CARD8:
-	  case XimType_CARD16:
-	  case XimType_CARD32:
-	  case XimType_Window:
-	    GetCardAttribute(valuesp, &list[i], need_swap);
-	    break;
-	  case XimType_XFontSet:
-	    GetFontAttribute(valuesp, &list[i], need_swap);
-	    break;
-	  case XimType_XRectangle:
-	    GetRectAttribute(valuesp, &list[i], need_swap);
-	    break;
-	  case XimType_XPoint:
-	    GetPointAttribute(valuesp, &list[i], need_swap);
-	    break;
+    switch (list[i].type) {
+      case XimType_CARD8:
+      case XimType_CARD16:
+      case XimType_CARD32:
+      case XimType_Window:
+        GetCardAttribute(valuesp, &list[i], need_swap);
+        break;
+      case XimType_XFontSet:
+        GetFontAttribute(valuesp, &list[i], need_swap);
+        break;
+      case XimType_XRectangle:
+        GetRectAttribute(valuesp, &list[i], need_swap);
+        break;
+      case XimType_XPoint:
+        GetPointAttribute(valuesp, &list[i], need_swap);
+        break;
 #if 0
-	  case XimType_XIMHotKeyTriggers:
-	    GetHotKeyAttribute(valuesp, &list[i], need_swap);
-	    break;
+      case XimType_XIMHotKeyTriggers:
+        GetHotKeyAttribute(valuesp, &list[i], need_swap);
+        break;
 #endif
-	  default:
-	    break;
-	}
-	valuesp += sizeof(CARD16) * 2;
-	valuesp += list[i].value_length;
-	valuesp += IMPAD(list[i].value_length);
+      default:
+        break;
+    }
+    valuesp += sizeof(CARD16) * 2;
+    valuesp += list[i].value_length;
+    valuesp += IMPAD(list[i].value_length);
     }
 
     nest_list = (XICAttribute *)malloc(sizeof(XICAttribute));
@@ -563,12 +563,12 @@ CARD16 icvalue_id;
     int i;
 
     for (i = 0; i < i18n_core->address.ic_attr_num; i++, ic_attr++) {
-	if (ic_attr->attribute_id == icvalue_id) {
-	    if (ic_attr->type == XimType_NEST)
-	      return True;
-	    else
-	      return False;
-	}
+    if (ic_attr->attribute_id == icvalue_id) {
+        if (ic_attr->type == XimType_NEST)
+          return True;
+        else
+          return False;
+    }
     }
     return False;
 }
@@ -588,7 +588,7 @@ CARD16 icvalue_id;
 static void
 #if NeedFunctionPrototypes
 GetICValue(Xi18n i18n_core, XICAttribute *attr_ret,
-	    CARD16 *id_list, int list_num, int *number_ret)
+        CARD16 *id_list, int list_num, int *number_ret)
 #else
 GetICValue(i18n_core, attr_ret, id_list, list_num, number_ret)
 Xi18n i18n_core;
@@ -603,32 +603,32 @@ int *number_ret;
 
     i = n = 0;
     if (IsNestedList(i18n_core, id_list[i])) {
-	i++;
-	while (i < list_num && !IsSeparator(i18n_core, id_list[i])) {
-	    for (j = 0; j < i18n_core->address.ic_attr_num; j++) {
-		if (xic_attr[j].attribute_id == id_list[i]) {
-		    attr_ret[n].attribute_id = xic_attr[j].attribute_id;
-		    attr_ret[n].name_length = xic_attr[j].length;
-		    attr_ret[n].name = malloc(xic_attr[j].length + 1);
-		    strcpy(attr_ret[n].name, xic_attr[j].name);
-		    attr_ret[n].type = xic_attr[j].type;
-		    n++; i++;
-		    break;
-		}
-	    }
-	}
+    i++;
+    while (i < list_num && !IsSeparator(i18n_core, id_list[i])) {
+        for (j = 0; j < i18n_core->address.ic_attr_num; j++) {
+        if (xic_attr[j].attribute_id == id_list[i]) {
+            attr_ret[n].attribute_id = xic_attr[j].attribute_id;
+            attr_ret[n].name_length = xic_attr[j].length;
+            attr_ret[n].name = malloc(xic_attr[j].length + 1);
+            strcpy(attr_ret[n].name, xic_attr[j].name);
+            attr_ret[n].type = xic_attr[j].type;
+            n++; i++;
+            break;
+        }
+        }
+    }
     } else {
-	for (j = 0; j < i18n_core->address.ic_attr_num; j++) {
-	    if (xic_attr[j].attribute_id == id_list[i]) {
-		attr_ret[n].attribute_id = xic_attr[j].attribute_id;
-		attr_ret[n].name_length = xic_attr[j].length;
-		attr_ret[n].name = malloc(xic_attr[j].length + 1);
-		strcpy(attr_ret[n].name, xic_attr[j].name);
-		attr_ret[n].type = xic_attr[j].type;
-		n++;
-		break;
-	    }
-	}
+    for (j = 0; j < i18n_core->address.ic_attr_num; j++) {
+        if (xic_attr[j].attribute_id == id_list[i]) {
+        attr_ret[n].attribute_id = xic_attr[j].attribute_id;
+        attr_ret[n].name_length = xic_attr[j].length;
+        attr_ret[n].name = malloc(xic_attr[j].length + 1);
+        strcpy(attr_ret[n].name, xic_attr[j].name);
+        attr_ret[n].type = xic_attr[j].type;
+        n++;
+        break;
+        }
+    }
     }
     *number_ret = n;
     return;
@@ -638,7 +638,7 @@ int *number_ret;
 void
 #if NeedFunctionPrototypes
 _Xi18nChangeIC(XIMS ims, IMProtocol *call_data,
-	       unsigned char *p, int create_flag)
+           unsigned char *p, int create_flag)
 #else
 _Xi18nChangeIC(ims, call_data, p, create_flag)
 XIMS ims;
@@ -670,71 +670,71 @@ int create_flag;
 
     /* create FrameMgr */
     if (create_flag == True) {
-	fm = FrameMgrInit(create_ic_fr, (char *)p,
-			  _Xi18nNeedSwap(i18n_core, connect_id));
-	/* get data */
-	FrameMgrGetToken(fm, input_method_ID);
-	FrameMgrGetToken(fm, byte_length);
+    fm = FrameMgrInit(create_ic_fr, (char *)p,
+              _Xi18nNeedSwap(i18n_core, connect_id));
+    /* get data */
+    FrameMgrGetToken(fm, input_method_ID);
+    FrameMgrGetToken(fm, byte_length);
     } else {
-	fm = FrameMgrInit(set_ic_values_fr, (char *)p,
-			  _Xi18nNeedSwap(i18n_core, connect_id));
-	/* get data */
-	FrameMgrGetToken(fm, input_method_ID);
-	FrameMgrGetToken(fm, changeic->icid);
-	FrameMgrGetToken(fm, byte_length);
+    fm = FrameMgrInit(set_ic_values_fr, (char *)p,
+              _Xi18nNeedSwap(i18n_core, connect_id));
+    /* get data */
+    FrameMgrGetToken(fm, input_method_ID);
+    FrameMgrGetToken(fm, changeic->icid);
+    FrameMgrGetToken(fm, byte_length);
     }
     attrib_list = (XICAttribute *)malloc(sizeof(XICAttribute) * IC_SIZE);
     if (!attrib_list) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(attrib_list, 0, sizeof(XICAttribute) * IC_SIZE);
 
     attrib_num = 0;
     while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
-	void *value;
-	int value_length;
-	FrameMgrGetToken(fm, attrib_list[attrib_num].attribute_id);
-	FrameMgrGetToken(fm, value_length);
-	FrameMgrSetSize(fm, value_length);
-	attrib_list[attrib_num].value_length = value_length;
-	FrameMgrGetToken(fm, value);
-	attrib_list[attrib_num].value = (void *)malloc(value_length + 1);
-	memmove(attrib_list[attrib_num].value, value, value_length);
-	attrib_num++;
+    void *value;
+    int value_length;
+    FrameMgrGetToken(fm, attrib_list[attrib_num].attribute_id);
+    FrameMgrGetToken(fm, value_length);
+    FrameMgrSetSize(fm, value_length);
+    attrib_list[attrib_num].value_length = value_length;
+    FrameMgrGetToken(fm, value);
+    attrib_list[attrib_num].value = (void *)malloc(value_length + 1);
+    memmove(attrib_list[attrib_num].value, value, value_length);
+    attrib_num++;
     }
 
     for (i = 0; i < attrib_num; i++) {
-	CARD16 number;
-	if (IsNestedList(i18n_core, attrib_list[i].attribute_id)) {
-	    if (attrib_list[i].attribute_id == i18n_core->address.preeditAttr_id) {
-		ReadICValue(i18n_core, attrib_list[i].attribute_id,
-			    attrib_list[i].value_length,
-			    attrib_list[i].value,
-			    &pre_attr[preedit_ic_num], &number,
-			    _Xi18nNeedSwap(i18n_core, connect_id));
-		preedit_ic_num += number;
-	    } else if (attrib_list[i].attribute_id == i18n_core->address.statusAttr_id) {
-		ReadICValue(i18n_core, attrib_list[i].attribute_id,
-			    attrib_list[i].value_length,
-			    attrib_list[i].value,
-			    &sts_attr[status_ic_num], &number,
-			    _Xi18nNeedSwap(i18n_core, connect_id));
-		status_ic_num += number;
-	    } else {
-		/* another nested list.. possible? */
-	    }
-	} else {
-	    ReadICValue(i18n_core, attrib_list[i].attribute_id,
-			attrib_list[i].value_length,
-			attrib_list[i].value,
-			&ic_attr[ic_num], &number,
-			_Xi18nNeedSwap(i18n_core, connect_id));
-	    ic_num +=number;
-	}
+    CARD16 number;
+    if (IsNestedList(i18n_core, attrib_list[i].attribute_id)) {
+        if (attrib_list[i].attribute_id == i18n_core->address.preeditAttr_id) {
+        ReadICValue(i18n_core, attrib_list[i].attribute_id,
+                attrib_list[i].value_length,
+                attrib_list[i].value,
+                &pre_attr[preedit_ic_num], &number,
+                _Xi18nNeedSwap(i18n_core, connect_id));
+        preedit_ic_num += number;
+        } else if (attrib_list[i].attribute_id == i18n_core->address.statusAttr_id) {
+        ReadICValue(i18n_core, attrib_list[i].attribute_id,
+                attrib_list[i].value_length,
+                attrib_list[i].value,
+                &sts_attr[status_ic_num], &number,
+                _Xi18nNeedSwap(i18n_core, connect_id));
+        status_ic_num += number;
+        } else {
+        /* another nested list.. possible? */
+        }
+    } else {
+        ReadICValue(i18n_core, attrib_list[i].attribute_id,
+            attrib_list[i].value_length,
+            attrib_list[i].value,
+            &ic_attr[ic_num], &number,
+            _Xi18nNeedSwap(i18n_core, connect_id));
+        ic_num +=number;
+    }
     }
     for (i = 0; i < attrib_num; i++) {
-	XFree(attrib_list[i].value);
+    XFree(attrib_list[i].value);
     }
     XFree(attrib_list);
 
@@ -750,21 +750,21 @@ int create_flag;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
     /* create FrameMgr */
     if (create_flag == True) {
-	fm = FrameMgrInit(create_ic_reply_fr, NULL,
-			  _Xi18nNeedSwap(i18n_core, connect_id));
+    fm = FrameMgrInit(create_ic_reply_fr, NULL,
+              _Xi18nNeedSwap(i18n_core, connect_id));
     } else {
-	fm = FrameMgrInit(set_ic_values_reply_fr, NULL,
-			  _Xi18nNeedSwap(i18n_core, connect_id));
+    fm = FrameMgrInit(set_ic_values_reply_fr, NULL,
+              _Xi18nNeedSwap(i18n_core, connect_id));
     }
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -773,28 +773,28 @@ int create_flag;
     FrameMgrPutToken(fm, changeic->icid);
 
     if (create_flag == True) {
-	_Xi18nSendMessage(ims, connect_id, XIM_CREATE_IC_REPLY, 0,
-			  reply, total_size);
+    _Xi18nSendMessage(ims, connect_id, XIM_CREATE_IC_REPLY, 0,
+              reply, total_size);
     } else {
-	_Xi18nSendMessage(ims, connect_id, XIM_SET_IC_VALUES_REPLY, 0,
-			  reply, total_size);
+    _Xi18nSendMessage(ims, connect_id, XIM_SET_IC_VALUES_REPLY, 0,
+              reply, total_size);
     }
     if (create_flag == True) {
-	int on_key_num = i18n_core->address.on_keys.count_keys;
-	int off_key_num = i18n_core->address.off_keys.count_keys;
+    int on_key_num = i18n_core->address.on_keys.count_keys;
+    int off_key_num = i18n_core->address.off_keys.count_keys;
 
-	if (on_key_num == 0 && off_key_num == 0) {
-	    long mask;
-	    if (i18n_core->address.imvalue_mask & I18N_FILTERMASK)
-	      mask = i18n_core->address.filterevent_mask;
-	    else
-	      mask = DEFAULT_FILTER_MASK;
-	    /* static event flow is default */
-	    _Xi18nSetEventMask(ims, connect_id,
-			       input_method_ID,
-			       changeic->icid,
-			       mask, ~mask);
-	}
+    if (on_key_num == 0 && off_key_num == 0) {
+        long mask;
+        if (i18n_core->address.imvalue_mask & I18N_FILTERMASK)
+          mask = i18n_core->address.filterevent_mask;
+        else
+          mask = DEFAULT_FILTER_MASK;
+        /* static event flow is default */
+        _Xi18nSetEventMask(ims, connect_id,
+                   input_method_ID,
+                   changeic->icid,
+                   mask, ~mask);
+    }
     }
     /* free FrameMgr */
     FrameMgrFree(fm);
@@ -836,7 +836,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(get_ic_values_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -848,35 +848,35 @@ unsigned char *p;
 
     number = 0;
     while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
-	FrameMgrGetToken(fm, attrID_list[number]);
-	number++;
+    FrameMgrGetToken(fm, attrID_list[number]);
+    number++;
     }
     /* free FrameMgr */
     FrameMgrFree(fm);
 
     i = 0;
     while (i < number) {
-	int read_number;
-	if (IsNestedList(i18n_core, attrID_list[i])) {
-	    if (attrID_list[i] == i18n_core->address.preeditAttr_id) {
-		GetICValue(i18n_core, &pre_attr[pre_count],
-			   &attrID_list[i], number, &read_number);
-		i += read_number + 1;
-		pre_count += read_number;
-	    } else if (attrID_list[i] == i18n_core->address.statusAttr_id) {
-		GetICValue(i18n_core, &sts_attr[sts_count],
-			   &attrID_list[i], number, &read_number);
-		i += read_number + 1;
-		sts_count += read_number;
-	    } else {
-		/* another nested list.. possible? */
-	    }
-	} else {
-	    GetICValue(i18n_core, &ic_attr[pre_count], &attrID_list[i],
-		       number, &read_number);
-	    i += read_number;
-	    ic_count += read_number;
-	}
+    int read_number;
+    if (IsNestedList(i18n_core, attrID_list[i])) {
+        if (attrID_list[i] == i18n_core->address.preeditAttr_id) {
+        GetICValue(i18n_core, &pre_attr[pre_count],
+               &attrID_list[i], number, &read_number);
+        i += read_number + 1;
+        pre_count += read_number;
+        } else if (attrID_list[i] == i18n_core->address.statusAttr_id) {
+        GetICValue(i18n_core, &sts_attr[sts_count],
+               &attrID_list[i], number, &read_number);
+        i += read_number + 1;
+        sts_count += read_number;
+        } else {
+        /* another nested list.. possible? */
+        }
+    } else {
+        GetICValue(i18n_core, &ic_attr[pre_count], &attrID_list[i],
+               number, &read_number);
+        i += read_number;
+        ic_count += read_number;
+    }
     }
     getic->preedit_attr_num = pre_count;
     getic->status_attr_num = sts_count;
@@ -886,33 +886,33 @@ unsigned char *p;
     getic->ic_attr = ic_attr;
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
     iter_count = getic->ic_attr_num;
 
     preedit_ret = CreateNestedList(i18n_core->address.preeditAttr_id,
-				   getic->preedit_attr,
-				   getic->preedit_attr_num,
-				   _Xi18nNeedSwap(i18n_core, connect_id));
+                   getic->preedit_attr,
+                   getic->preedit_attr_num,
+                   _Xi18nNeedSwap(i18n_core, connect_id));
     if (preedit_ret != NULL)
       iter_count++;
     status_ret = CreateNestedList(i18n_core->address.statusAttr_id,
-				  getic->status_attr,
-				  getic->status_attr_num,
-				  _Xi18nNeedSwap(i18n_core, connect_id));
+                  getic->status_attr,
+                  getic->status_attr_num,
+                  _Xi18nNeedSwap(i18n_core, connect_id));
     if (status_ret != NULL)
       iter_count++;
 
     /* create FrameMgr */
     fm = FrameMgrInit(get_ic_values_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* set iteration count for list of ic_attribute */
     FrameMgrSetIterCount(fm, iter_count);
 
     /* set length of BARRAY item in xicattribute_fr*/
     for (i = 0; i < (int)getic->ic_attr_num; i++) {
-	FrameMgrSetSize(fm, ic_attr[i].value_length);
+    FrameMgrSetSize(fm, ic_attr[i].value_length);
     }
 
     if (preedit_ret != NULL)
@@ -923,8 +923,8 @@ unsigned char *p;
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -933,30 +933,30 @@ unsigned char *p;
     FrameMgrPutToken(fm, getic->icid);
 
     for (i = 0; i < (int)getic->ic_attr_num; i++) {
-	FrameMgrPutToken(fm, ic_attr[i].attribute_id);
-	FrameMgrPutToken(fm, ic_attr[i].value_length);
-	FrameMgrPutToken(fm, ic_attr[i].value);
+    FrameMgrPutToken(fm, ic_attr[i].attribute_id);
+    FrameMgrPutToken(fm, ic_attr[i].value_length);
+    FrameMgrPutToken(fm, ic_attr[i].value);
     }
     if (preedit_ret != NULL) {
-	FrameMgrPutToken(fm, preedit_ret->attribute_id);
-	FrameMgrPutToken(fm, preedit_ret->value_length);
-	FrameMgrPutToken(fm, preedit_ret->value);
+    FrameMgrPutToken(fm, preedit_ret->attribute_id);
+    FrameMgrPutToken(fm, preedit_ret->value_length);
+    FrameMgrPutToken(fm, preedit_ret->value);
     }
     if (status_ret != NULL) {
-	FrameMgrPutToken(fm, status_ret->attribute_id);
-	FrameMgrPutToken(fm, status_ret->value_length);
-	FrameMgrPutToken(fm, status_ret->value);
+    FrameMgrPutToken(fm, status_ret->attribute_id);
+    FrameMgrPutToken(fm, status_ret->value_length);
+    FrameMgrPutToken(fm, status_ret->value);
     }
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_GET_IC_VALUES_REPLY, 0, reply, total_size);
+              XIM_GET_IC_VALUES_REPLY, 0, reply, total_size);
     XFree(reply);
     if (preedit_ret != NULL) {
-	XFree(preedit_ret->value);
-	XFree(preedit_ret);
+    XFree(preedit_ret->value);
+    XFree(preedit_ret);
     }
     if (status_ret != NULL) {
-	XFree(status_ret->value);
-	XFree(status_ret);
+    XFree(status_ret->value);
+    XFree(status_ret);
     }
     /* free FrameMgr */
     FrameMgrFree(fm);

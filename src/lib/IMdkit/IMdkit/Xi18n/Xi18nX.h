@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #ifndef _Xi18nTrX_h
 #define _Xi18nTrX_h
@@ -31,15 +31,15 @@ Author:
 #define _XIM_PROTOCOL           "_XIM_PROTOCOL"
 #define _XIM_XCONNECT           "_XIM_XCONNECT"
 
-#define XCM_DATA_LIMIT		20
+#define XCM_DATA_LIMIT        20
 
 typedef struct _XClient {
-    Window	client_win;	/* client window */
-    Window	accept_win;	/* accept window */
+    Window    client_win;    /* client window */
+    Window    accept_win;    /* accept window */
 } XClient;
 
 typedef struct {
-    Atom	 xim_request;
-    Atom	 connect_request;
+    Atom     xim_request;
+    Atom     connect_request;
 } XSpecRec;
 #endif /* Xi18nTrX_h */

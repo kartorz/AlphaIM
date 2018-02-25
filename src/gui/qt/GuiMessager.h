@@ -9,18 +9,18 @@ class AimWin;
 
 class GuiMessager: public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public slots:
-	void doWork();
-	void onExit();
+    void doWork();
+    void onExit();
 
 public:
     GuiMessager(AimWin* owner, MessageQueue* q);
     ~GuiMessager();
 
-	void start();
-	void abort();
+    void start();
+    void abort();
 
 protected:
     AimWin* m_owner;

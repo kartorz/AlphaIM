@@ -1,0 +1,14 @@
+[Icon Theme]
+Name=hicolor
+Comment=Default theme for AlphaIM
+Directories=40x40,48x48
+
+[40x40]
+Size=40
+Type=Fixed
+Context=Applications
+
+[48x48]
+Size=48
+Type=Fixed
+Context=Applications

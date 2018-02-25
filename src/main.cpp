@@ -15,12 +15,10 @@ extern void init_singals();
 void cleanup(void)
 {
     if (gApp) {
-        log.d("app exit, cleanup in main\n");
-		DBusDaemon::getRefrence().stop();
+        logger.d("app exit, cleanup in main\n");
+        DBusDaemon::getRefrence().stop();
         gApp->xim.close();
-    //#ifdef AL_DEBUG
         gApp->sig.cleanup();
-    //#endif
         delete gApp;
     }
 }
@@ -54,29 +52,26 @@ static void run_as_daemon()
     }
 #endif
     /* Close out the standard file descriptors */
-//#ifndef AL_DEBUG
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
-//#endif
 }
 
 int main(int argc, char* argv[])
 {
     run_as_daemon();
     atexit(cleanup);
-	if (DBusDaemon::getRefrence().setup() != 0) {
-		log.e("Can't register dbus daemon\n");
-		return -1;
-	}
+
+    if (DBusDaemon::getRefrence().setup() != 0) {
+        logger.e("Can't register dbus daemon\n");
+        return -1;
+    }
 
     Configure::getRefrence().initialization();
 
     gApp = new Application();
-//#ifdef AL_DEBUG
     gApp->sig.init();
-//#endif
-	gApp->xim.open();
-	DBusDaemon::getRefrence().start();
-	gApp->xim.eventLoop();
+    gApp->xim.open();
+    DBusDaemon::getRefrence().start();
+    gApp->xim.eventLoop();
 }

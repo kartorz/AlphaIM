@@ -22,43 +22,43 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 
 typedef struct {
-    XRectangle	area;		/* area */
-    XRectangle	area_needed;	/* area needed */
-    XPoint	spot_location;	/* spot location */
-    Colormap	cmap;		/* colormap */
-    CARD32	foreground;	/* foreground */
-    CARD32	background;	/* background */
-    Pixmap	bg_pixmap;	/* background pixmap */
-    char	*base_font;	/* base font of fontset */
-    CARD32	line_space;	/* line spacing */
-    Cursor	cursor;		/* cursor */
+    XRectangle    area;        /* area */
+    XRectangle    area_needed;    /* area needed */
+    XPoint    spot_location;    /* spot location */
+    Colormap    cmap;        /* colormap */
+    CARD32    foreground;    /* foreground */
+    CARD32    background;    /* background */
+    Pixmap    bg_pixmap;    /* background pixmap */
+    char    *base_font;    /* base font of fontset */
+    CARD32    line_space;    /* line spacing */
+    Cursor    cursor;        /* cursor */
 } PreeditAttributes;
 
 typedef struct {
-    XRectangle	area;		/* area */
-    XRectangle	area_needed;	/* area needed */
-    Colormap	cmap;		/* colormap */
-    CARD32	foreground;	/* foreground */
-    CARD32	background;	/* background */
-    Pixmap	bg_pixmap;	/* background pixmap */
-    char	*base_font;	/* base font of fontset */
-    CARD32	line_space;	/* line spacing */
-    Cursor	cursor;		/* cursor */
+    XRectangle    area;        /* area */
+    XRectangle    area_needed;    /* area needed */
+    Colormap    cmap;        /* colormap */
+    CARD32    foreground;    /* foreground */
+    CARD32    background;    /* background */
+    Pixmap    bg_pixmap;    /* background pixmap */
+    char    *base_font;    /* base font of fontset */
+    CARD32    line_space;    /* line spacing */
+    Cursor    cursor;        /* cursor */
 } StatusAttributes;
 
 typedef struct _IC {
-    CARD16	id;		/* ic id */
-    INT32	input_style;	/* input style */
-    Window	client_win;	/* client window */
-    Window	focus_win;	/* focus window */
-    char	*resource_name;	/* resource name */
-    char	*resource_class; /* resource class */
+    CARD16    id;        /* ic id */
+    INT32    input_style;    /* input style */
+    Window    client_win;    /* client window */
+    Window    focus_win;    /* focus window */
+    char    *resource_name;    /* resource name */
+    char    *resource_class; /* resource class */
     PreeditAttributes pre_attr; /* preedit attributes */
     StatusAttributes sts_attr; /* status attributes */
-    struct _IC	*next;
+    struct _IC    *next;
 } IC;

@@ -23,42 +23,42 @@ distribution.
 
 #include "tinyxml2.h"
 
-#include <new>		// yes, this one new style header, is in the Android SDK.
+#include <new>        // yes, this one new style header, is in the Android SDK.
 #   ifdef ANDROID_NDK
 #   include <stddef.h>
 #else
 #   include <cstddef>
 #endif
 
-static const char LINE_FEED				= (char)0x0a;			// all line endings are normalized to LF
+static const char LINE_FEED                = (char)0x0a;            // all line endings are normalized to LF
 static const char LF = LINE_FEED;
-static const char CARRIAGE_RETURN		= (char)0x0d;			// CR gets filtered out
+static const char CARRIAGE_RETURN        = (char)0x0d;            // CR gets filtered out
 static const char CR = CARRIAGE_RETURN;
-static const char SINGLE_QUOTE			= '\'';
-static const char DOUBLE_QUOTE			= '\"';
+static const char SINGLE_QUOTE            = '\'';
+static const char DOUBLE_QUOTE            = '\"';
 
 // Bunch of unicode info at:
-//		http://www.unicode.org/faq/utf_bom.html
-//	ef bb bf (Microsoft "lead bytes") - designates UTF-8
+//        http://www.unicode.org/faq/utf_bom.html
+//    ef bb bf (Microsoft "lead bytes") - designates UTF-8
 
 static const unsigned char TIXML_UTF_LEAD_0 = 0xefU;
 static const unsigned char TIXML_UTF_LEAD_1 = 0xbbU;
 static const unsigned char TIXML_UTF_LEAD_2 = 0xbfU;
 
 
-#define DELETE_NODE( node )	{			\
-        if ( node ) {						\
-            MemPool* pool = node->_memPool;	\
-            node->~XMLNode();				\
-            pool->Free( node );				\
-        }									\
+#define DELETE_NODE( node )    {            \
+        if ( node ) {                        \
+            MemPool* pool = node->_memPool;    \
+            node->~XMLNode();                \
+            pool->Free( node );                \
+        }                                    \
     }
-#define DELETE_ATTRIBUTE( attrib ) {		\
-        if ( attrib ) {							\
-            MemPool* pool = attrib->_memPool;	\
-            attrib->~XMLAttribute();			\
-            pool->Free( attrib );				\
-        }										\
+#define DELETE_ATTRIBUTE( attrib ) {        \
+        if ( attrib ) {                            \
+            MemPool* pool = attrib->_memPool;    \
+            attrib->~XMLAttribute();            \
+            pool->Free( attrib );                \
+        }                                        \
     }
 
 namespace tinyxml2
@@ -72,11 +72,11 @@ struct Entity {
 
 static const int NUM_ENTITIES = 5;
 static const Entity entities[NUM_ENTITIES] = {
-    { "quot", 4,	DOUBLE_QUOTE },
-    { "amp", 3,		'&'  },
-    { "apos", 4,	SINGLE_QUOTE },
-    { "lt",	2, 		'<'	 },
-    { "gt",	2,		'>'	 }
+    { "quot", 4,    DOUBLE_QUOTE },
+    { "amp", 3,        '&'  },
+    { "apos", 4,    SINGLE_QUOTE },
+    { "lt",    2,         '<'     },
+    { "gt",    2,        '>'     }
 };
 
 
@@ -112,7 +112,7 @@ char* StrPair::ParseText( char* p, const char* endTag, int strFlags )
 {
     TIXMLASSERT( endTag && *endTag );
 
-    char* start = p;	// fixme: hides a member
+    char* start = p;    // fixme: hides a member
     char  endChar = *endTag;
     size_t length = strlen( endTag );
 
@@ -154,8 +154,8 @@ void StrPair::CollapseWhitespace()
     _start = XMLUtil::SkipWhiteSpace( _start );
 
     if ( _start && *_start ) {
-        char* p = _start;	// the read pointer
-        char* q = _start;	// the write pointer
+        char* p = _start;    // the read pointer
+        char* q = _start;    // the write pointer
 
         while( *p ) {
             if ( XMLUtil::IsWhiteSpace( *p )) {
@@ -182,8 +182,8 @@ const char* StrPair::GetStr()
         _flags ^= NEEDS_FLUSH;
 
         if ( _flags ) {
-            char* p = _start;	// the read pointer
-            char* q = _start;	// the write pointer
+            char* p = _start;    // the read pointer
+            char* q = _start;    // the write pointer
 
             while( p < _end ) {
                 if ( (_flags & NEEDS_NEWLINE_NORMALIZATION) && *p == CR ) {
@@ -503,24 +503,24 @@ char* XMLDocument::Identify( char* p, XMLNode** node )
     // - Everything else is unknown to tinyxml.
     //
 
-    static const char* xmlHeader		= { "<?" };
-    static const char* commentHeader	= { "<!--" };
-    static const char* dtdHeader		= { "<!" };
-    static const char* cdataHeader		= { "<![CDATA[" };
-    static const char* elementHeader	= { "<" };	// and a header for everything else; check last.
+    static const char* xmlHeader        = { "<?" };
+    static const char* commentHeader    = { "<!--" };
+    static const char* dtdHeader        = { "<!" };
+    static const char* cdataHeader        = { "<![CDATA[" };
+    static const char* elementHeader    = { "<" };    // and a header for everything else; check last.
 
-    static const int xmlHeaderLen		= 2;
-    static const int commentHeaderLen	= 4;
-    static const int dtdHeaderLen		= 2;
-    static const int cdataHeaderLen		= 9;
-    static const int elementHeaderLen	= 1;
+    static const int xmlHeaderLen        = 2;
+    static const int commentHeaderLen    = 4;
+    static const int dtdHeaderLen        = 2;
+    static const int cdataHeaderLen        = 9;
+    static const int elementHeaderLen    = 1;
 
 #if defined(_MSC_VER)
 #pragma warning ( push )
 #pragma warning ( disable : 4127 )
 #endif
-    TIXMLASSERT( sizeof( XMLComment ) == sizeof( XMLUnknown ) );		// use same memory pool
-    TIXMLASSERT( sizeof( XMLComment ) == sizeof( XMLDeclaration ) );	// use same memory pool
+    TIXMLASSERT( sizeof( XMLComment ) == sizeof( XMLUnknown ) );        // use same memory pool
+    TIXMLASSERT( sizeof( XMLComment ) == sizeof( XMLDeclaration ) );    // use same memory pool
 #if defined(_MSC_VER)
 #pragma warning (pop)
 #endif
@@ -554,7 +554,7 @@ char* XMLDocument::Identify( char* p, XMLNode** node )
     else {
         returnNode = new (_textPool.Alloc()) XMLText( this );
         returnNode->_memPool = &_textPool;
-        p = start;	// Back it up, all the text counts.
+        p = start;    // Back it up, all the text counts.
     }
 
     *node = returnNode;
@@ -595,7 +595,7 @@ XMLNode::~XMLNode()
     }
 }
 
-const char* XMLNode::Value() const 
+const char* XMLNode::Value() const
 {
     return _value.GetStr();
 }
@@ -638,7 +638,7 @@ void XMLNode::Unlink( XMLNode* child )
     if ( child->_next ) {
         child->_next->_prev = child->_prev;
     }
-	child->_parent = 0;
+    child->_parent = 0;
 }
 
 
@@ -651,13 +651,13 @@ void XMLNode::DeleteChild( XMLNode* node )
 
 XMLNode* XMLNode::InsertEndChild( XMLNode* addThis )
 {
-	if (addThis->_document != _document)
-		return 0;
+    if (addThis->_document != _document)
+        return 0;
 
-	if (addThis->_parent)
-		addThis->_parent->Unlink( addThis );
-	else
-	   addThis->_memPool->SetTracked();
+    if (addThis->_parent)
+        addThis->_parent->Unlink( addThis );
+    else
+       addThis->_memPool->SetTracked();
 
     if ( _lastChild ) {
         TIXMLASSERT( _firstChild );
@@ -682,13 +682,13 @@ XMLNode* XMLNode::InsertEndChild( XMLNode* addThis )
 
 XMLNode* XMLNode::InsertFirstChild( XMLNode* addThis )
 {
-	if (addThis->_document != _document)
-		return 0;
+    if (addThis->_document != _document)
+        return 0;
 
-	if (addThis->_parent)
-		addThis->_parent->Unlink( addThis );
-	else
-	   addThis->_memPool->SetTracked();
+    if (addThis->_parent)
+        addThis->_parent->Unlink( addThis );
+    else
+       addThis->_memPool->SetTracked();
 
     if ( _firstChild ) {
         TIXMLASSERT( _lastChild );
@@ -714,8 +714,8 @@ XMLNode* XMLNode::InsertFirstChild( XMLNode* addThis )
 
 XMLNode* XMLNode::InsertAfterChild( XMLNode* afterThis, XMLNode* addThis )
 {
-	if (addThis->_document != _document)
-		return 0;
+    if (addThis->_document != _document)
+        return 0;
 
     TIXMLASSERT( afterThis->_parent == this );
 
@@ -727,10 +727,10 @@ XMLNode* XMLNode::InsertAfterChild( XMLNode* afterThis, XMLNode* addThis )
         // The last node or the only node.
         return InsertEndChild( addThis );
     }
-	if (addThis->_parent)
-		addThis->_parent->Unlink( addThis );
-	else
-	   addThis->_memPool->SetTracked();
+    if (addThis->_parent)
+        addThis->_parent->Unlink( addThis );
+    else
+       addThis->_memPool->SetTracked();
     addThis->_prev = afterThis;
     addThis->_next = afterThis->_next;
     afterThis->_next->_prev = addThis;
@@ -798,13 +798,13 @@ char* XMLNode::ParseDeep( char* p, StrPair* parentEnd )
 {
     // This is a recursive method, but thinking about it "at the current level"
     // it is a pretty simple flat list:
-    //		<foo/>
-    //		<!-- comment -->
+    //        <foo/>
+    //        <!-- comment -->
     //
     // With a special case:
-    //		<foo>
-    //		</foo>
-    //		<!-- comment -->
+    //        <foo>
+    //        </foo>
+    //        <!-- comment -->
     //
     // Where the closing element (/foo) *must* be the next thing after the opening
     // element, and the names must match. BUT the tricky bit is that the closing
@@ -837,7 +837,7 @@ char* XMLNode::ParseDeep( char* p, StrPair* parentEnd )
             if ( parentEnd ) {
                 *parentEnd = static_cast<XMLElement*>(node)->_value;
             }
-			node->_memPool->SetTracked();	// created and then immediately deleted.
+            node->_memPool->SetTracked();    // created and then immediately deleted.
             DELETE_NODE( node );
             return p;
         }
@@ -906,7 +906,7 @@ XMLNode* XMLText::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLText* text = doc->NewText( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLText* text = doc->NewText( Value() );    // fixme: this will always allocate memory. Intern?
     text->SetCData( this->CData() );
     return text;
 }
@@ -953,7 +953,7 @@ XMLNode* XMLComment::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLComment* comment = doc->NewComment( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLComment* comment = doc->NewComment( Value() );    // fixme: this will always allocate memory. Intern?
     return comment;
 }
 
@@ -1000,7 +1000,7 @@ XMLNode* XMLDeclaration::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLDeclaration* dec = doc->NewDeclaration( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLDeclaration* dec = doc->NewDeclaration( Value() );    // fixme: this will always allocate memory. Intern?
     return dec;
 }
 
@@ -1047,7 +1047,7 @@ XMLNode* XMLUnknown::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLUnknown* text = doc->NewUnknown( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLUnknown* text = doc->NewUnknown( Value() );    // fixme: this will always allocate memory. Intern?
     return text;
 }
 
@@ -1065,12 +1065,12 @@ bool XMLUnknown::Accept( XMLVisitor* visitor ) const
 
 // --------- XMLAttribute ---------- //
 
-const char* XMLAttribute::Name() const 
+const char* XMLAttribute::Name() const
 {
     return _name.GetStr();
 }
 
-const char* XMLAttribute::Value() const 
+const char* XMLAttribute::Value() const
 {
     return _value.GetStr();
 }
@@ -1089,14 +1089,14 @@ char* XMLAttribute::ParseDeep( char* p, bool processEntities )
         return 0;
     }
 
-    ++p;	// move up to opening quote
+    ++p;    // move up to opening quote
     p = XMLUtil::SkipWhiteSpace( p );
     if ( *p != '\"' && *p != '\'' ) {
         return 0;
     }
 
     char endTag[2] = { *p, 0 };
-    ++p;	// move past opening quote
+    ++p;    // move past opening quote
 
     p = _value.ParseText( p, endTag, processEntities ? StrPair::ATTRIBUTE_VALUE : StrPair::ATTRIBUTE_VALUE_LEAVE_ENTITIES );
     return p;
@@ -1391,7 +1391,7 @@ char* XMLElement::ParseAttributes( char* p )
         if (XMLUtil::IsNameStartChar( *p ) ) {
             XMLAttribute* attrib = new (_document->_attributePool.Alloc() ) XMLAttribute();
             attrib->_memPool = &_document->_attributePool;
-			attrib->_memPool->SetTracked();
+            attrib->_memPool->SetTracked();
 
             p = attrib->ParseDeep( p, _document->ProcessEntities() );
             if ( !p || Attribute( attrib->Name() ) ) {
@@ -1415,7 +1415,7 @@ char* XMLElement::ParseAttributes( char* p )
         // end of the tag
         else if ( *p == '/' && *(p+1) == '>' ) {
             _closingType = CLOSED;
-            return p+2;	// done; sealed element.
+            return p+2;    // done; sealed element.
         }
         // end of the tag
         else if ( *p == '>' ) {
@@ -1432,8 +1432,8 @@ char* XMLElement::ParseAttributes( char* p )
 
 
 //
-//	<ele></ele>
-//	<ele>foo<b>bar</b></ele>
+//    <ele></ele>
+//    <ele>foo<b>bar</b></ele>
 //
 char* XMLElement::ParseDeep( char* p, StrPair* strPair )
 {
@@ -1472,9 +1472,9 @@ XMLNode* XMLElement::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLElement* element = doc->NewElement( Value() );					// fixme: this will always allocate memory. Intern?
+    XMLElement* element = doc->NewElement( Value() );                    // fixme: this will always allocate memory. Intern?
     for( const XMLAttribute* a=FirstAttribute(); a; a=a->Next() ) {
-        element->SetAttribute( a->Name(), a->Value() );					// fixme: this will always allocate memory. Intern?
+        element->SetAttribute( a->Name(), a->Value() );                    // fixme: this will always allocate memory. Intern?
     }
     return element;
 }
@@ -1529,7 +1529,7 @@ XMLDocument::XMLDocument( bool processEntities, Whitespace whitespace ) :
     _errorStr2( 0 ),
     _charBuffer( 0 )
 {
-    _document = this;	// avoid warning about 'this' in initializer list
+    _document = this;    // avoid warning about 'this' in initializer list
 }
 
 
@@ -1546,12 +1546,12 @@ XMLDocument::~XMLDocument()
 #endif
 
 #ifdef DEBUG
-	if ( Error() == false ) {
-		TIXMLASSERT( _elementPool.CurrentAllocs()   == _elementPool.Untracked() );
-		TIXMLASSERT( _attributePool.CurrentAllocs() == _attributePool.Untracked() );
-		TIXMLASSERT( _textPool.CurrentAllocs()      == _textPool.Untracked() );
-		TIXMLASSERT( _commentPool.CurrentAllocs()   == _commentPool.Untracked() );
-	}
+    if ( Error() == false ) {
+        TIXMLASSERT( _elementPool.CurrentAllocs()   == _elementPool.Untracked() );
+        TIXMLASSERT( _attributePool.CurrentAllocs() == _attributePool.Untracked() );
+        TIXMLASSERT( _textPool.CurrentAllocs()      == _textPool.Untracked() );
+        TIXMLASSERT( _commentPool.CurrentAllocs()   == _commentPool.Untracked() );
+    }
 #endif
 }
 
@@ -1699,7 +1699,7 @@ XMLError XMLDocument::SaveFile( FILE* fp, bool compact )
 
 XMLError XMLDocument::Parse( const char* p, size_t len )
 {
-	const char* start = p;
+    const char* start = p;
     Clear();
 
     if ( len == 0 ) {
@@ -1725,7 +1725,7 @@ XMLError XMLDocument::Parse( const char* p, size_t len )
         return _errorID;
     }
 
-    ptrdiff_t delta = p - start;	// skip initial whitespace, BOM, etc.
+    ptrdiff_t delta = p - start;    // skip initial whitespace, BOM, etc.
     ParseDeep( _charBuffer+delta, 0 );
     return _errorID;
 }
@@ -1790,7 +1790,7 @@ XMLPrinter::XMLPrinter( FILE* file, bool compact, int depth ) :
     }
     _restrictedEntityFlag[(int)'&'] = true;
     _restrictedEntityFlag[(int)'<'] = true;
-    _restrictedEntityFlag[(int)'>'] = true;	// not required, but consistency is nice
+    _restrictedEntityFlag[(int)'>'] = true;    // not required, but consistency is nice
     _buffer.Push( 0 );
 }
 

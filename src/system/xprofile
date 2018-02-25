@@ -1,7 +1,0 @@
-export GTK_IM_MODULE=AlphaIM
-export QT_IM_MODULE=AlphaIM
-export QT_IM_MODULE=AlphaIM
-export XMODIFIERS=@im=AlphaIM
-eval `dbus-launch --sh-syntax --exit-with-session`
-AlphaIM
-

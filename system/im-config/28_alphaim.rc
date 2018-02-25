@@ -1,0 +1,13 @@
+# vim: set sts=4 expandtab:
+if [ "$IM_CONFIG_PHASE" = 2 ]; then
+  /usr/bin/alphaimd >/dev/null 2>&1
+fi
+
+if [ "$IM_CONFIG_PHASE" = 1 ]; then
+XMODIFIERS=@im=alphaim
+GTK_IM_MODULE=alphaim
+QT_IM_MODULE=alphaim
+CLUTTER_IM_MODULE=alphaim
+
+#G_MESSAGES_DEBUG=AlphaIM
+fi

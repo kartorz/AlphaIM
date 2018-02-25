@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_BUILD_OPTIONS = noautodbgsym
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	cd src && ./configure --prefix=/usr --bindir=/usr/bin
+
+override_dh_auto_build:
+	$(MAKE) -C src a11
+
+override_dh_auto_install:
+	install -d $(CURDIR)/debian/alphaim/usr/bin
+	install -m 0755 src/alphaimd src/aimctl src/alphaim-ui $(CURDIR)/debian/alphaim/usr/bin/
+	install -d $(CURDIR)/debian/alphaim/usr/share/alphaim
+	install -m 0644 system/pinyin-utf8.imdb system/phrase-utf8.imdb system/han-utf8.imdb $(CURDIR)/debian/alphaim/usr/share/alphaim/
+	install -m 0644 system/app.png system/configure.xml.in $(CURDIR)/debian/alphaim/usr/share/alphaim/
+	install -d $(CURDIR)/debian/alphaim/usr/share/alphaim/theme 
+	cp -a system/theme/. $(CURDIR)/debian/alphaim/usr/share/alphaim/theme/
+	find $(CURDIR)/debian/alphaim/usr/share/alphaim/theme -type f -exec chmod 0644 {} +
+	install -d $(CURDIR)/debian/alphaim/usr/share/im-config/data
+	install -m 0644 system/im-config/*  $(CURDIR)/debian/alphaim/usr/share/im-config/data
+#	install -d $(CURDIR)/debian/alphaim/usr/share/dbus-1/system.d
+#	install -m 0644 system/org.freedesktop.alphaim.conf  $(CURDIR)/debian/alphaim/usr/share/dbus-1/system.d/
+	install -d $(CURDIR)/debian/alphaim/etc/xdg/autostart
+	install -m 0644 system/alphaim.desktop $(CURDIR)/debian/alphaim/etc/xdg/autostart/alphaim.desktop
+	$(MAKE) -C src/protocol/qt install DESTDIR=$(CURDIR)/debian/alphaim
+	$(MAKE) -C src/protocol/gtk install DESTDIR=$(CURDIR)/debian/alphaim
+
+override_dh_shlibdeps:
+	dh_shlibdeps -X/usr/lib/*/gtk-2.0 -X/usr/lib/*/gtk-3.0 -X/usr/lib/*/gtk-4.0

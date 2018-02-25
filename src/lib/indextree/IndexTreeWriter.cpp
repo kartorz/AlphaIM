@@ -1,5 +1,5 @@
 /**
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -128,16 +128,16 @@ void IndexTreeWriter::addToIndextree(ktree::tree_node<inxtree_chrindex>::treeNod
                                      const off_t d_off, u32 *keyStartPtr, u32 *keyEndPtr)
 {
     int i = 0;
-	const u32 key = *(keyStartPtr++);
-	if (!key)
-	    return;
+    const u32 key = *(keyStartPtr++);
+    if (!key)
+        return;
 
     static int cache[3] = {-1, -1, -1};
     static int cchinx = 0;
 
-	ktree::tree_node<inxtree_chrindex>::treeNodePtr next;
-	int size = parent->size();
-	bool found = false;
+    ktree::tree_node<inxtree_chrindex>::treeNodePtr next;
+    int size = parent->size();
+    bool found = false;
     u32 chr;
     int pos=0;
 
@@ -182,23 +182,23 @@ void IndexTreeWriter::addToIndextree(ktree::tree_node<inxtree_chrindex>::treeNod
     }
     //printf("2: %u\n", get_timems());
 ADD:
-	bool leaf = keyStartPtr == keyEndPtr ? true : false;
+    bool leaf = keyStartPtr == keyEndPtr ? true : false;
 
     struct inxtree_chrindex  charInx;
     inxtree_write_u32(charInx.wchr, key);
     inxtree_write_u16(charInx.len_content, 0);
     if (leaf) {
-	    inxtree_write_u32(charInx.location, d_off);
+        inxtree_write_u32(charInx.location, d_off);
         ++m_totalEntry;
     } else {
-		inxtree_write_u32(charInx.location, INXTREE_INVALID_ADDR);
+        inxtree_write_u32(charInx.location, INXTREE_INVALID_ADDR);
     }
 
     if (!found) {
         if (pos == size)
-    	    next = parent->insert(charInx);
+            next = parent->insert(charInx);
         else
-    		next = parent->insert(charInx, pos);
+            next = parent->insert(charInx, pos);
     } else {
         if (leaf) {
             if (inxtree_read_u32((*parent)[pos]->value().location) == INXTREE_INVALID_ADDR) {
@@ -221,9 +221,9 @@ ADD:
         cache[cchinx] = pos;
     }
     /* advance to next level */
-	if (!leaf) {
+    if (!leaf) {
         ++cchinx;
-		addToIndextree(next, d_off, keyStartPtr, keyEndPtr);
+        addToIndextree(next, d_off, keyStartPtr, keyEndPtr);
         --cchinx;
     }
 }
@@ -233,9 +233,9 @@ bool IndexTreeWriter::write(string output)
     indextree::MutexLock lock(m_cs);
 
 #ifdef _LINUX
-	FILE *strinxTmpFile= fopen("/tmp/inxtree_tmp2", "w+");
+    FILE *strinxTmpFile= fopen("/tmp/inxtree_tmp2", "w+");
 #elif defined(WIN32)
-	FILE *strinxTmpFile = fopen("inxtree_tmp2", "w+bTD");
+    FILE *strinxTmpFile = fopen("inxtree_tmp2", "w+bTD");
 #endif
     if (output == "") {
         output = "/tmp/inxtreewriter_output_tmp";
@@ -251,49 +251,49 @@ bool IndexTreeWriter::write(string output)
     if (!m_bOnLineRW)
         trimIndexTree(m_indexTree->root(), 0, strinxTmpFile);
 
-	/*- Write char index to dict file. */
+    /*- Write char index to dict file. */
     fseek(outputFile, (INDEX_BLOCK_NR-1)*INXTREE_BLOCK, SEEK_SET);
-    	// Write root node.
-	ktree::tree_node<inxtree_chrindex>::treeNodePtr rootNode = m_indexTree->root();
-	struct inxtree_chrindex& rootIndex = rootNode->value();
-	inxtree_write_u32(rootIndex.location, sizeof(struct inxtree_chrindex));
-	inxtree_write_u16(rootIndex.len_content, rootNode->size());
-	fwrite(&rootIndex, sizeof(struct inxtree_chrindex), 1, outputFile);
-	m_totalChrindex = 1;
-	// Write all nodes recursively.
-	writeCharIndex(rootNode, outputFile);
+        // Write root node.
+    ktree::tree_node<inxtree_chrindex>::treeNodePtr rootNode = m_indexTree->root();
+    struct inxtree_chrindex& rootIndex = rootNode->value();
+    inxtree_write_u32(rootIndex.location, sizeof(struct inxtree_chrindex));
+    inxtree_write_u16(rootIndex.len_content, rootNode->size());
+    fwrite(&rootIndex, sizeof(struct inxtree_chrindex), 1, outputFile);
+    m_totalChrindex = 1;
+    // Write all nodes recursively.
+    writeCharIndex(rootNode, outputFile);
 
     printf("write total %d, \n", m_totalChrindex);
-	/*- Merge temple files */
-	m_header.loc_chrindex[0] = INDEX_BLOCK_NR;
+    /*- Merge temple files */
+    m_header.loc_chrindex[0] = INDEX_BLOCK_NR;
     inxtree_write_u32(m_header.d_entries, m_totalEntry);
 
-	fseek(outputFile, 0, SEEK_END);
-	int bnr = INXTREE_BLOCK_NR(ftello(outputFile)) + 1;
-	inxtree_write_u32(m_header.loc_strindex, bnr);
+    fseek(outputFile, 0, SEEK_END);
+    int bnr = INXTREE_BLOCK_NR(ftello(outputFile)) + 1;
+    inxtree_write_u32(m_header.loc_strindex, bnr);
     m_header.flags[0] |= m_duplicateIndexFlag ? F_DUPLICATEINX : 0;
 
-	fseek(outputFile, (bnr-1)*INXTREE_BLOCK, SEEK_SET);
-	fseek(strinxTmpFile, 0, SEEK_SET);
-	IndexTreeHelper::mergeFile(outputFile, strinxTmpFile);
+    fseek(outputFile, (bnr-1)*INXTREE_BLOCK, SEEK_SET);
+    fseek(strinxTmpFile, 0, SEEK_SET);
+    IndexTreeHelper::mergeFile(outputFile, strinxTmpFile);
 
-	bnr = INXTREE_BLOCK_NR(ftello(outputFile)) + 1;
-	inxtree_write_u32(m_header.loc_data, bnr);
-	fseek(outputFile, (bnr-1)*INXTREE_BLOCK, SEEK_SET);
+    bnr = INXTREE_BLOCK_NR(ftello(outputFile)) + 1;
+    inxtree_write_u32(m_header.loc_data, bnr);
+    fseek(outputFile, (bnr-1)*INXTREE_BLOCK, SEEK_SET);
 
-	fseek(m_inxFile, (m_dataLoc-1)*INXTREE_BLOCK, SEEK_SET);
-	IndexTreeHelper::mergeFile(outputFile, m_inxFile);
-	fseek(m_dataTmpFile, 0, SEEK_SET);
+    fseek(m_inxFile, (m_dataLoc-1)*INXTREE_BLOCK, SEEK_SET);
+    IndexTreeHelper::mergeFile(outputFile, m_inxFile);
+    fseek(m_dataTmpFile, 0, SEEK_SET);
     IndexTreeHelper::mergeFile(outputFile, m_dataTmpFile);
 
     fseek(outputFile, 0L, SEEK_END);
     u32 filesize = ftello(outputFile);
     inxtree_write_u32(m_header.f_size, filesize);
-	fseek(outputFile, 0, SEEK_SET);
-	fwrite(&m_header, sizeof(struct inxtree_header), 1, outputFile);
+    fseek(outputFile, 0, SEEK_SET);
+    fwrite(&m_header, sizeof(struct inxtree_header), 1, outputFile);
 
-	fclose(outputFile);
-	fclose(strinxTmpFile);
+    fclose(outputFile);
+    fclose(strinxTmpFile);
     fclose(m_inxFile);
     m_inxFile = NULL;
     fclose(m_dataTmpFile);
@@ -301,7 +301,7 @@ bool IndexTreeWriter::write(string output)
 
     if (m_bOnLineRW) {
         try {
-            copy_file(output, m_inxFilePath, copy_option::overwrite_if_exists);
+            copy_file(output, m_inxFilePath, copy_options::overwrite_existing);
         } catch (const filesystem_error& ex) {
             printf("%s", ex.what());
         }
@@ -315,6 +315,7 @@ bool IndexTreeWriter::write(string output)
         printf("    char index: %d\n", m_totalChrindex);
         //printf("    costs: (%u)s\n", Util::getTimeMS()/1000);
     }
+    return true;
 }
 
 int IndexTreeWriter::bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,
@@ -326,10 +327,10 @@ int IndexTreeWriter::bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr par
     if (min >= max) {
         return min;
     }
-	if (chr == key)
+    if (chr == key)
         return mid;
     if (chr < key)
-	    return bsearch(parent, key, mid+1, max);
+        return bsearch(parent, key, mid+1, max);
 
     if (mid > min)
         return bsearch(parent, key, min, mid-1);
@@ -340,7 +341,7 @@ int IndexTreeWriter::bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr par
 /*
  *  Strip string index, Save it to sinxfile.
  *
- *  'parent' should be saved to char index area, check if its children should be saved to 
+ *  'parent' should be saved to char index area, check if its children should be saved to
  *  char index area or string index area. If a child should be saved to char index area,
  *  then all the children should be save to char index area.
  *
@@ -352,27 +353,27 @@ int IndexTreeWriter::bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr par
 void IndexTreeWriter::trimIndexTree(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,
                                      int depth, FILE* sinxfile)
 {
-	bool bIsStrIndex = false;
-	if (++depth > CHRINX_DEPTH_MIN &&
-	    inxtree_read_u32(parent->value().location) == INXTREE_INVALID_ADDR) {
-		bIsStrIndex = isInStringIndex(parent, 0, 0);
-	}
-	if (bIsStrIndex) {
-		struct inxtree_chrindex& cinx = parent->value();
-		//inxtree_write_u32(cinx.location, ftello(sinxfile));
-		int len_content = 0;
-		off_t loc = 0;
+    bool bIsStrIndex = false;
+    if (++depth > CHRINX_DEPTH_MIN &&
+        inxtree_read_u32(parent->value().location) == INXTREE_INVALID_ADDR) {
+        bIsStrIndex = isInStringIndex(parent, 0, 0);
+    }
+    if (bIsStrIndex) {
+        struct inxtree_chrindex& cinx = parent->value();
+        //inxtree_write_u32(cinx.location, ftello(sinxfile));
+        int len_content = 0;
+        off_t loc = 0;
         writeStringIndex(parent, 0, &len_content, &loc, sinxfile);/* parent is char index */
         inxtree_write_u32(cinx.location, loc);
         cinx.location[3] |= 0x80;
-		inxtree_write_u16(cinx.len_content, len_content);
-		parent->clear(); /* Children have been save to string index area */
-	} else {
-		//parent.len_content = parent->children().size();
-		for (int i=0; i<parent->size(); i++) {
-			trimIndexTree((*parent)[i], depth, sinxfile);
-		}
-	}
+        inxtree_write_u16(cinx.len_content, len_content);
+        parent->clear(); /* Children have been save to string index area */
+    } else {
+        //parent.len_content = parent->children().size();
+        for (int i=0; i<parent->size(); i++) {
+            trimIndexTree((*parent)[i], depth, sinxfile);
+        }
+    }
 }
 
 /// The below three functions "is_in_stringindex", "write_stringindex" and "trim_indextree"
@@ -409,23 +410,23 @@ bool IndexTreeWriter::isInStringIndex(ktree::tree_node<inxtree_chrindex>::treeNo
     if (depth == 0 && parent->size() == 0)
         return false;
 
-	if (parent->size() > m_strinxWordsMax)
-		return false;
-	// firgure-3, if there is one more children, this node should be char index.
-	int max_depth = words > 1 ? m_strinxDepthMax : STRINX_LEN_MAX;
-	if (++depth > max_depth)
-		return false;
+    if (parent->size() > m_strinxWordsMax)
+        return false;
+    // firgure-3, if there is one more children, this node should be char index.
+    int max_depth = words > 1 ? m_strinxDepthMax : STRINX_LEN_MAX;
+    if (++depth > max_depth)
+        return false;
 
-	for (int i = 0; i < parent->size(); i++) {
-		struct inxtree_chrindex& charIndex = (*parent)[i]->value();
-		if (inxtree_read_u32(charIndex.location) != INXTREE_INVALID_ADDR) {
-			if (++words > m_strinxWordsMax)
-				return false;
-		}
-		if (!isInStringIndex((*parent)[i], words, depth))
-			return false;
-	}
-	return true;
+    for (int i = 0; i < parent->size(); i++) {
+        struct inxtree_chrindex& charIndex = (*parent)[i]->value();
+        if (inxtree_read_u32(charIndex.location) != INXTREE_INVALID_ADDR) {
+            if (++words > m_strinxWordsMax)
+                return false;
+        }
+        if (!isInStringIndex((*parent)[i], words, depth))
+            return false;
+    }
+    return true;
 }
 
 /* @len_inx - length of string.
@@ -433,21 +434,21 @@ bool IndexTreeWriter::isInStringIndex(ktree::tree_node<inxtree_chrindex>::treeNo
 void IndexTreeWriter::writeStringIndex(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,
                                         int len_inx, int* total, off_t *start, FILE* file)
 {
-	static u32 index[STRINX_LEN_MAX] = {0};
+    static u32 index[STRINX_LEN_MAX] = {0};
 
-	for (int i=0; i<parent->size(); i++) {
-		struct inxtree_chrindex& charIndex = (*parent)[i]->value();
-		u32 wchr = inxtree_read_u32(charIndex.wchr);
-		if (len_inx < STRINX_LEN_MAX) {
-			index[len_inx] = wchr;
-		} else {
-			printf(
-			"WARRING: length of string index greatter then STRINX_LEN_MAX,please check function is_in_stringindex\n");
+    for (int i=0; i<parent->size(); i++) {
+        struct inxtree_chrindex& charIndex = (*parent)[i]->value();
+        u32 wchr = inxtree_read_u32(charIndex.wchr);
+        if (len_inx < STRINX_LEN_MAX) {
+            index[len_inx] = wchr;
+        } else {
+            printf(
+            "WARRING: length of string index greatter then STRINX_LEN_MAX,please check function is_in_stringindex\n");
             index[STRINX_LEN_MAX-1] = wchr;
-		}
+        }
 
-		if (inxtree_read_u32(charIndex.location) != INXTREE_INVALID_ADDR) {
-			int nbytes_strinx = sizeof( struct inxtree_strindex)-1;
+        if (inxtree_read_u32(charIndex.location) != INXTREE_INVALID_ADDR) {
+            int nbytes_strinx = sizeof( struct inxtree_strindex)-1;
             size_t  nbytes_str=0;
             index[len_inx+1] = L'\0';
             char* mbindex = IndexTreeHelper::ucs4StrToUTF8Str(index, &nbytes_str);
@@ -459,26 +460,26 @@ void IndexTreeWriter::writeStringIndex(ktree::tree_node<inxtree_chrindex>::treeN
                 }
                 //printf("%s-->%lu\n", mbindex, nbytes_str);
                 nbytes_strinx += nbytes_str;
-			    struct inxtree_strindex *strinx = ( struct inxtree_strindex *)malloc(nbytes_strinx);
-			    memcpy(strinx->keystr, mbindex, nbytes_str);
-			    memcpy(strinx->location, charIndex.location, sizeof(strinx->location));
-			    strinx->len_str[0] = nbytes_str;
+                struct inxtree_strindex *strinx = ( struct inxtree_strindex *)malloc(nbytes_strinx);
+                memcpy(strinx->keystr, mbindex, nbytes_str);
+                memcpy(strinx->location, charIndex.location, sizeof(strinx->location));
+                strinx->len_str[0] = nbytes_str;
 
-			    off_t offset = IndexTreeHelper::checkBlockBound(ftello(file), nbytes_strinx);
-			    fseek(file, offset, SEEK_CUR);
+                off_t offset = IndexTreeHelper::checkBlockBound(ftello(file), nbytes_strinx);
+                fseek(file, offset, SEEK_CUR);
                 if ((*total) == 0) {
                     *start = ftello(file);
                 }
-			    fwrite(strinx, nbytes_strinx, 1, file);
-			    free(strinx);
+                fwrite(strinx, nbytes_strinx, 1, file);
+                free(strinx);
                 free(mbindex);
-			    (*total) += 1;
+                (*total) += 1;
             } else {
                 printf("ERROR: index did't be converted to utf-8:(%x) \n", wchr);
             }
-		}
-		writeStringIndex((*parent)[i], len_inx+1, total, start, file);
-	}
+        }
+        writeStringIndex((*parent)[i], len_inx+1, total, start, file);
+    }
 }
 
 /*
@@ -487,49 +488,49 @@ void IndexTreeWriter::writeStringIndex(ktree::tree_node<inxtree_chrindex>::treeN
 void IndexTreeWriter::writeCharIndex(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,
                                      FILE* cinxfile)
 {
-	/*
-	 * Deal with three situation (see figure 2):
-	 *     1) parent is a char index and has children().
-	 *     2) parent[i] is a node with string index.
-	 *     3) parent[i] is only a non-leaf char index node.
-	 */
-	/* Reserve room for children, children should be save together at parent's location.*/
-	m_totalChrindex += parent->size(); /* as a global variable, always point to the last file position */
-	for (int i = 0; i < parent->size(); i++) {
-		struct inxtree_chrindex& i_cinx = (*parent)[i]->value();
-		int loc = inxtree_read_u32(i_cinx.location);
-		int clen = (*parent)[i]->size();
+    /*
+     * Deal with three situation (see figure 2):
+     *     1) parent is a char index and has children().
+     *     2) parent[i] is a node with string index.
+     *     3) parent[i] is only a non-leaf char index node.
+     */
+    /* Reserve room for children, children should be save together at parent's location.*/
+    m_totalChrindex += parent->size(); /* as a global variable, always point to the last file position */
+    for (int i = 0; i < parent->size(); i++) {
+        struct inxtree_chrindex& i_cinx = (*parent)[i]->value();
+        int loc = inxtree_read_u32(i_cinx.location);
+        int clen = (*parent)[i]->size();
 
-		if (loc == INXTREE_INVALID_ADDR) { /* Situation 3 */
-			inxtree_write_u16(i_cinx.len_content, clen);
-			/* Reserve room for parent[i]'s children.
-			   Write sequentialy from the end of file.
-			   So, m_totalChrindex must be a global variable. */
-			inxtree_write_u32(i_cinx.location, m_totalChrindex*sizeof(struct inxtree_chrindex));
-		} else if ((*parent)[i]->size() > 0) { /* Situation 1 */
-			struct inxtree_chrindex inx;
+        if (loc == INXTREE_INVALID_ADDR) { /* Situation 3 */
+            inxtree_write_u16(i_cinx.len_content, clen);
+            /* Reserve room for parent[i]'s children.
+               Write sequentialy from the end of file.
+               So, m_totalChrindex must be a global variable. */
+            inxtree_write_u32(i_cinx.location, m_totalChrindex*sizeof(struct inxtree_chrindex));
+        } else if ((*parent)[i]->size() > 0) { /* Situation 1 */
+            struct inxtree_chrindex inx;
 
-			inxtree_write_u32(inx.location, loc);
-			inxtree_write_u32(inx.wchr, 0);
-			inxtree_write_u16(inx.len_content, 0);
-			(*parent)[i]->insert(inx, 0); /* Add a '0' index specifing the location in data area */
+            inxtree_write_u32(inx.location, loc);
+            inxtree_write_u32(inx.wchr, 0);
+            inxtree_write_u16(inx.len_content, 0);
+            (*parent)[i]->insert(inx, 0); /* Add a '0' index specifing the location in data area */
 
-			inxtree_write_u16(i_cinx.len_content, clen+1);
-			inxtree_write_u32(i_cinx.location, m_totalChrindex*sizeof(struct inxtree_chrindex));
-		}
+            inxtree_write_u16(i_cinx.len_content, clen+1);
+            inxtree_write_u32(i_cinx.location, m_totalChrindex*sizeof(struct inxtree_chrindex));
+        }
 
-	    // Children's room has been reserved in parent's location.
-	    off_t offset = inxtree_read_u32(parent->value().location) + i * sizeof(struct inxtree_chrindex);
-	    fseek(cinxfile, (INDEX_BLOCK_NR-1)*INXTREE_BLOCK+offset, SEEK_SET);
-	    fwrite(&i_cinx, sizeof(struct inxtree_chrindex), 1, cinxfile);
-	    writeCharIndex((*parent)[i], cinxfile);
-	}
+        // Children's room has been reserved in parent's location.
+        off_t offset = inxtree_read_u32(parent->value().location) + i * sizeof(struct inxtree_chrindex);
+        fseek(cinxfile, (INDEX_BLOCK_NR-1)*INXTREE_BLOCK+offset, SEEK_SET);
+        fwrite(&i_cinx, sizeof(struct inxtree_chrindex), 1, cinxfile);
+        writeCharIndex((*parent)[i], cinxfile);
+    }
 }
 
 struct inxtree_dataitem
 IndexTreeWriter::dataitem(address_t loc)
 {
-	if (loc != INXTREE_INVALID_ADDR) {
+    if (loc != INXTREE_INVALID_ADDR) {
         if (loc < m_inxDataLen) {
             map<int, struct inxtree_dataitem>::iterator iter = m_updateCache.find(loc);
             if(iter != m_updateCache.end()) {
@@ -543,7 +544,7 @@ IndexTreeWriter::dataitem(address_t loc)
     }
 
     struct inxtree_dataitem d;
-	memset(&d, 0, sizeof(struct inxtree_dataitem));
+    memset(&d, 0, sizeof(struct inxtree_dataitem));
     return d;
 }
 

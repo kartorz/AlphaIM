@@ -1,12 +1,12 @@
-		       IM Server Developers Kit
-				    
-			    Release Notes
+               IM Server Developers Kit
 
-			   Hidetoshi Tajima
-				    
-		   X11R6 Xi18n Implementation Group
-				    
-			     May 15, 1994
+                Release Notes
+
+               Hidetoshi Tajima
+
+           X11R6 Xi18n Implementation Group
+
+                 May 15, 1994
 
    Here is an introduction of IMserver Developers Kit, in short IMdkit,
 which is distributed with X11R6 contributions.
@@ -58,27 +58,27 @@ standard IMProtocol model.
    IMdkit is to IMserver Developers what XIM is to I18N application
 Developers, so IMdkit is modeled after XIM APIs. For example:
 
-	XIM has XOpenIM and XCloseIM, and IMdkit has IMOpenIM and
-	IMCloseIM.
+    XIM has XOpenIM and XCloseIM, and IMdkit has IMOpenIM and
+    IMCloseIM.
 
-	XIM has a concept of IMValues and provides XSetIMValues and
-	XGetIMValues to set and get them, and IMdkit also uses IMValues
-	and provides IMSetIMValues and IMGetIMValues to set and get
-	them.
+    XIM has a concept of IMValues and provides XSetIMValues and
+    XGetIMValues to set and get them, and IMdkit also uses IMValues
+    and provides IMSetIMValues and IMGetIMValues to set and get
+    them.
 
 2.  Building
 
-	There is one special build instruction. Please use xmkmf with -a
-	option, and with the top directory(path to xc) and the path to
-	the current directory from the top directory in order to make a
-	Makefile, include all the necessary files and check dependency.
-	Type:
+    There is one special build instruction. Please use xmkmf with -a
+    option, and with the top directory(path to xc) and the path to
+    the current directory from the top directory in order to make a
+    Makefile, include all the necessary files and check dependency.
+    Type:
 
-	xmkmf -a path_to_top(xc)_directory \
-		path_from_top(xc)_to_current_directory
+    xmkmf -a path_to_top(xc)_directory \
+        path_from_top(xc)_to_current_directory
 
-	This is because IMdkit refers to some files in xc/lib/xtrans
-	directory to support X TransportServer mechinism.
+    This is because IMdkit refers to some files in xc/lib/xtrans
+    directory to support X TransportServer mechinism.
 
 3.  Documents
 
@@ -90,19 +90,19 @@ the doc/ subdirectory.
 The IMdkit has been built and tested with the current X11R6 release
 (patchlevel 1) on the following systems:
 
-	FUJITSU DS 7742		UXP/DS V10L20
-	IBM RS/6000 320H	AIX 3.2.5
-	Sony NWS-5000		NEWS-OS 6.0.2
-	SPARCstation		SunOS 4.1
-	SPARCstation		Solaris 2.3
-	HP9000 S700		HP-UX9.01
+    FUJITSU DS 7742        UXP/DS V10L20
+    IBM RS/6000 320H    AIX 3.2.5
+    Sony NWS-5000        NEWS-OS 6.0.2
+    SPARCstation        SunOS 4.1
+    SPARCstation        Solaris 2.3
+    HP9000 S700        HP-UX9.01
 
 5.  Bug Reports
 
 If you find a reproducible bug in this software or the documentation,
 please send a bug report to the following destination address:
 
-	tajima@kobe.hp.com
+    tajima@kobe.hp.com
 
 6.   Acknowledgements
 

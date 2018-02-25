@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gtk/aimapp">
+    <file preprocess="xml-stripblanks">gui/gtk/setting.ui</file>
+    <file preprocess="xml-stripblanks">gui/gtk/menu.ui</file>
+  </gresource>
+</gresources>

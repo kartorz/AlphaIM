@@ -7,10 +7,10 @@ XCOMM IMserver Developers Kit Imakefile,v 1.13 94/02/06 15:22:54 tajima Exp $
 #define NormalLibXimd (!SharedLibXimd | ForceNormalLib)
 #endif
 #ifndef DebugLibXimd
-#define DebugLibXimd		NO	/* debugged Ximd library */
+#define DebugLibXimd        NO    /* debugged Ximd library */
 #endif
 #ifndef ProfileLibXimd
-#define ProfileLibXimd		NO	/* profiled Ximd library */
+#define ProfileLibXimd        NO    /* profiled Ximd library */
 #endif
 
 #ifdef SharedLibXimd
@@ -86,22 +86,22 @@ I18NOBJS = \
 IMPHDRS = XimpData.h
 
 IMPSRCS = \
-	XimpMethods.c \
-	XimpHandler.c \
-	XimpProc.c \
-	XimpAttr.c \
-	XimpFlt.c \
-	XimpClbk.c \
-	XimpUtls.c
+    XimpMethods.c \
+    XimpHandler.c \
+    XimpProc.c \
+    XimpAttr.c \
+    XimpFlt.c \
+    XimpClbk.c \
+    XimpUtls.c
 
 IMPOBJS = \
-	XimpMethods.o \
-	XimpHandler.o \
-	XimpProc.o \
-	XimpAttr.o \
-	XimpFlt.o \
-	XimpClbk.o \
-	XimpUtls.o
+    XimpMethods.o \
+    XimpHandler.o \
+    XimpProc.o \
+    XimpAttr.o \
+    XimpFlt.o \
+    XimpClbk.o \
+    XimpUtls.o
 
 #endif
 
@@ -112,32 +112,32 @@ OBJS = $(COREOBJS) $(I18NOBJS) $(IMPOBJS)
 
 #include <Library.tmpl>
 
-#define LCCORERules()					@@\
-LinkSourceFile(IMdkit.h,IMCore)				@@\
-LinkSourceFile(IMConn.c,IMCore)				@@\
-LinkSourceFile(IMValues.c,IMCore)			@@\
+#define LCCORERules()                    @@\
+LinkSourceFile(IMdkit.h,IMCore)                @@\
+LinkSourceFile(IMConn.c,IMCore)                @@\
+LinkSourceFile(IMValues.c,IMCore)            @@\
 LinkSourceFile(IMMethod.c,IMCore)
 
 #if BuildXi18n
 
-#define LCI18NRules()					@@\
-LinkSourceFile(XimProto.h,Xi18n)			@@\
-LinkSourceFile(FrameMgr.h,Xi18n)			@@\
-LinkSourceFile(Xi18n.h,Xi18n)				@@\
-LinkSourceFile(Xtrans.h,Xi18n)				@@\
-LinkSourceFile(Xi18nX.h,Xi18n)				@@\
-LinkSourceFile(Xi18nTr.h,Xi18n)				@@\
-LinkSourceFile(FrameMgr.c,Xi18n)			@@\
-LinkSourceFile(i18nIMProto.c,Xi18n)			@@\
-LinkSourceFile(i18nAttr.c,Xi18n)			@@\
-LinkSourceFile(i18nMethod.c,Xi18n)			@@\
-LinkSourceFile(i18nUtil.c,Xi18n)			@@\
-LinkSourceFile(i18nPtHdr.c,Xi18n)			@@\
-LinkSourceFile(i18nIc.c,Xi18n)				@@\
-LinkSourceFile(i18nClbk.c,Xi18n)			@@\
-LinkSourceFile(i18nX.c,Xi18n)				@@\
+#define LCI18NRules()                    @@\
+LinkSourceFile(XimProto.h,Xi18n)            @@\
+LinkSourceFile(FrameMgr.h,Xi18n)            @@\
+LinkSourceFile(Xi18n.h,Xi18n)                @@\
+LinkSourceFile(Xtrans.h,Xi18n)                @@\
+LinkSourceFile(Xi18nX.h,Xi18n)                @@\
+LinkSourceFile(Xi18nTr.h,Xi18n)                @@\
+LinkSourceFile(FrameMgr.c,Xi18n)            @@\
+LinkSourceFile(i18nIMProto.c,Xi18n)            @@\
+LinkSourceFile(i18nAttr.c,Xi18n)            @@\
+LinkSourceFile(i18nMethod.c,Xi18n)            @@\
+LinkSourceFile(i18nUtil.c,Xi18n)            @@\
+LinkSourceFile(i18nPtHdr.c,Xi18n)            @@\
+LinkSourceFile(i18nIc.c,Xi18n)                @@\
+LinkSourceFile(i18nClbk.c,Xi18n)            @@\
+LinkSourceFile(i18nX.c,Xi18n)                @@\
 SpecialCLibObjectRule(i18nTr,$(ICONFIGFILES),$(CONN_DEFINES) $(XTRANS_XIM_DEFINES))
-LinkSourceFile(i18nTr.c,Xi18n)				@@\
+LinkSourceFile(i18nTr.c,Xi18n)                @@\
 SpecialCLibObjectRule(i18ntrans,$(ICONFIGFILES),$(TRANS_INCLUDES) $(CONN_DEFINES) $(SOCK_DEFINES) $(XTRANS_XIM_DEFINES))
 LinkFile(i18ntrans.c,$(TRANSCOMMSRC)/transport.c)
 LinkFile(Xtransint.h,$(TRANSCOMMSRC)/Xtransint.h)
@@ -146,15 +146,15 @@ LinkFile(Xtransint.h,$(TRANSCOMMSRC)/Xtransint.h)
 
 #if BuildXimp
 
-#define LCIMPRules()					@@\
-LinkSourceFile(XIMProto.h,Ximp)				@@\
-LinkSourceFile(XimpData.h,Ximp)				@@\
-LinkSourceFile(XimpMethods.c,Ximp)			@@\
-LinkSourceFile(XimpHandler.c,Ximp)			@@\
-LinkSourceFile(XimpProc.c,Ximp)				@@\
-LinkSourceFile(XimpAttr.c,Ximp)				@@\
-LinkSourceFile(XimpFlt.c,Ximp)				@@\
-LinkSourceFile(XimpClbk.c,Ximp)				@@\
+#define LCIMPRules()                    @@\
+LinkSourceFile(XIMProto.h,Ximp)                @@\
+LinkSourceFile(XimpData.h,Ximp)                @@\
+LinkSourceFile(XimpMethods.c,Ximp)            @@\
+LinkSourceFile(XimpHandler.c,Ximp)            @@\
+LinkSourceFile(XimpProc.c,Ximp)                @@\
+LinkSourceFile(XimpAttr.c,Ximp)                @@\
+LinkSourceFile(XimpFlt.c,Ximp)                @@\
+LinkSourceFile(XimpClbk.c,Ximp)                @@\
 LinkSourceFile(XimpUtls.c,Ximp)
 
 #endif

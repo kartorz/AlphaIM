@@ -16,33 +16,33 @@ int CharUtil::ucs4CharToUTF16Byte(u32 uchr, u16* ub)
 {
     if(ub != NULL ) {
         if (uchr <= 0xFFFF) {
-            *ub = static_cast<wchar_t>(uchr);  
+            *ub = static_cast<wchar_t>(uchr);
             return 1;
         } else if(uchr <= 0xEFFFF) {
             ub[0] = static_cast<u16>(0xD800 + (uchr >> 10) - 0x40);
             ub[1] = static_cast<u16>(0xDC00 + (uchr & 0x03FF));
-            return 2;  
+            return 2;
         }
     }
-    return 0;  
+    return 0;
 }
 
-int CharUtil::ucs4CharToUTF8Byte(u32 uchr, char* ub)  
+int CharUtil::ucs4CharToUTF8Byte(u32 uchr, char* ub)
 {
-    const char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};  
-    const u32  codeup[] = {  
-        0x80,           // U+00000000 бл U+0000007F  
-        0x800,          // U+00000080 бл U+000007FF  
-        0x10000,        // U+00000800 бл U+0000FFFF  
-        0x200000,       // U+00010000 бл U+001FFFFF  
-        0x4000000,      // U+00200000 бл U+03FFFFFF  
-        0x80000000      // U+04000000 бл U+7FFFFFFF  
+    const unsigned char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
+    const u32  codeup[] = {
+        0x80,           // U+00000000 бл U+0000007F
+        0x800,          // U+00000080 бл U+000007FF
+        0x10000,        // U+00000800 бл U+0000FFFF
+        0x200000,       // U+00010000 бл U+001FFFFF
+        0x4000000,      // U+00200000 бл U+03FFFFFF
+        0x80000000      // U+04000000 бл U+7FFFFFFF
     };
 
-    int i, len;  
-    len = sizeof(codeup) / sizeof(u32);  
-    for (i = 0; i < len; i++)  
-    {  
+    int i, len;
+    len = sizeof(codeup) / sizeof(u32);
+    for (i = 0; i < len; i++)
+    {
         if (uchr < codeup[i])
             break;
     }
@@ -52,14 +52,14 @@ int CharUtil::ucs4CharToUTF8Byte(u32 uchr, char* ub)
     len = i + 1;
     if (ub != NULL)
     {
-        for( ; i > 0; i-- )  
+        for( ; i > 0; i-- )
         {
-            ub[i] = static_cast<char>((uchr & 0x3F) | 0x80);  
-            uchr >>= 6;  
+            ub[i] = static_cast<char>((uchr & 0x3F) | 0x80);
+            uchr >>= 6;
         }
-        ub[0] = static_cast<char>(uchr | prefix[len - 1]);  
+        ub[0] = static_cast<char>(uchr | prefix[len - 1]);
     }
-    return len;  
+    return len;
 }
 
 char* CharUtil::u8charat(const char* u8str, int pos, int *o_start)
@@ -72,7 +72,7 @@ char* CharUtil::u8charat(const char* u8str, int pos, int *o_start)
     int i = 0;
     unsigned char b;
 
-    do  {   
+    do  {
         b = *(s+len);
         if (b == 0x00) {
             if (pos == -1 && len > 0) {
@@ -85,7 +85,7 @@ char* CharUtil::u8charat(const char* u8str, int pos, int *o_start)
             return NULL;
         }
         s += len;
- 
+
         if(b < 0x80) {
             len = 1;
         } else if(b < 0xC0 || b > 0xFD ) {
@@ -93,10 +93,10 @@ char* CharUtil::u8charat(const char* u8str, int pos, int *o_start)
         } else if(b < 0xE0) {
             len = 2;
         } else if(b < 0xF0) {
-            len = 3;  
+            len = 3;
         } else if( b < 0xF8) {
-            len = 4;	
-        } else if(b < 0xFC) {  
+            len = 4;
+        } else if(b < 0xFC) {
             len = 5;
         } else {
             len = 6;
@@ -134,10 +134,10 @@ char* CharUtil::nextu8char(const char* u8str, int *o_len)
     } else if(b < 0xE0) {
         len = 2;
     } else if(b < 0xF0) {
-        len = 3;  
+        len = 3;
     } else if( b < 0xF8) {
-        len = 4;	
-    } else if(b < 0xFC) {  
+        len = 4;
+    } else if(b < 0xFC) {
         len = 5;
     } else {
         len = 6;
@@ -166,10 +166,10 @@ int CharUtil::nextu8char(const char* u8str, char* u8chr)
     } else if(b < 0xE0) {
         len = 2;
     } else if(b < 0xF0) {
-        len = 3;  
+        len = 3;
     } else if( b < 0xF8) {
-        len = 4;	
-    } else if(b < 0xFC) {  
+        len = 4;
+    } else if(b < 0xFC) {
         len = 5;
     } else {
         len = 6;
@@ -203,15 +203,15 @@ u32 CharUtil::utf8byteToUCS4Char(const char** ub)
     }
 
     if(b < 0xE0) {
-        uchr = b & 0x1F;  
+        uchr = b & 0x1F;
         len = 2;
     } else if(b < 0xF0) {
-        uchr = b & 0x0F;  
-        len = 3;  
+        uchr = b & 0x0F;
+        len = 3;
     } else if( b < 0xF8) {
         uchr = b & 7;
-        len = 4;	
-    } else if(b < 0xFC) {  
+        len = 4;
+    } else if(b < 0xFC) {
         uchr = b & 3;
         len = 5;
     } else {
@@ -299,8 +299,8 @@ char* CharUtil::mbsrtoutf8s(const char *mbs)
         free(ws);
         return u8s;
     }
-    return NULL;
 #endif
+    return NULL;
 }
 
 wchar_t* CharUtil::utf8srtowcs(const char *u8s)
@@ -312,22 +312,22 @@ wchar_t* CharUtil::utf8srtowcs(const char *u8s)
     int len = MultiByteToWideChar(CP_UTF8, 0, u8s, -1, ws, total);
     if (len > 0 && len < 0xFFFD)
         return ws;
-    else
-        return NULL;
 #endif
+    return NULL;
 }
 /* This piece of code comes from an example of mbrtowc function of GNU libc. */
 wchar_t CharUtil::mbrtowc(char** mb)
 {
-	wchar_t wctmp[1];
-	size_t len = strlen(*mb);
-	size_t nbytes = ::mbrtowc(wctmp, *mb, len, NULL);
-	if (nbytes > 0) {
-		if (nbytes > (size_t)-2)
-			return 0;
-		*mb += nbytes;
-		return wctmp[0];
-	}
+    wchar_t wctmp[1];
+    size_t len = strlen(*mb);
+    size_t nbytes = ::mbrtowc(wctmp, *mb, len, NULL);
+    if (nbytes > 0) {
+        if (nbytes > (size_t)-2)
+            return 0;
+        *mb += nbytes;
+        return wctmp[0];
+    }
+    return 0;
 }
 
 int CharUtil::wcrtomb(char* s, wchar_t *wc)

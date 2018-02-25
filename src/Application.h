@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -12,7 +12,7 @@
 
 #include "config.h"
 #include "XIMSrv.h"
-#include "QIMSrv.h"
+#include "DBusICSrv.h"
 #include "Log.h"
 #include "MessageQueue.h"
 #include "SysMessager.h"
@@ -40,17 +40,16 @@ public:
     ~Application();
     iIM* curIM();
     void slowJob();
-	MessageQueue* getMessageQ();
+    MessageQueue* getMessageQ();
 
     XIMSrv  xim;
-	QIMSrv  qim;
+    DBusICSrv dim;
     Signal  sig;
 
 private:
     SysMessager  *m_sysMsgr;
-	PY py;
+    PY py;
 };
 
 extern Application*  gApp;
 #endif
-

@@ -37,7 +37,7 @@ public:
     static string stringCaseToLower(const string& str);
     static string stringCaseToUpper(const string& str);
     static int    stringCommonLen(const string& str1, const string& str2, int start = 0);
-    // Replace /old/ with /new/ of the /ori/ up to /count/ /old/ occurs. 
+    // Replace /old/ with /new/ of the /ori/ up to /count/ /old/ occurs.
     //static string replaceString(string& ori, string old, string new, int count);
 };
 
@@ -45,35 +45,35 @@ namespace util {
 
 class ReadFile {
 public:
-	ReadFile()
-	:ptr(NULL)
-	{ }
+    ReadFile()
+    :ptr(NULL)
+    { }
 
-	~ReadFile()	
-	{ 
-		if (ptr != NULL)
-			free(ptr);
-	}
-	size_t operator()(FILE *f, void *ptr, size_t length);
-	void*  operator()(FILE *f, size_t length);
+    ~ReadFile()
+    {
+        if (ptr != NULL)
+            free(ptr);
+    }
+    size_t operator()(FILE *f, void *ptr, size_t length);
+    void*  operator()(FILE *f, size_t length);
 
-	void *ptr;
+    void *ptr;
 };
 
 class Malloc {
 public:
-	Malloc()
-	:ptr(NULL) { }
-	void* operator()(size_t size) {
-	    ptr = malloc(size);
-		return ptr;
-	}
-	~Malloc()
+    Malloc()
+    :ptr(NULL) { }
+    void* operator()(size_t size) {
+        ptr = malloc(size);
+        return ptr;
+    }
+    ~Malloc()
     {
-		if (ptr != NULL)
-			free(ptr);
-	}
-	void *ptr;
+        if (ptr != NULL)
+            free(ptr);
+    }
+    void *ptr;
 };
 #if 0
 class XMLUtil {

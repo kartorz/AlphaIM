@@ -1,3 +1,7 @@
+empty :=
+space := $(empty) $(empty)
+.RECIPEPREFIX := $(space)
+
 # Query the default goal.
 
 ifeq ($(SharedLibXimd),)
@@ -9,11 +13,11 @@ endif
 #endif
 
 ifeq ($(DebugLibXimd),)
-DebugLibXimd :=	NO	/* debugged Ximd library */
+DebugLibXimd :=    NO    /* debugged Ximd library */
 endif
 
 ifeq ($(ProfileLibXimd),)
-ProfileLibXimd := NO	/* profiled Ximd library */
+ProfileLibXimd := NO    /* profiled Ximd library */
 endif
 
 ifeq ($(SharedLibXimd),)
@@ -101,22 +105,22 @@ ifeq ($(BuildXimp), YES)
 IMPHDRS = XimpData.h
 
 IMPSRCS = \
-	XimpMethods.c \
-	XimpHandler.c \
-	XimpProc.c \
-	XimpAttr.c \
-	XimpFlt.c \
-	XimpClbk.c \
-	XimpUtls.c
+    XimpMethods.c \
+    XimpHandler.c \
+    XimpProc.c \
+    XimpAttr.c \
+    XimpFlt.c \
+    XimpClbk.c \
+    XimpUtls.c
 
 IMPOBJS = \
-	XimpMethods.o \
-	XimpHandler.o \
-	XimpProc.o \
-	XimpAttr.o \
-	XimpFlt.o \
-	XimpClbk.o \
-	XimpUtls.o
+    XimpMethods.o \
+    XimpHandler.o \
+    XimpProc.o \
+    XimpAttr.o \
+    XimpFlt.o \
+    XimpClbk.o \
+    XimpUtls.o
 
 IMPHDRS := $(call ADDPREFIX, Ximp, $(IMPHDRS))
 IMPSRCS := $(call ADDPREFIX, Ximp, $(IMPSRCS))
@@ -128,29 +132,29 @@ SRCS := $(CORESRCS) $(I18NSRCS) $(IMPSRCS)
 OBJS := $(I18NOBJS) $(IMPOBJS) $(COREOBJS)
 
 $(LibName).a : $(OBJS)
-	$(AR) -r $@  $^
-	@if [ ! -d ../Ximd ] ; then mkdir ../Ximd; fi
+    $(AR) -r $@  $^
+    @if [ ! -d ../Ximd ] ; then mkdir ../Ximd; fi
 
-	install -m 0666  IMCore/*.h             "../Ximd/"
-	install -m 0666  Xi18n/*.h              "../Ximd/"
-	install -m 0666  Ximp/*.h               "../Ximd/"
-	install -m 0666  Ximd.a                 "../Ximd/Ximd.a"
+    install -m 0666  IMCore/*.h             "../Ximd/"
+    install -m 0666  Xi18n/*.h              "../Ximd/"
+    install -m 0666  Ximp/*.h               "../Ximd/"
+    install -m 0666  Ximd.a                 "../Ximd/Ximd.a"
 
 #Xi18n/i18ntrans.o : Xi18n/i18ntrans.c
-#	$(CC) $(CFLAGS) $(XTRANS_XIM_DEFINES) -c $< -o $@
+#    $(CC) $(CFLAGS) $(XTRANS_XIM_DEFINES) -c $< -o $@
 
 #Xi18n/i18ntrans.c :
-#	ln -s ${X11_INC_DIR}/Xtrans/transport.c  Xi18n/i18ntrans.c
-#	ln -s ${X11_INC_DIR}/Xtrans/Xtransint.h  Xi18n/Xtransint.h
-#	ln -s ${X11_INC_DIR}/Xtrans/Xtrans.h     Xi18n/Xtrans.h
+#    ln -s ${X11_INC_DIR}/Xtrans/transport.c  Xi18n/i18ntrans.c
+#    ln -s ${X11_INC_DIR}/Xtrans/Xtransint.h  Xi18n/Xtransint.h
+#    ln -s ${X11_INC_DIR}/Xtrans/Xtrans.h     Xi18n/Xtrans.h
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+    $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@if [ -L Xi18n/Xtransint.h ] ; then unlink Xi18n/Xtransint.h; fi
-	@if [ -L Xi18n/Xtrans.h    ] ; then unlink Xi18n/Xtrans.h; fi
-	@if [ -L Xi18n/i18ntrans.c ] ; then unlink Xi18n/i18ntrans.c; fi
+    @if [ -L Xi18n/Xtransint.h ] ; then unlink Xi18n/Xtransint.h; fi
+    @if [ -L Xi18n/Xtrans.h    ] ; then unlink Xi18n/Xtrans.h; fi
+    @if [ -L Xi18n/i18ntrans.c ] ; then unlink Xi18n/i18ntrans.c; fi
 
 all: $(libName).a clean
 

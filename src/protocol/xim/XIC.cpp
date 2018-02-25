@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -43,7 +43,7 @@ StatusAttributes::~StatusAttributes()
 void StatusAttributes::set(XICAttribute *xattr, int num)
 {
     for (int i = 0; i < num && xattr[i].name; i++) {
-        //PRINTF("***********set xattr:name(%s)\n", xattr[i].name);
+        PRINTF("***********set xattr:name(%s)\n", xattr[i].name);
         if (!strncmp(XNArea, xattr[i].name, xattr[i].name_length))
             area = *(XRectangle *)xattr[i].value;
         else if (!strncmp(XNAreaNeeded, xattr[i].name, xattr[i].name_length))
@@ -73,7 +73,7 @@ void StatusAttributes::set(XICAttribute *xattr, int num)
             line_space= *(CARD32*)xattr[i].value;
         else if (!strncmp(XNCursor, xattr[i].name, xattr[i].name_length))
             cursor = *(Cursor*)xattr[i].value;
-        else 
+        else
             check(xattr, false);
     }
 }
@@ -81,7 +81,7 @@ void StatusAttributes::set(XICAttribute *xattr, int num)
 void StatusAttributes::get(XICAttribute *xattr, int num)
 {
     for (int i = 0; i < num && xattr[i].name; i++) {
-        //PRINTF("^^^^^^get: xattr:name(%s)\n", xattr[i].name);
+        PRINTF("^^^^^^get: xattr:name(%s)\n", xattr[i].name);
         if (!strncmp(XNArea, xattr[i].name, xattr[i].name_length))
             setxattr(xattr[i], XRectangle, area);
         else if (!strncmp(XNAreaNeeded, xattr[i].name, xattr[i].name_length)) {
@@ -114,15 +114,15 @@ void StatusAttributes::get(XICAttribute *xattr, int num)
             setxattr(xattr[i], CARD32, line_space);
         else if (!strncmp(XNCursor, xattr[i].name, xattr[i].name_length))
             setxattr(xattr[i], Cursor, cursor);
-        else 
+        else
             check(xattr + i, true);
     }
 }
 
 bool PreeditAttributes::check(XICAttribute *xattr, bool r)
-{   
+{
     if (!strncmp(XNSpotLocation, xattr->name, xattr->name_length)) {
-        //PRINTF("check (%s), (%d)\n", xattr->name, r);
+        PRINTF("check (%s), (%d)\n", xattr->name, r);
         if (r)
             setxattr((*xattr), XPoint, spot_location);
         else
@@ -137,7 +137,7 @@ XIMIC::XIMIC()
     pre_attr.spot_location.x = -1;/*a check condition*/
     client_win = 0;
     focus_win = 0;
-	preedit = new X11IMPreedit();
+    preedit = new X11IMPreedit();
 }
 
 XIMIC::~XIMIC()
@@ -148,17 +148,16 @@ void XIMIC::set(IMChangeICStruct *calldata)
 {
     XICAttribute *xattr = calldata->ic_attr;
     int num = calldata->ic_attr_num;
-    register int i;
+    int i;
     for (i = 0; i < (int)num && xattr[i].name; i++) {
-        //PRINTF("IC:set %s\n", xattr[i].name);
         if (!strncmp(XNInputStyle, xattr[i].name, xattr[i].name_length))
             input_style = *(INT32*)xattr[i].value;
-        else if (!strncmp(XNClientWindow, xattr[i].name, xattr[i].name_length)) {
-            client_win = *(Window*)xattr[i].value; PRINTF("set client wind (%d) --> (%x)\n",client_win, client_win);}
+        else if (!strncmp(XNClientWindow, xattr[i].name, xattr[i].name_length))
+            client_win = *(Window*)xattr[i].value;
         else if (!strncmp(XNFocusWindow, xattr[i].name, xattr[i].name_length))
             focus_win = *(Window*)xattr[i].value;
+        PRINTF("IC:set %s, client(%d), focus(%d)\n", xattr[i].name, client_win, focus_win);
     }
-    //PRINTF("sssssss set pre attr\n");
     pre_attr.set(calldata->preedit_attr, calldata->preedit_attr_num);
     sts_attr.set(calldata->status_attr, calldata->status_attr_num);
 }
@@ -167,9 +166,9 @@ void XIMIC::get(IMChangeICStruct *calldata)
 {
     XICAttribute *xattr = calldata->ic_attr;
     int num = calldata->ic_attr_num;
-    register int i;
+    int i;
     for (i = 0; i < num && xattr[i].name; i++) {
-        //PRINTF("IC:get %s \n", xattr[i].name);
+        PRINTF("IC:get %s \n", xattr[i].name);
         if (!strncmp(XNFilterEvents, xattr[i].name, xattr[i].name_length)) {
             xattr[i].value = (void *)malloc(sizeof(CARD32));
             *(CARD32*)xattr[i].value = KeyPressMask|KeyReleaseMask;
@@ -181,4 +180,3 @@ void XIMIC::get(IMChangeICStruct *calldata)
     pre_attr.get(calldata->preedit_attr, calldata->preedit_attr_num);
     sts_attr.get(calldata->status_attr, calldata->status_attr_num);
 }
-

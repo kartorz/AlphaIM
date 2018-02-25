@@ -9,6 +9,7 @@
 #include "aim.h"
 #include "GuiMessager.h"
 
+typedef struct _AppIndicator AppIndicator;
 typedef struct _AimApp       AimApp;
 typedef struct _AimAppClass  AimAppClass;
 
@@ -31,26 +32,20 @@ struct _AimAppClass
     AimWin              *imwin;
     HelpWin             *hpwin;
 
-    GtkStatusIcon       *systray;
-    GtkWidget           *systray_img_en;
-    GtkWidget           *systray_img_cn;
-    GtkWidget           *systray_img_app;
+    GtkMenu             *setmenu;
+    AppIndicator        *systray;
+    gchar               *tray_icon_theme_path;
+    gchar               *tray_icon_app_path;
+    gchar               *tray_icon_en_path;
+    gchar               *tray_icon_cn_path;
     bool                bshow_imwin;
     int                 x,y;
-	GDBusProxy          *im_proxy;
-	GDBusProxy          *event_proxy;
+    GDBusProxy          *im_proxy;
+    GDBusProxy          *event_proxy;
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 extern GType   aim_app_get_type       (void);
 extern AimApp* aim_app_new            (void);
 extern int     aim_app_main           (int argc, char* argv[]);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

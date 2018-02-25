@@ -1,12 +1,13 @@
 
-SRCS_GUI-$(GTK3) := gui/gtk/AimApp.cpp \
+SRCS_GUI-gtk := gui/gtk/AimApp.cpp \
                     gui/gtk/AimWin.cpp \
                     gui/gtk/IcWin.cpp  \
-                    gui/gtk/HelpWin.cpp
+                    gui/gtk/HelpWin.cpp \
+                    gui/gtk/SettingMenu.cpp \
+                    gui/gtk/resource.c
 
 
-
-SRCS_GUI-$(QTGUI) := gui/qt/AimApp.cpp \
+SRCS_GUI-qt := gui/qt/AimApp.cpp \
                    gui/qt/GuiMessager.cpp \
                    gui/qt/moc_GuiMessager.cpp \
                    gui/qt/aimwin.cpp  \

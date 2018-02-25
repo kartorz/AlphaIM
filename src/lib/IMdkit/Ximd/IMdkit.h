@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #ifndef _IMdkit_h
 #define _IMdkit_h
@@ -31,41 +31,41 @@ Author:
 #include <X11/Xmd.h>
 
 /* IM Attributes Name */
-#define IMModifiers		"modifiers"
-#define IMServerWindow		"serverWindow"
-#define IMServerName		"serverName"
-#define IMServerTransport	"serverTransport"
-#define IMLocale		"locale"
-#define IMInputStyles		"inputStyles"
-#define IMProtocolHandler	"protocolHandler"
-#define IMOnKeysList		"onKeysList"
-#define IMOffKeysList		"offKeysList"
-#define IMEncodingList		"encodingList"
-#define IMFilterEventMask	"filterEventMask"
-#define IMProtocolDepend	"protocolDepend"
+#define IMModifiers        "modifiers"
+#define IMServerWindow        "serverWindow"
+#define IMServerName        "serverName"
+#define IMServerTransport    "serverTransport"
+#define IMLocale        "locale"
+#define IMInputStyles        "inputStyles"
+#define IMProtocolHandler    "protocolHandler"
+#define IMOnKeysList        "onKeysList"
+#define IMOffKeysList        "offKeysList"
+#define IMEncodingList        "encodingList"
+#define IMFilterEventMask    "filterEventMask"
+#define IMProtocolDepend    "protocolDepend"
 
 /* Masks for IM Attributes Name */
-#define I18N_IMSERVER_WIN	0x0001 /* IMServerWindow */
-#define I18N_IM_NAME		0x0002 /* IMServerName */
-#define I18N_IM_LOCALE		0x0004 /* IMLocale */
-#define I18N_IM_ADDRESS		0x0008 /* IMServerTransport */
-#define I18N_INPUT_STYLES	0x0010 /* IMInputStyles */
-#define I18N_ON_KEYS		0x0020 /* IMOnKeysList */
-#define I18N_OFF_KEYS		0x0040 /* IMOffKeysList */
-#define I18N_IM_HANDLER		0x0080 /* IMProtocolHander */
-#define I18N_ENCODINGS		0x0100 /* IMEncodingList */
-#define I18N_FILTERMASK		0x0200 /* IMFilterEventMask */
-#define I18N_PROTO_DEPEND	0x0400 /* IMProtoDepend */
+#define I18N_IMSERVER_WIN    0x0001 /* IMServerWindow */
+#define I18N_IM_NAME        0x0002 /* IMServerName */
+#define I18N_IM_LOCALE        0x0004 /* IMLocale */
+#define I18N_IM_ADDRESS        0x0008 /* IMServerTransport */
+#define I18N_INPUT_STYLES    0x0010 /* IMInputStyles */
+#define I18N_ON_KEYS        0x0020 /* IMOnKeysList */
+#define I18N_OFF_KEYS        0x0040 /* IMOffKeysList */
+#define I18N_IM_HANDLER        0x0080 /* IMProtocolHander */
+#define I18N_ENCODINGS        0x0100 /* IMEncodingList */
+#define I18N_FILTERMASK        0x0200 /* IMFilterEventMask */
+#define I18N_PROTO_DEPEND    0x0400 /* IMProtoDepend */
 
 typedef struct {
-    char	*name;
-    XPointer	value;
+    char    *name;
+    XPointer    value;
 } XIMArg;
 
 typedef struct {
-    CARD32	keysym;
-    CARD32	modifier;
-    CARD32	modifier_mask;
+    CARD32    keysym;
+    CARD32    modifier;
+    CARD32    modifier_mask;
 } XIMTriggerKey;
 
 typedef struct {
@@ -81,35 +81,35 @@ typedef struct {
 } XIMEncodings;
 
 typedef struct {
-    void*	(*setup)();
-    Status	(*openIM)();
-    Status	(*closeIM)();
-    char*	(*setIMValues)();
-    char*	(*getIMValues)();
-    Status	(*forwardEvent)();
-    Status	(*commitString)();
-    int		(*callCallback)();
-    int		(*preeditStart)();
-    int		(*preeditEnd)();
+    void*    (*setup)();
+    Status    (*openIM)();
+    Status    (*closeIM)();
+    char*    (*setIMValues)();
+    char*    (*getIMValues)();
+    Status    (*forwardEvent)();
+    Status    (*commitString)();
+    int        (*callCallback)();
+    int        (*preeditStart)();
+    int        (*preeditEnd)();
 } IMMethodsRec, *IMMethods;
 
 typedef struct _XIMS *XIMS;
 
 typedef struct {
-    Display	*display;
-    int		screen;
+    Display    *display;
+    int        screen;
 } IMCoreRec, *IMCore;
 
 typedef struct _XIMS {
-    IMMethods	methods;
-    IMCoreRec	core;
-    void	*protocol;
+    IMMethods    methods;
+    IMCoreRec    core;
+    void    *protocol;
 } XIMProtocolRec;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* 
+/*
  * X function declarations.
  */
 extern XIMS IMOpenIM(
@@ -152,6 +152,12 @@ void IMCommitString(
 );
 
 int IMCallCallback(
+#if NeedFunctionPrototypes
+    XIMS, XPointer
+#endif
+);
+
+int IMPreeditStart(
 #if NeedFunctionPrototypes
     XIMS, XPointer
 #endif

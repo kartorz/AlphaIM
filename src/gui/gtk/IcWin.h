@@ -25,7 +25,7 @@ struct _IcWin
 struct _IcWinClass
 {
     GtkWindowClass parent_class;
-    
+
     GtkWidget *input_label;
     GtkWidget *preedit_label[PREEDIT_ITEMS_MAX];
 };
@@ -39,6 +39,6 @@ extern void ic_win_refresh(IcWin *win,
                     gint32 y,
                     gint32 w,
                     gint32 h,
-					gchar *input,
-					gchar *items);
+                    gchar *input,
+                    gchar *items);
 #endif

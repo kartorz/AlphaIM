@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <X11/Xlib.h>
 #include "IMdkit.h"
@@ -86,8 +86,8 @@ int *total_count;
     *total_count = 0;
 
     while (attr->name != NULL) {
-	attr++;
-	++(*total_count);
+    attr++;
+    ++(*total_count);
     }
 }
 
@@ -96,7 +96,7 @@ static XIMAttr *
 CreateAttrList(Xi18n i18n_core, IMListOfAttr *attr, int *total_count)
 #else
 CreateAttrList(i18n_core, attr, total_count)
-Xi18n	i18n_core;
+Xi18n    i18n_core;
 IMListOfAttr *attr;
 int *total_count;
 #endif
@@ -113,16 +113,16 @@ int *total_count;
     memset(args, 0, buf_size);
 
     for (p = args; attr->name != NULL; attr++, p++) {
-	p->name = attr->name;
-	p->length = strlen(attr->name);
-	p->type = (CARD16)attr->type;
-	p->attribute_id = XrmStringToQuark(p->name);
-	if (!strcmp(p->name, XNPreeditAttributes))
-	  i18n_core->address.preeditAttr_id = p->attribute_id;
-	else if (!strcmp(p->name, XNStatusAttributes))
-	  i18n_core->address.statusAttr_id = p->attribute_id;
-	else if (!strcmp(p->name, XNSeparatorofNestedList))
-	  i18n_core->address.separatorAttr_id = p->attribute_id;
+    p->name = attr->name;
+    p->length = strlen(attr->name);
+    p->type = (CARD16)attr->type;
+    p->attribute_id = XrmStringToQuark(p->name);
+    if (!strcmp(p->name, XNPreeditAttributes))
+      i18n_core->address.preeditAttr_id = p->attribute_id;
+    else if (!strcmp(p->name, XNStatusAttributes))
+      i18n_core->address.statusAttr_id = p->attribute_id;
+    else if (!strcmp(p->name, XNSeparatorofNestedList))
+      i18n_core->address.separatorAttr_id = p->attribute_id;
     }
     p->name = (char*)NULL;
 
@@ -138,7 +138,7 @@ Xi18n i18n_core;
 #endif
 {
     XIMAttr *args;
-    int	total_count;
+    int    total_count;
 
     /* init IMAttr list */
     if (i18n_core->address.xim_attr)
@@ -170,12 +170,12 @@ Xi18n i18n_core;
     register int i;
     IMExtList *extensions = (IMExtList*)Default_Extension;
     XIMExt *ext_list = (XIMExt*)i18n_core->address.extension;
-    
+
     for (i = 0; extensions->name != NULL; i++, ext_list++, extensions++) {
-	ext_list->major_opcode = extensions->major_opcode;
-	ext_list->minor_opcode = extensions->minor_opcode;
-	ext_list->name = extensions->name;
-	ext_list->length = strlen(ext_list->name);
+    ext_list->major_opcode = extensions->major_opcode;
+    ext_list->minor_opcode = extensions->minor_opcode;
+    ext_list->name = extensions->name;
+    ext_list->length = strlen(ext_list->name);
     }
     i18n_core->address.ext_num = i;
     return;
