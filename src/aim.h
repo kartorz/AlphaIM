@@ -4,6 +4,8 @@
 #include <string>
 #include "config.h"
 
+#define VERSION  "1.2"
+
 #define IM_NAME "AlphaIM"
 
 #define ICONS_PATH  "theme/hicolor/32x32"

@@ -70,8 +70,6 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	DBusDaemon::getRefrence().start();
-
     Configure::getRefrence().initialization();
 
     gApp = new Application();
@@ -79,5 +77,6 @@ int main(int argc, char* argv[])
     gApp->sig.init();
 //#endif
 	gApp->xim.open();
+	DBusDaemon::getRefrence().start();
 	gApp->xim.eventLoop();
 }

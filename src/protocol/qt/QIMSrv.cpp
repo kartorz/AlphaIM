@@ -5,8 +5,8 @@
 #include "DBusDaemon.h"
 
 #undef PRINTF
-#define PRINTF(fmt, args...)  printf(fmt, ##args)
-//#define PRINTF(fmt, args...)
+//#define PRINTF(fmt, args...)  printf(fmt, ##args)
+#define PRINTF(fmt, args...)
 
 int qic_process_keyevent(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {

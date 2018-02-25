@@ -234,7 +234,7 @@ static bool aim_app_dbus_init()
 		g_error_free (error);
 		return false;
     }
-
+	error = NULL;
 	g_signal_connect (klass->event_proxy,
 					  "g-signal",
 					  G_CALLBACK (aim_app_on_signal),
