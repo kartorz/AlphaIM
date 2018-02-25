@@ -25,11 +25,10 @@
       . Shift + SPACE
 
   - 中英文切换
-      . 左Shift
       . 左(Ctr + Shift)
 
   - 中英文符号切换
-      . 右Shift
+      . 右(Ctr + Shift)
 
   - 提交
       . SPACE
@@ -42,13 +41,15 @@
   - 向前翻页
       . Ctr + F
       . PgUp
-      . 左方向键盘
+      . 左方向键
+	  . 上方向键
       . '-'键
 
   - 向后翻页
       . Ctr + J
       . PgDn
-      . 右方向键盘
+      . 右方向键
+	  . 下方向键
       . '=' 键
 
 许可证
@@ -87,36 +88,32 @@ $ make install
 
 windows
 -------
-暂不支持window 版本， win10的输入法已经蛮好用了，这个输入法同它类似。
+暂不支持window 版本。
 
 
 X11系统配置
 ==========
-. 卸载/删除已经安装的输入法。
+. 卸载/删除已经安装的输入法。 (可选)
    sudo im-config  , 选择 auto/xim
     ~/.xinputrc  run_im auto
 
 . 打开或创建 ~/.xprofile
 . 加入下列内容:
-  export XMODIFIERS=@im=aim
-  export GTK_IM_MODULE=aim
-  export QT_IM_MODULE=aim
-  export QT4_IM_MODULE=aim
+  export GTK_IM_MODULE=AlphaIM
+  export QT_IM_MODULE=AlphaIM
+  export QT_IM_MODULE=AlphaIM
+  export XMODIFIERS=@im=AlphaIM
   eval `dbus-launch --sh-syntax --exit-with-session`
   AlphaIM
 
 . AlphaIM.desktop 拷贝到 .config/autostart
+. libalphaimplatforminputcontextplugin.so 拷贝到 qt 的插件目录/...../qt5/plugins/platforminputcontexts/
 
 软件兼容性
 ========
-目前这个输入法只支持xim协议， 我测试了GTK/QT下的一些常用软件：
+目前这个输入法支持xim和QtIM协议， 我测试了GTK/QT下的一些常用软件：
    kate, gedit, thunderbird, firefox, chrome, libreoffice,  emacs, ....
 都可以支持，如果碰到不能支持的软件， 可以使用kate/gedit 来临时替代输入。
-
-PS:
-linux 下面开发输入法是很一件痛苦的事情， 它缺乏一个像windows系统那样一个统一的标准， 
-仅有一个通用的xim协议，也不是强制标准，基于它的开发库IMdkit,也好久没更新了，我是在freedesktop ftp 里面的
-unsupported/lib 下找到了，还带着一些明显的bug. 
 
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系
