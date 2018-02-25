@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<interface>
+  <menu id="setting">
+    <section>
+      <item>
+        <attribute name="label" translatable="no">用户词组</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="no">快捷键设置</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

@@ -1,6 +1,6 @@
-/** 
- *	@Copyright 2013  AlphaDict
- *	@Authors: LiQiong Lee
+/**
+ *    @Copyright 2013  AlphaDict
+ *    @Authors: LiQiong Lee
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -18,18 +18,18 @@
 namespace ktree {
 template <typename T>
 class kary_tree {
-	typedef typename tree_node<T>::treeNodePtr  treeNodePtr;
+    typedef typename tree_node<T>::treeNodePtr  treeNodePtr;
 public:
     kary_tree():_root(NULL)
     {
     }
 
-	kary_tree(const T& d, int type = 2)
-	{
+    kary_tree(const T& d, int type = 2)
+    {
         _root = newNode(d, type);
-	}
+    }
 
-	~kary_tree() { remove(_root); }
+    ~kary_tree() { remove(_root); }
 
     treeNodePtr newNode(const T& d, int type = 2)
     {
@@ -41,10 +41,10 @@ public:
         return ret;
     }
 
-	treeNodePtr root() const { return _root; }
+    treeNodePtr root() const { return _root; }
 
     // Keep _root
-	void clear() const {
+    void clear() const {
         tree_node<T> *child = _root->begin();
         while (child != NULL) {
             tree_node<T> *next = _root->next();
@@ -54,7 +54,7 @@ public:
     }
 
 private:
-	treeNodePtr _root;
+    treeNodePtr _root;
 };
 
 template <typename T>
@@ -89,13 +89,13 @@ void remove(tree_node<T> *pTree)
     if(p != NULL)
         p->remove(pTree); // Remove node from parent.
 
-	traverse(pTree, erase);
+    traverse(pTree, erase);
 }
 #endif
 template <typename T>
 void traverse(tree_node<T> *pTree, void(*visit)(tree_node<T> *pTree))
 {
-	if(!pTree) return;
+    if(!pTree) return;
     if (pTree->size() == 0) return;
 
     tree_node<T> *child = pTree->begin();
@@ -105,7 +105,7 @@ void traverse(tree_node<T> *pTree, void(*visit)(tree_node<T> *pTree))
         child = next;
     }
 
-	visit(pTree);
+    visit(pTree);
 }
 
 };

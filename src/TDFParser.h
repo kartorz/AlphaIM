@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -15,10 +15,10 @@
  *  It's a table struct, item separated by 'space' or 'tab' .
  *      item  item  .. item
  *      item  item  .. item(mn)
- *  
+ *
  *  Comment Line:
  *      Begin with '%' or '#' .
- *   
+ *
  *  The last line must be ended by '\n', eg, must be ended by a blank line ('\n').
  */
 
@@ -31,7 +31,7 @@
 
 #define TDF_HEADER_START   "@--header--"
 #define TDF_HEADER_END     "@--header-end--"
-#define SEPARATOR_CHARS    " 	"   //SPACE, TABLE
+#define SEPARATOR_CHARS    "     "   //SPACE, TABLE
 #define COMMENT_CHARS      "%#"
 
 // CODING LIST: [utf8, utf16]

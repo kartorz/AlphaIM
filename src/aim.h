@@ -1,22 +1,13 @@
 #ifndef _AIM_H_
 #define _AIM_H_
 
-#include <string>
+#include <string.h>
 #include "config.h"
 
 #define VERSION  "1.2"
 
+#define IM_ID   "alphaim"
 #define IM_NAME "AlphaIM"
-
-#define ICONS_PATH  "theme/hicolor/32x32"
-#define MAX_WORK_THREAD  2
-#define MAX_PREEDIT_PAGE 5
-
-//#define PRINTF(fmt, args...)  printf(fmt, ##args)
-#define PRINTF(fmt, args...)
-
-/* i in [0 .. c-1] */
-#define LOOP(size)  for (int i=0; i<size; i++)
 
 #define AIM_SRV_NAME  "org.freedesktop.AlphaIM"
 #define AIM_SRV_PATH  "/org/freedesktop/AlphaIM"
@@ -24,10 +15,26 @@
 
 #define AIM_NOTIFY_PATH  "/org/freedesktop/AlphaIM/Event"
 #define AIM_NOTIFY_INTF  "org.freedesktop.AlphaIM.Event"
-#define AIM_NOTIFY_MESSAGE     "Message"
+#define AIM_NOTIFY_MESSAGE  "Message"
 
-#define AIM_SRV_QIM_PATH  "/org/freedesktop/AlphaIM/qim"
-#define AIM_SRV_QIM_INTF   "org.freedesktop.AlphaIM.InputContext"
+#define AIM_INPUT_CONTEXT_PATH  "/org/freedesktop/AlphaIM/InputContext"
+#define AIM_INPUT_CONTEXT_INTF  "org.freedesktop.AlphaIM.InputContext"
+
+#define AIM_QT_IC_NAME  "AIMQtIC"
+#define AIM_GTK_IC_NAME "AIMGtkIC"
+
+#define ICONS_PATH  "theme/hicolor/32x32"
+#define MAX_WORK_THREAD  2
+#define MAX_PREEDIT_PAGE 5
+
+#if defined(DEBUG)
+#define PRINTF(fmt, args...) printf(fmt, ##args)
+#else
+#define PRINTF(fmt, args...)
+#endif
+
+/* i in [0 .. c-1] */
+#define LOOP(size)  for (int i=0; i<size; i++)
 
 enum {
     // [iArg1 .. fArg2]: rect.

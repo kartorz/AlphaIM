@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -26,7 +26,7 @@ bool TDFParser::parser(const string& file, const string conding)
 {
     FILE *fDB = fopen(file.c_str(), "rb");
     if (fDB == NULL) {
-        log.e("{TDFParser}: can't open %s\n", file.c_str());
+        logger.e("{TDFParser}: can't open %s\n", file.c_str());
         return false;
     }
 
@@ -77,7 +77,7 @@ bool TDFParser::parser(const string& file, const string conding)
                 vector<string> columns;
                 string strRow = str.substr(rowS, rowE - rowS); // Not include '\n'.
                 rowS = rowE + 1;
- 
+
                 algorithm::trim(strRow);
                 if(strRow.length() == 0)
                     continue;

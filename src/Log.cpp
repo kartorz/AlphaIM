@@ -16,7 +16,7 @@
 
 #define  LOG_FILENAME "alphaim.log"
 
-Log log;
+Log logger;
 
 Log::Log()
 : m_level(LOG_DEBUG)
@@ -34,14 +34,14 @@ Log::Log()
 
 Log::~Log()
 {
-    i("{Log}: close log file\n");
+    i("{Log}: close logger file\n");
     if (m_logFile != stdout)
         fclose(m_logFile);
 }
 
 #define VFPRINT_MSG(l) do {        \
     SpinLock lock(m_crs);          \
-    fprintf(m_logFile, "[%u] %d:  ",Util::getTimeMS(), l);   \
+    fprintf(m_logFile, "[aim] [%u] %d:  ",Util::getTimeMS(), l);   \
     va_list args;                  \
     va_start(args, msg);           \
     vfprintf(m_logFile, msg, args);\

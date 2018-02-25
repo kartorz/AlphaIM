@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <sys/param.h>
 #include <X11/Xlib.h>
@@ -45,7 +45,7 @@ extern Xi18nClient *_Xi18nFindClient();
 static void
 #if NeedFunctionPrototypes
 GetProtocolVersion(CARD16 client_major, CARD16 client_minor,
-		   CARD16 *server_major, CARD16 *server_minor)
+           CARD16 *server_major, CARD16 *server_minor)
 #else
 GetProtocolVersion(client_major, client_minor, server_major, server_minor)
 CARD16 client_major;
@@ -80,7 +80,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(connect_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, imconnect->byte_order);
@@ -91,22 +91,22 @@ unsigned char *p;
     FrameMgrFree(fm);
 
     GetProtocolVersion(imconnect->major_version, imconnect->minor_version,
-		       &server_major_version, &server_minor_version);
+               &server_major_version, &server_minor_version);
 #ifdef PROTOCOL_RICH
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 #endif /* PROTOCOL_RICH */
 
     /* create FrameMgr */
     fm = FrameMgrInit(connect_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -115,7 +115,7 @@ unsigned char *p;
     FrameMgrPutToken(fm, server_minor_version);
 
     _Xi18nSendMessage(ims, connect_id, XIM_CONNECT_REPLY,
-		      0, reply, total_size);
+              0, reply, total_size);
 
     XFree(reply);
     /* free FrameMgr */
@@ -139,11 +139,11 @@ IMProtocol *call_data;
 #ifdef PROTOCOL_RICH
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 #endif /* PROTOCOL_RICH */
 
     _Xi18nSendMessage(ims, connect_id, XIM_DISCONNECT_REPLY,
-		      0, reply, 0);
+              0, reply, 0);
 
     i18n_core->methods.disconnect(ims, connect_id);
     return;
@@ -173,7 +173,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(open_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, str_length);
@@ -189,39 +189,39 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
     if ((i18n_core->address.imvalue_mask & I18N_ON_KEYS) ||
-	(i18n_core->address.imvalue_mask & I18N_OFF_KEYS)) {
-	_Xi18nSendTriggerKey(ims, connect_id);
+    (i18n_core->address.imvalue_mask & I18N_OFF_KEYS)) {
+    _Xi18nSendTriggerKey(ims, connect_id);
     }
     XFree(imopen->lang.name);
 
     /* create FrameMgr */
     fm = FrameMgrInit(open_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* set iteration count for list of imattr */
     FrameMgrSetIterCount(fm, i18n_core->address.im_attr_num);
 
     /* set length of BARRAY item in ximattr_fr */
     for (i = 0; i < i18n_core->address.im_attr_num; i++) {
-	str_size = strlen(i18n_core->address.xim_attr[i].name);
-	FrameMgrSetSize(fm, str_size);
+    str_size = strlen(i18n_core->address.xim_attr[i].name);
+    FrameMgrSetSize(fm, str_size);
     }
     /* set iteration count for list of icattr */
     FrameMgrSetIterCount(fm, i18n_core->address.ic_attr_num);
     /* set length of BARRAY item in xicattr_fr */
     for (i = 0; i < i18n_core->address.ic_attr_num; i++) {
-	str_size = strlen(i18n_core->address.xic_attr[i].name);
-	FrameMgrSetSize(fm, str_size);
+    str_size = strlen(i18n_core->address.xic_attr[i].name);
+    FrameMgrSetSize(fm, str_size);
     }
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -230,22 +230,22 @@ unsigned char *p;
     FrameMgrPutToken(fm, connect_id);
 
     for (i = 0; i < i18n_core->address.im_attr_num; i++) {
-	str_size = FrameMgrGetSize(fm);
-	FrameMgrPutToken(fm, i18n_core->address.xim_attr[i].attribute_id);
-	FrameMgrPutToken(fm, i18n_core->address.xim_attr[i].type);
-	FrameMgrPutToken(fm, str_size);
-	FrameMgrPutToken(fm, i18n_core->address.xim_attr[i].name);
+    str_size = FrameMgrGetSize(fm);
+    FrameMgrPutToken(fm, i18n_core->address.xim_attr[i].attribute_id);
+    FrameMgrPutToken(fm, i18n_core->address.xim_attr[i].type);
+    FrameMgrPutToken(fm, str_size);
+    FrameMgrPutToken(fm, i18n_core->address.xim_attr[i].name);
     }
     for (i = 0; i < i18n_core->address.ic_attr_num; i++) {
-	str_size = FrameMgrGetSize(fm);
-	FrameMgrPutToken(fm, i18n_core->address.xic_attr[i].attribute_id);
-	FrameMgrPutToken(fm, i18n_core->address.xic_attr[i].type);
-	FrameMgrPutToken(fm, str_size);
-	FrameMgrPutToken(fm, i18n_core->address.xic_attr[i].name);
+    str_size = FrameMgrGetSize(fm);
+    FrameMgrPutToken(fm, i18n_core->address.xic_attr[i].attribute_id);
+    FrameMgrPutToken(fm, i18n_core->address.xic_attr[i].type);
+    FrameMgrPutToken(fm, str_size);
+    FrameMgrPutToken(fm, i18n_core->address.xic_attr[i].name);
     }
 
     _Xi18nSendMessage(ims, connect_id, XIM_OPEN_REPLY,
-		      0, reply, total_size);
+              0, reply, total_size);
 
     XFree(reply);
     /* free FrameMgr */
@@ -273,7 +273,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(close_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     FrameMgrGetToken(fm, input_method_ID);
 
@@ -282,18 +282,18 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
     /* create FrameMgr */
     fm = FrameMgrInit(close_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR,
-			  0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR,
+              0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -301,7 +301,7 @@ unsigned char *p;
     FrameMgrPutToken(fm, input_method_ID);
 
     _Xi18nSendMessage(ims, connect_id, XIM_CLOSE_REPLY,
-		      0, reply, total_size);
+              0, reply, total_size);
 
     XFree(reply);
     /* free FrameMgr */
@@ -312,7 +312,7 @@ unsigned char *p;
 static XIMExt *
 #if NeedFunctionPrototypes
 MakeExtensionList(Xi18n i18n_core, XIMStr *lib_extension,
-		  int number, int *reply_number)
+          int number, int *reply_number)
 #else
 MakeExtensionList(i18n_core, lib_extension, number, reply_number)
 Xi18n i18n_core;
@@ -328,16 +328,16 @@ int *reply_number;
 
     *reply_number = 0;
 
-    if (number == 0) {		/* query all extensions */
-	*reply_number = im_ext_len;
+    if (number == 0) {        /* query all extensions */
+    *reply_number = im_ext_len;
     } else {
-	for (i = 0; i < im_ext_len; i++) {
-	    for (j = 0; j < (int)number; j++) 
-	      if (!strcmp(lib_extension[j].name, im_ext[i].name)) {
-		  (*reply_number)++;
-		  break;
-	      }
-	}
+    for (i = 0; i < im_ext_len; i++) {
+        for (j = 0; j < (int)number; j++)
+          if (!strcmp(lib_extension[j].name, im_ext[i].name)) {
+          (*reply_number)++;
+          break;
+          }
+    }
     }
 
     if (!(*reply_number))
@@ -348,28 +348,28 @@ int *reply_number;
       return NULL;
     memset(ext_list, 0, sizeof(XIMExt) * (*reply_number));
 
-    if (number == 0) {		/* query all extensions */
-	for (i = 0; i < im_ext_len; i++) {
-	    ext_list[i].major_opcode = im_ext[i].major_opcode;
-	    ext_list[i].minor_opcode = im_ext[i].minor_opcode;
-	    ext_list[i].length = im_ext[i].length;
-	    ext_list[i].name = malloc(im_ext[i].length + 1);
-	    strcpy(ext_list[i].name, im_ext[i].name);
-	}
+    if (number == 0) {        /* query all extensions */
+    for (i = 0; i < im_ext_len; i++) {
+        ext_list[i].major_opcode = im_ext[i].major_opcode;
+        ext_list[i].minor_opcode = im_ext[i].minor_opcode;
+        ext_list[i].length = im_ext[i].length;
+        ext_list[i].name = malloc(im_ext[i].length + 1);
+        strcpy(ext_list[i].name, im_ext[i].name);
+    }
     } else {
-	int n = 0;
-	for (i = 0; i < im_ext_len; i++) {
-	    for (j = 0; j < (int)number; j++)
-	      if (!strcmp(lib_extension[j].name, im_ext[i].name)) {
-		  ext_list[n].major_opcode = im_ext[i].major_opcode;
-		  ext_list[n].minor_opcode = im_ext[i].minor_opcode;
-		  ext_list[n].length = im_ext[i].length;
-		  ext_list[n].name = malloc(im_ext[i].length + 1);
-		  strcpy(ext_list[n].name, im_ext[i].name);
-		  n++;
-		  break;
-	    }
-	}
+    int n = 0;
+    for (i = 0; i < im_ext_len; i++) {
+        for (j = 0; j < (int)number; j++)
+          if (!strcmp(lib_extension[j].name, im_ext[i].name)) {
+          ext_list[n].major_opcode = im_ext[i].major_opcode;
+          ext_list[n].minor_opcode = im_ext[i].minor_opcode;
+          ext_list[n].length = im_ext[i].length;
+          ext_list[n].name = malloc(im_ext[i].length + 1);
+          strcpy(ext_list[n].name, im_ext[i].name);
+          n++;
+          break;
+        }
+    }
     }
     return ext_list;
 }
@@ -401,7 +401,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(query_extension_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     FrameMgrGetToken(fm, input_method_ID);
     FrameMgrGetToken(fm, byte_length);
@@ -409,55 +409,55 @@ unsigned char *p;
     memset(query_ext->extension, 0, sizeof(XIMStr) * 10);
     number = 0;
     while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
-	char *name;
-	int str_length;
-	FrameMgrGetToken(fm, str_length);
-	FrameMgrSetSize(fm, str_length);
-	query_ext->extension[number].length = str_length;
-	FrameMgrGetToken(fm, name);
-	query_ext->extension[number].name = malloc(str_length + 1);
-	strncpy(query_ext->extension[number].name, name, str_length);
-	query_ext->extension[number].name[str_length] = (char)0;
-	number++;
+    char *name;
+    int str_length;
+    FrameMgrGetToken(fm, str_length);
+    FrameMgrSetSize(fm, str_length);
+    query_ext->extension[number].length = str_length;
+    FrameMgrGetToken(fm, name);
+    query_ext->extension[number].name = malloc(str_length + 1);
+    strncpy(query_ext->extension[number].name, name, str_length);
+    query_ext->extension[number].name[str_length] = (char)0;
+    number++;
     }
     query_ext->number = number;
 
 #ifdef PROTOCOL_RICH
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 #endif /* PROTOCOL_RICH */
 
     /* free FrameMgr */
     FrameMgrFree(fm);
 
     ext_list = MakeExtensionList(i18n_core, query_ext->extension, number,
-				 &reply_number);
+                 &reply_number);
 
     for (i = 0; i < number; i++) {
-	XFree(query_ext->extension[i].name);
+    XFree(query_ext->extension[i].name);
     }
     XFree(query_ext->extension);
 
     /* create FrameMgr */
     fm = FrameMgrInit(query_extension_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* set iteration count for list of extensions */
     FrameMgrSetIterCount(fm, reply_number);
 
     /* set length of BARRAY item in ext_fr */
     for (i = 0; i < reply_number; i++) {
-	str_size = strlen(ext_list[i].name);
-	FrameMgrSetSize(fm, str_size);
+    str_size = strlen(ext_list[i].name);
+    FrameMgrSetSize(fm, str_size);
     }
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR,
-			  0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR,
+              0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -465,20 +465,20 @@ unsigned char *p;
     FrameMgrPutToken(fm, input_method_ID);
 
     for (i = 0; i < reply_number; i++) {
-	str_size = FrameMgrGetSize(fm);
-	FrameMgrPutToken(fm, ext_list[i].major_opcode);
-	FrameMgrPutToken(fm, ext_list[i].minor_opcode);
-	FrameMgrPutToken(fm, str_size);
-	FrameMgrPutToken(fm, ext_list[i].name);
+    str_size = FrameMgrGetSize(fm);
+    FrameMgrPutToken(fm, ext_list[i].major_opcode);
+    FrameMgrPutToken(fm, ext_list[i].minor_opcode);
+    FrameMgrPutToken(fm, str_size);
+    FrameMgrPutToken(fm, ext_list[i].name);
     }
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_QUERY_EXTENSION_REPLY, 0, reply, total_size);
+              XIM_QUERY_EXTENSION_REPLY, 0, reply, total_size);
     XFree(reply);
     /* free FrameMgr */
     FrameMgrFree(fm);
 
     for (i = 0; i < reply_number; i++) {
-	XFree(ext_list[i].name);
+    XFree(ext_list[i].name);
     }
     XFree((char *)ext_list);
     return;
@@ -499,12 +499,12 @@ unsigned char *p;
     extern XimFrameRec sync_reply_fr[];
     CARD16 connect_id = call_data->any.connect_id;
     Xi18nClient *client = (Xi18nClient *)_Xi18nFindClient(i18n_core,
-							  connect_id);
+                              connect_id);
     CARD16 input_method_ID, input_context_ID;
 
     /* create FrameMgr */
     fm = FrameMgrInit(sync_reply_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
     FrameMgrGetToken(fm, input_method_ID);
     FrameMgrGetToken(fm, input_context_ID);
     /* free FrameMgr */
@@ -517,7 +517,7 @@ unsigned char *p;
 static void
 #if NeedFunctionPrototypes
 GetIMValueFromName(Xi18n i18n_core, CARD16 connect_id,
-		   char *buf, char *name, int *length)
+           char *buf, char *name, int *length)
 #else
 GetIMValueFromName(i18n_core, connect_id, buf, name, length)
 Xi18n i18n_core;
@@ -528,48 +528,48 @@ int *length;
 #endif
 {
     register int i;
-    
+
     if (!strcmp(name, XNQueryInputStyle)) {
-	XIMStyles *styles = (XIMStyles*)&i18n_core->address.input_styles;
+    XIMStyles *styles = (XIMStyles*)&i18n_core->address.input_styles;
 
-	*length = sizeof(CARD16) * 2;	/* count_styles, unused */
-	*length += styles->count_styles * sizeof(CARD32);
+    *length = sizeof(CARD16) * 2;    /* count_styles, unused */
+    *length += styles->count_styles * sizeof(CARD32);
 
-	if (buf != NULL) {
-	    FrameMgr fm;
-	    extern XimFrameRec input_styles_fr[];
-	    unsigned char *data = NULL;
-	    int total_size;
-	    /* create FrameMgr */
-	    fm = FrameMgrInit(input_styles_fr, NULL,
-			      _Xi18nNeedSwap(i18n_core, connect_id));
+    if (buf != NULL) {
+        FrameMgr fm;
+        extern XimFrameRec input_styles_fr[];
+        unsigned char *data = NULL;
+        int total_size;
+        /* create FrameMgr */
+        fm = FrameMgrInit(input_styles_fr, NULL,
+                  _Xi18nNeedSwap(i18n_core, connect_id));
 
-	    /* set iteration count for list of input_style */
-	    FrameMgrSetIterCount(fm, styles->count_styles);
+        /* set iteration count for list of input_style */
+        FrameMgrSetIterCount(fm, styles->count_styles);
 
-	    total_size = FrameMgrGetTotalSize(fm);
-	    data = (unsigned char *)malloc(total_size);
-	    if (!data) {
-		return;
-	    }
-	    memset(data, 0, total_size);
-	    FrameMgrSetBuffer(fm, data);
+        total_size = FrameMgrGetTotalSize(fm);
+        data = (unsigned char *)malloc(total_size);
+        if (!data) {
+        return;
+        }
+        memset(data, 0, total_size);
+        FrameMgrSetBuffer(fm, data);
 
-	    FrameMgrPutToken(fm, styles->count_styles);
-	    for (i = 0; i < (int)styles->count_styles; i++) {
-		FrameMgrPutToken(fm, styles->supported_styles[i]);
-	    }
-	    memmove(buf, data, total_size);
-	    /* free FrameMgr */
-	    FrameMgrFree(fm);
-	}
+        FrameMgrPutToken(fm, styles->count_styles);
+        for (i = 0; i < (int)styles->count_styles; i++) {
+        FrameMgrPutToken(fm, styles->supported_styles[i]);
+        }
+        memmove(buf, data, total_size);
+        /* free FrameMgr */
+        FrameMgrFree(fm);
+    }
     }
 }
 
 static XIMAttribute *
 #if NeedFunctionPrototypes
 MakeIMAttributeList(Xi18n i18n_core, CARD16 connect_id,
-		    CARD16 *list, int *number, int *length)
+            CARD16 *list, int *number, int *length)
 #else
 MakeIMAttributeList(i18n_core, connect_id, list, number, length)
 Xi18n i18n_core;
@@ -590,12 +590,12 @@ int *length;
     *length = 0;
     list_num = 0;
     for (i = 0; i < *number; i++) {
-	for (j = 0; j < list_len; j++) {
-	    if (attr[j].attribute_id == list[i]) {
-		list_num++;
-		break;
-	    }
-	}
+    for (j = 0; j < list_len; j++) {
+        if (attr[j].attribute_id == list[i]) {
+        list_num++;
+        break;
+        }
+    }
     }
     attrib_list = (XIMAttribute *)malloc(sizeof(XIMAttribute) * list_num);
     if (!attrib_list)
@@ -604,28 +604,28 @@ int *length;
     number_ret = list_num;
     list_num = 0;
     for (i = 0; i < *number; i++) {
-	for (j = 0; j < list_len; j++) {
-	    if (attr[j].attribute_id == list[i]) {
-		attrib_list[list_num].attribute_id = attr[j].attribute_id;
-		attrib_list[list_num].name_length = attr[j].length;
-		attrib_list[list_num].name = attr[j].name;
-		attrib_list[list_num].type = attr[j].type;
-		GetIMValueFromName(i18n_core, connect_id,
-				   NULL,
-				   attr[j].name, &value_length);
-		attrib_list[list_num].value_length = value_length;
-		attrib_list[list_num].value = (void *)malloc(value_length);
-		memset(attrib_list[list_num].value, 0, value_length);
-		GetIMValueFromName(i18n_core, connect_id,
-				   attrib_list[list_num].value,
-				   attr[j].name, &value_length);
-		*length += sizeof(CARD16) * 2;
-		*length += value_length;
-		*length += IMPAD(value_length);
-		list_num++;
-		break;
-	    }
-	}
+    for (j = 0; j < list_len; j++) {
+        if (attr[j].attribute_id == list[i]) {
+        attrib_list[list_num].attribute_id = attr[j].attribute_id;
+        attrib_list[list_num].name_length = attr[j].length;
+        attrib_list[list_num].name = attr[j].name;
+        attrib_list[list_num].type = attr[j].type;
+        GetIMValueFromName(i18n_core, connect_id,
+                   NULL,
+                   attr[j].name, &value_length);
+        attrib_list[list_num].value_length = value_length;
+        attrib_list[list_num].value = (void *)malloc(value_length);
+        memset(attrib_list[list_num].value, 0, value_length);
+        GetIMValueFromName(i18n_core, connect_id,
+                   attrib_list[list_num].value,
+                   attr[j].name, &value_length);
+        *length += sizeof(CARD16) * 2;
+        *length += value_length;
+        *length += IMPAD(value_length);
+        list_num++;
+        break;
+        }
+    }
     }
     *number = number_ret;
     return attrib_list;
@@ -662,7 +662,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(get_im_values_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     FrameMgrGetToken(fm, input_method_ID);
     FrameMgrGetToken(fm, byte_length);
@@ -672,19 +672,19 @@ unsigned char *p;
     memset(name_list, 0, sizeof(char *) * 20);
     number = 0;
     while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
-	FrameMgrGetToken(fm, im_attrID_list[number]);
-	number++;
+    FrameMgrGetToken(fm, im_attrID_list[number]);
+    number++;
     }
     /* free FrameMgr */
     FrameMgrFree(fm);
 
     name_number = 0;
     for (i = 0; i < number; i++) {
-	for (j = 0; j < i18n_core->address.im_attr_num; j++)
-	  if (i18n_core->address.xim_attr[j].attribute_id == im_attrID_list[i]) {
-	      name_list[name_number++] = i18n_core->address.xim_attr[j].name;
-	      break;
-	  }
+    for (j = 0; j < i18n_core->address.im_attr_num; j++)
+      if (i18n_core->address.xim_attr[j].attribute_id == im_attrID_list[i]) {
+          name_list[name_number++] = i18n_core->address.xim_attr[j].name;
+          break;
+      }
     }
 
     getim->number = name_number;
@@ -693,20 +693,20 @@ unsigned char *p;
 #ifdef PROTOCOL_RICH
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 #endif /* PROTOCOL_RICH */
 
     XFree(name_list);
 
     im_attribute_list = MakeIMAttributeList(i18n_core, connect_id,
-					    im_attrID_list,
-					    &number, &list_len);
+                        im_attrID_list,
+                        &number, &list_len);
     if (im_attrID_list)
       XFree(im_attrID_list);
 
     /* create FrameMgr */
     fm = FrameMgrInit(get_im_values_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     iter_count = number;
 
@@ -715,14 +715,14 @@ unsigned char *p;
 
     /* set length of BARRAY item in ximattribute_fr */
     for (i = 0; i < iter_count; i++) {
-	FrameMgrSetSize(fm, im_attribute_list[i].value_length);
+    FrameMgrSetSize(fm, im_attribute_list[i].value_length);
     }
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -730,12 +730,12 @@ unsigned char *p;
     FrameMgrPutToken(fm, input_method_ID);
 
     for (i = 0; i < iter_count; i++) {
-	FrameMgrPutToken(fm, im_attribute_list[i].attribute_id);
-	FrameMgrPutToken(fm, im_attribute_list[i].value_length);
-	FrameMgrPutToken(fm, im_attribute_list[i].value);
+    FrameMgrPutToken(fm, im_attribute_list[i].attribute_id);
+    FrameMgrPutToken(fm, im_attribute_list[i].value_length);
+    FrameMgrPutToken(fm, im_attribute_list[i].value);
     }
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_GET_IM_VALUES_REPLY, 0, reply, total_size);
+              XIM_GET_IM_VALUES_REPLY, 0, reply, total_size);
     XFree(reply);
     /* free FrameMgr */
     FrameMgrFree(fm);
@@ -806,7 +806,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(set_ic_focus_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -817,7 +817,7 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
     return;
 }
 
@@ -841,7 +841,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(unset_ic_focus_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -852,7 +852,7 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
     return;
 }
 
@@ -878,7 +878,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(destroy_ic_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -889,17 +889,17 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
     /* create FrameMgr */
     fm = FrameMgrInit(destroy_ic_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -908,7 +908,7 @@ unsigned char *p;
     FrameMgrPutToken(fm, destroy->icid);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_DESTROY_IC_REPLY, 0, reply, total_size);
+              XIM_DESTROY_IC_REPLY, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     return;
@@ -936,7 +936,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(reset_ic_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -947,11 +947,11 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
     /* create FrameMgr */
     fm = FrameMgrInit(reset_ic_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* set length of STRING8 */
     FrameMgrSetSize(fm, resetic->length);
@@ -959,8 +959,8 @@ unsigned char *p;
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -970,7 +970,7 @@ unsigned char *p;
     FrameMgrPutToken(fm, resetic->commit_string);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_RESET_IC_REPLY, 0, reply, total_size);
+              XIM_RESET_IC_REPLY, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     return;
@@ -979,11 +979,11 @@ unsigned char *p;
 static int
 #if NeedFunctionPrototypes
 WireEventToEvent(Xi18n i18n_core, xEvent *event,
-		 CARD16 serial, XEvent *ev)
+         CARD16 serial, XEvent *ev)
 #else
 WireEventToEvent(i18n_core, event, serial, ev)
 Xi18n i18n_core;
-xEvent *event;			/* wire protocol event */
+xEvent *event;            /* wire protocol event */
 CARD16 serial;
 XEvent *ev;
 #endif
@@ -995,18 +995,18 @@ XEvent *ev;
     switch (ev->type = event->u.u.type & 0x7f) {
       case KeyPress:
       case KeyRelease:
-	((XKeyEvent *)ev)->keycode = event->u.u.detail;
-	((XKeyEvent *)ev)->window = event->u.keyButtonPointer.event;
-	((XKeyEvent *)ev)->state = event->u.keyButtonPointer.state;
-	((XKeyEvent *)ev)->time = event->u.keyButtonPointer.time;
-	((XKeyEvent *)ev)->root = event->u.keyButtonPointer.root;
-	((XKeyEvent *)ev)->x = event->u.keyButtonPointer.eventX;
-	((XKeyEvent *)ev)->y = event->u.keyButtonPointer.eventY;
-	((XKeyEvent *)ev)->x_root = 0;
-	((XKeyEvent *)ev)->y_root = 0;
-	return True;
+    ((XKeyEvent *)ev)->keycode = event->u.u.detail;
+    ((XKeyEvent *)ev)->window = event->u.keyButtonPointer.event;
+    ((XKeyEvent *)ev)->state = event->u.keyButtonPointer.state;
+    ((XKeyEvent *)ev)->time = event->u.keyButtonPointer.time;
+    ((XKeyEvent *)ev)->root = event->u.keyButtonPointer.root;
+    ((XKeyEvent *)ev)->x = event->u.keyButtonPointer.eventX;
+    ((XKeyEvent *)ev)->y = event->u.keyButtonPointer.eventY;
+    ((XKeyEvent *)ev)->x_root = 0;
+    ((XKeyEvent *)ev)->y_root = 0;
+    return True;
       default:
-	break;
+    break;
     }
     return False;
 }
@@ -1032,7 +1032,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(forward_event_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -1046,10 +1046,10 @@ unsigned char *p;
     FrameMgrFree(fm);
 
     if (WireEventToEvent(i18n_core, &wire_event,
-			 forward->serial_number,&forward->event) == True) {
-	if (i18n_core->address.improto)
-	  if (!(i18n_core->address.improto(ims, call_data)))
-	    return;
+             forward->serial_number,&forward->event) == True) {
+    if (i18n_core->address.improto)
+      if (!(i18n_core->address.improto(ims, call_data)))
+        return;
     }
     return;
 }
@@ -1057,7 +1057,7 @@ unsigned char *p;
 static void
 #if NeedFunctionPrototypes
 ExtForwardKeyEventMessageProc(XIMS ims, IMProtocol *call_data,
-			      unsigned char *p)
+                  unsigned char *p)
 #else
 ExtForwardKeyEventMessageProc(ims, call_data, p)
 XIMS ims;
@@ -1079,7 +1079,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(ext_forward_keyevent_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
     FrameMgrGetToken(fm, forward->icid);
@@ -1095,8 +1095,8 @@ unsigned char *p;
     FrameMgrFree(fm);
 
     if (type != KeyPress) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     /* make a faked keypress event */
     ev->type = (int)type;
@@ -1115,7 +1115,7 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
     return;
 }
 
@@ -1139,7 +1139,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(ext_move_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -1152,7 +1152,7 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
     return;
 }
 
@@ -1168,18 +1168,18 @@ unsigned char *p;
 {
     switch (call_data->any.minor_code) {
       case XIM_EXT_FORWARD_KEYEVENT:
-	ExtForwardKeyEventMessageProc(ims, call_data, p);
-	break;
+    ExtForwardKeyEventMessageProc(ims, call_data, p);
+    break;
       case XIM_EXT_MOVE:
-	ExtMoveMessageProc(ims, call_data, p);
-	break;
+    ExtMoveMessageProc(ims, call_data, p);
+    break;
     }
 }
 
 static void
 #if NeedFunctionPrototypes
 TriggerNotifyMessageProc(XIMS ims, IMProtocol *call_data,
-			 unsigned char *p)
+             unsigned char *p)
 #else
 TriggerNotifyMessageProc(ims, call_data, p)
 XIMS ims;
@@ -1200,7 +1200,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(trigger_notify_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
@@ -1221,13 +1221,13 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(trigger_notify_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -1241,19 +1241,19 @@ unsigned char *p;
        sent after XIM_SET_EVENT_MASK in case of
        XIM_TRIGGER_NOTIFY(flag == OFF).
        */
-    if (flag == 0) {	/* on key */
-	_Xi18nSendMessage(ims, connect_id, XIM_TRIGGER_NOTIFY_REPLY, 0,
-			  reply, total_size);
-	IMPreeditStart(ims, (XPointer)call_data);
+    if (flag == 0) {    /* on key */
+    _Xi18nSendMessage(ims, connect_id, XIM_TRIGGER_NOTIFY_REPLY, 0,
+              reply, total_size);
+    IMPreeditStart(ims, (XPointer)call_data);
     }
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 
-    if (flag == 1) {	/* off key */
-	IMPreeditEnd(ims, (XPointer)call_data);
-	_Xi18nSendMessage(ims, connect_id, XIM_TRIGGER_NOTIFY_REPLY, 0,
-			  reply, total_size);
+    if (flag == 1) {    /* off key */
+    IMPreeditEnd(ims, (XPointer)call_data);
+    _Xi18nSendMessage(ims, connect_id, XIM_TRIGGER_NOTIFY_REPLY, 0,
+              reply, total_size);
     }
     /* free FrameMgr */
     FrameMgrFree(fm);
@@ -1264,7 +1264,7 @@ unsigned char *p;
 static INT16
 #if NeedFunctionPrototypes
 ChooseEncoding(Xi18n i18n_core,
-	       IMEncodingNegotiationStruct *enc_nego)
+           IMEncodingNegotiationStruct *enc_nego)
 #else
 ChooseEncoding(i18n_core, enc_nego)
 Xi18n i18n_core;
@@ -1278,13 +1278,13 @@ IMEncodingNegotiationStruct *enc_nego;
 
     p = (XIMEncodings*)&address->encoding_list;
     for (i = 0; i < (int)p->count_encodings; i++) {
-	for (j = 0; j < (int)enc_nego->encoding_number; j++) {
-	    if (!strcmp(p->supported_encodings[i],
-			enc_nego->encoding[j].name)) {
-		enc_index = j;
-		break;
-	    }
-	}
+    for (j = 0; j < (int)enc_nego->encoding_number; j++) {
+        if (!strcmp(p->supported_encodings[i],
+            enc_nego->encoding[j].name)) {
+        enc_index = j;
+        break;
+        }
+    }
     }
     /*
       Encoinding Negotiation isn't supported yet in the IMlibrary, so
@@ -1299,7 +1299,7 @@ IMEncodingNegotiationStruct *enc_nego;
 static void
 #if NeedFunctionPrototypes
 EncodingNegotiatonMessageProc(XIMS ims, IMProtocol *call_data,
-			      unsigned char *p)
+                  unsigned char *p)
 #else
 EncodingNegotiatonMessageProc(ims, call_data, p)
 XIMS ims;
@@ -1321,49 +1321,49 @@ unsigned char *p;
     CARD16 input_method_ID;
 
     fm = FrameMgrInit(encoding_negotiation_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     FrameMgrGetToken(fm, input_method_ID);
 
     /* get ENCODING STR field */
     FrameMgrGetToken(fm, byte_length);
     if (byte_length > 0) {
-	enc_nego->encoding = (XIMStr *)malloc(sizeof(XIMStr) * 10);
-	memset(enc_nego->encoding, 0, sizeof(XIMStr) * 10);
-	i = 0;
-	while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
-	    char *name;
-	    int str_length;
-	    FrameMgrGetToken(fm, str_length);
-	    FrameMgrSetSize(fm, str_length);
-	    enc_nego->encoding[i].length = str_length;
-	    FrameMgrGetToken(fm, name);
-	    enc_nego->encoding[i].name = malloc(str_length + 1);
-	    strncpy(enc_nego->encoding[i].name, name, str_length);
-	    enc_nego->encoding[i].name[str_length] = (char)0;
-	    i++;
-	}
-	enc_nego->encoding_number = i;
+    enc_nego->encoding = (XIMStr *)malloc(sizeof(XIMStr) * 10);
+    memset(enc_nego->encoding, 0, sizeof(XIMStr) * 10);
+    i = 0;
+    while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
+        char *name;
+        int str_length;
+        FrameMgrGetToken(fm, str_length);
+        FrameMgrSetSize(fm, str_length);
+        enc_nego->encoding[i].length = str_length;
+        FrameMgrGetToken(fm, name);
+        enc_nego->encoding[i].name = malloc(str_length + 1);
+        strncpy(enc_nego->encoding[i].name, name, str_length);
+        enc_nego->encoding[i].name[str_length] = (char)0;
+        i++;
+    }
+    enc_nego->encoding_number = i;
     }
     /* get ENCODING INFO field */
     FrameMgrGetToken(fm, byte_length);
     if (byte_length > 0) {
-	enc_nego->encodinginfo = (XIMStr *)malloc(sizeof(XIMStr) * 10);
-	memset(enc_nego->encoding, 0, sizeof(XIMStr) * 10);
-	i = 0;
-	while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
-	    char *name;
-	    int str_length;
-	    FrameMgrGetToken(fm, str_length);
-	    FrameMgrSetSize(fm, str_length);
-	    enc_nego->encodinginfo[i].length = str_length;
-	    FrameMgrGetToken(fm, name);
-	    enc_nego->encodinginfo[i].name = malloc(str_length + 1);
-	    strncpy(enc_nego->encodinginfo[i].name, name, str_length);
-	    enc_nego->encodinginfo[i].name[str_length] = (char)0;
-	    i++;
-	}
-	enc_nego->encoding_info_number = i;
+    enc_nego->encodinginfo = (XIMStr *)malloc(sizeof(XIMStr) * 10);
+    memset(enc_nego->encoding, 0, sizeof(XIMStr) * 10);
+    i = 0;
+    while (FrameMgrIsIterLoopEnd(fm, &status) == False) {
+        char *name;
+        int str_length;
+        FrameMgrGetToken(fm, str_length);
+        FrameMgrSetSize(fm, str_length);
+        enc_nego->encodinginfo[i].length = str_length;
+        FrameMgrGetToken(fm, name);
+        enc_nego->encodinginfo[i].name = malloc(str_length + 1);
+        strncpy(enc_nego->encodinginfo[i].name, name, str_length);
+        enc_nego->encodinginfo[i].name[str_length] = (char)0;
+        i++;
+    }
+    enc_nego->encoding_info_number = i;
     }
 
     enc_nego->enc_index = ChooseEncoding(i18n_core, enc_nego);
@@ -1372,7 +1372,7 @@ unsigned char *p;
 #ifdef PROTOCOL_RICH
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
 #endif /* PROTOCOL_RICH */
 
     /* free FrameMgr */
@@ -1380,13 +1380,13 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(encoding_negotiation_reply_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -1396,17 +1396,17 @@ unsigned char *p;
     FrameMgrPutToken(fm, enc_nego->enc_index);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_ENCODING_NEGOTIATION_REPLY, 0, reply, total_size);
+              XIM_ENCODING_NEGOTIATION_REPLY, 0, reply, total_size);
     XFree(reply);
 
     for (i = 0; i < (int)enc_nego->encoding_number; i++) {
-	XFree(enc_nego->encoding[i].name);
+    XFree(enc_nego->encoding[i].name);
     }
     /* free data for encoding list */
     if (enc_nego->encoding != NULL) XFree(enc_nego->encoding);
 
     for (i = 0; i < (int)enc_nego->encoding_info_number; i++) {
-	XFree(enc_nego->encodinginfo[i].name);
+    XFree(enc_nego->encodinginfo[i].name);
     }
     if (enc_nego->encodinginfo != NULL) XFree(enc_nego->encodinginfo);
 
@@ -1418,7 +1418,7 @@ unsigned char *p;
 void
 #if NeedFunctionPrototypes
 PreeditStartReplyMessageProc(XIMS ims, IMProtocol *call_data,
-			     unsigned char *p)
+                 unsigned char *p)
 #else
 PreeditStartReplyMessageProc(ims, call_data, p)
 XIMS ims;
@@ -1436,7 +1436,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(preedit_start_reply_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
     FrameMgrGetToken(fm, preedit_CB->icid);
@@ -1447,14 +1447,14 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
     return;
 }
 
 void
 #if NeedFunctionPrototypes
 PreeditCaretReplyMessageProc(XIMS ims, IMProtocol *call_data,
-			     unsigned char *p)
+                 unsigned char *p)
 #else
 PreeditCaretReplyMessageProc(ims, call_data, p)
 XIMS ims;
@@ -1474,7 +1474,7 @@ unsigned char *p;
 
     /* create FrameMgr */
     fm = FrameMgrInit(preedit_caret_reply_fr, (char *)p,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
     /* get data */
     FrameMgrGetToken(fm, input_method_ID);
     FrameMgrGetToken(fm, preedit_CB->icid);
@@ -1485,14 +1485,14 @@ unsigned char *p;
 
     if (i18n_core->address.improto)
       if (!(i18n_core->address.improto(ims, call_data)))
-	return;
+    return;
     return;
 }
 
 void
 #if NeedFunctionPrototypes
 StrConvReplyMessageProc(XIMS ims, IMProtocol *call_data,
-			unsigned char *p)
+            unsigned char *p)
 #else
 StrConvReplyMessageProc(ims, call_data, p)
 XIMS ims;
@@ -1512,7 +1512,7 @@ Xi18nClient *client;
 unsigned char *p;
 #endif
 {
-    XIMPending	 *new, *last;
+    XIMPending     *new, *last;
 
     if ((new = (XIMPending *)malloc(sizeof(XIMPending))) == NULL)
       return;
@@ -1521,8 +1521,8 @@ unsigned char *p;
     if (!client->pending)
       client->pending = new;
     else {
-	for (last = client->pending; last->next; last = last->next);
-	last->next = new;
+    for (last = client->pending; last->next; last = last->next);
+    last->next = new;
     }
     return;
 }
@@ -1538,30 +1538,30 @@ CARD16 connect_id;
 {
     Xi18n i18n_core = ims->protocol;
     Xi18nClient *client = (Xi18nClient *)_Xi18nFindClient(i18n_core,
-							  connect_id);
+                              connect_id);
 
     while (client->sync == False && client->pending != NULL) {
-	XimProtoHdr *hdr = (XimProtoHdr *)client->pending->p;
-	unsigned char *p1 = (unsigned char *)(hdr + 1);
-	IMProtocol call_data;
+    XimProtoHdr *hdr = (XimProtoHdr *)client->pending->p;
+    unsigned char *p1 = (unsigned char *)(hdr + 1);
+    IMProtocol call_data;
 
-	call_data.major_code = hdr->major_opcode;
-	call_data.any.minor_code = hdr->minor_opcode;
-	call_data.any.connect_id = connect_id;
+    call_data.major_code = hdr->major_opcode;
+    call_data.any.minor_code = hdr->minor_opcode;
+    call_data.any.connect_id = connect_id;
 
-	switch (hdr->major_opcode) {
-	  case XIM_FORWARD_EVENT:
-	    ForwardEventMessageProc(ims, &call_data, p1);
-	    break;
-	  default:
-	    break;
-	}
-	XFree(hdr);
-	{
-	    XIMPending *old = client->pending;
-	    client->pending = old->next;
-	    XFree(old);
-	}
+    switch (hdr->major_opcode) {
+      case XIM_FORWARD_EVENT:
+        ForwardEventMessageProc(ims, &call_data, p1);
+        break;
+      default:
+        break;
+    }
+    XFree(hdr);
+    {
+        XIMPending *old = client->pending;
+        client->pending = old->next;
+        XFree(old);
+    }
     }
     return;
 }
@@ -1569,7 +1569,7 @@ CARD16 connect_id;
 void
 #if NeedFunctionPrototypes
 _Xi18nMessageHandler(XIMS ims, CARD16 connect_id,
-		     unsigned char *p, Bool *delete)
+             unsigned char *p, Bool *delete)
 #else
 _Xi18nMessageHandler(ims, connect_id, p, delete)
 XIMS ims;
@@ -1578,12 +1578,12 @@ unsigned char *p;
 Bool *delete;
 #endif
 {
-    XimProtoHdr	*hdr = (XimProtoHdr *)p;
+    XimProtoHdr    *hdr = (XimProtoHdr *)p;
     unsigned char *p1 = (unsigned char *)(hdr + 1);
     IMProtocol call_data;
     Xi18n i18n_core = ims->protocol;
     Xi18nClient *client = (Xi18nClient *)_Xi18nFindClient(i18n_core,
-							  connect_id);
+                              connect_id);
     memset(&call_data, 0, sizeof(IMProtocol));
     //printf("joni debug _Xi18nMessageHandler\n");
     call_data.major_code = hdr->major_opcode;
@@ -1592,77 +1592,77 @@ Bool *delete;
 
     switch (call_data.major_code) {
       case XIM_CONNECT:
-	ConnectMessageProc(ims, &call_data, p1);
-	break;
+    ConnectMessageProc(ims, &call_data, p1);
+    break;
       case XIM_DISCONNECT:
-	DisConnectMessageProc(ims, &call_data);
-	break;
+    DisConnectMessageProc(ims, &call_data);
+    break;
       case XIM_OPEN:
-	OpenMessageProc(ims, &call_data, p1);
-	break;
+    OpenMessageProc(ims, &call_data, p1);
+    break;
       case XIM_CLOSE:
-	CloseMessageProc(ims, &call_data, p1);
-	break;
+    CloseMessageProc(ims, &call_data, p1);
+    break;
       case XIM_QUERY_EXTENSION:
-	QueryExtensionMessageProc(ims, &call_data, p1);
-	break;
+    QueryExtensionMessageProc(ims, &call_data, p1);
+    break;
       case XIM_GET_IM_VALUES:
-	GetIMValuesMessageProc(ims, &call_data, p1);
-	break;
+    GetIMValuesMessageProc(ims, &call_data, p1);
+    break;
       case XIM_CREATE_IC:
-	CreateICMessageProc(ims, &call_data, p1);
-	break;
+    CreateICMessageProc(ims, &call_data, p1);
+    break;
       case XIM_SET_IC_VALUES:
-	SetICValuesMessageProc(ims, &call_data, p1);
-	break;
+    SetICValuesMessageProc(ims, &call_data, p1);
+    break;
       case XIM_GET_IC_VALUES:
-	GetICValuesMessageProc(ims, &call_data, p1);
-	break;
+    GetICValuesMessageProc(ims, &call_data, p1);
+    break;
       case XIM_SET_IC_FOCUS:
-	SetICFocusMessageProc(ims, &call_data, p1);
-	break;
+    SetICFocusMessageProc(ims, &call_data, p1);
+    break;
       case XIM_UNSET_IC_FOCUS:
-	UnsetICFocusMessageProc(ims, &call_data, p1);
-	break;
+    UnsetICFocusMessageProc(ims, &call_data, p1);
+    break;
       case XIM_DESTROY_IC:
-	DestroyICMessageProc(ims, &call_data, p1);
-	break;
+    DestroyICMessageProc(ims, &call_data, p1);
+    break;
       case XIM_RESET_IC:
-	ResetICMessageProc(ims, &call_data, p1);
-	break;
+    ResetICMessageProc(ims, &call_data, p1);
+    break;
       case XIM_FORWARD_EVENT:
-	if (client->sync == True) {
-	    AddQueue(client, p);
-	    *delete = False;
-	} else {
-	    ForwardEventMessageProc(ims, &call_data, p1);
-	}
-	break;
+    if (client->sync == True) {
+        AddQueue(client, p);
+        *delete = False;
+    } else {
+        ForwardEventMessageProc(ims, &call_data, p1);
+    }
+    break;
       case XIM_EXTENSION:
-	ExtensionMessageProc(ims, &call_data, p1);
-	break;
+    ExtensionMessageProc(ims, &call_data, p1);
+    break;
       case XIM_SYNC:
-	break;
+    break;
       case XIM_SYNC_REPLY:
-	SyncReplyMessageProc(ims, &call_data, p1);
-	ProcessQueue(ims, connect_id);
-	break;
+    SyncReplyMessageProc(ims, &call_data, p1);
+    ProcessQueue(ims, connect_id);
+    break;
       case XIM_TRIGGER_NOTIFY:
-	TriggerNotifyMessageProc(ims, &call_data, p1);
-	break;
+    TriggerNotifyMessageProc(ims, &call_data, p1);
+    break;
       case XIM_ENCODING_NEGOTIATION:
-	EncodingNegotiatonMessageProc(ims, &call_data, p1);
-	break;
+    EncodingNegotiatonMessageProc(ims, &call_data, p1);
+    break;
       case XIM_PREEDIT_START_REPLY:
-	PreeditStartReplyMessageProc(ims, &call_data, p1);
-	break;
+    PreeditStartReplyMessageProc(ims, &call_data, p1);
+    break;
       case XIM_PREEDIT_CARET_REPLY:
-	PreeditCaretReplyMessageProc(ims, &call_data, p1);
-	break;
+    PreeditCaretReplyMessageProc(ims, &call_data, p1);
+    break;
       case XIM_STR_CONVERSION_REPLY:
-	StrConvReplyMessageProc(ims, &call_data, p1);
-	break;
+    StrConvReplyMessageProc(ims, &call_data, p1);
+    break;
       default:
-	break;
+    break;
     }
 }

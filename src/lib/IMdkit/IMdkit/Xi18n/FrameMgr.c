@@ -3,13 +3,13 @@ Copyright 1993, 1994 by Digital Equipment Corporation, Maynard, Massachusetts,
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the names of Digital or MIT not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -34,15 +34,15 @@ SOFTWARE.
 /* For byte swapping */
 
 #define Swap16(p, n) ((p)->byte_swap ?       \
-		      (((n) << 8 & 0xff00) | \
-		       ((n) >> 8 & 0xff)     \
-		      ) : n)
+              (((n) << 8 & 0xff00) | \
+               ((n) >> 8 & 0xff)     \
+              ) : n)
 #define Swap32(p, n) ((p)->byte_swap ?            \
-		      (((n) << 24 & 0xff000000) | \
-		       ((n) <<  8 & 0xff0000) |   \
-		       ((n) >>  8 & 0xff00) |     \
-		       ((n) >> 24 & 0xff)         \
-		      ) : n)
+              (((n) << 24 & 0xff000000) | \
+               ((n) <<  8 & 0xff0000) |   \
+               ((n) >>  8 & 0xff00) |     \
+               ((n) >> 24 & 0xff)         \
+              ) : n)
 
 /* Type definition */
 
@@ -51,15 +51,15 @@ typedef struct _Iter *Iter;
 typedef struct _FrameInst *FrameInst;
 
 typedef union {
-    int num;		/* For BARRAY */
-    FrameInst fi;	/* For POINTER */
-    Iter iter;		/* For ITER */
+    int num;        /* For BARRAY */
+    FrameInst fi;    /* For POINTER */
+    Iter iter;        /* For ITER */
 } ExtraDataRec, *ExtraData;
 
 typedef struct _Chain {
-	ExtraDataRec d;
-	int frame_no;
-	struct _Chain *next;
+    ExtraDataRec d;
+    int frame_no;
+    struct _Chain *next;
 } ChainRec, *Chain;
 
 typedef struct _ChainMgr {
@@ -87,9 +87,9 @@ typedef struct _FrameInst {
 
 typedef void  (*IterStartWatchProc)(
 #if NeedFunctionPrototypes
-				    Iter it, void* client_data
+                    Iter it, void* client_data
 #endif
-				    );
+                    );
 
 typedef struct _Iter {
     XimFrame template;
@@ -115,8 +115,8 @@ typedef struct _FrameMgr {
 typedef union {
     int num;          /* For BARRAY and PAD */
     struct {          /* For COUNTER_* */
-	Iter iter;        
-	Bool is_byte_len;
+    Iter iter;
+    Bool is_byte_len;
     } counter;
 } XimFrameTypeInfoRec, *XimFrameTypeInfo;
 
@@ -150,7 +150,7 @@ static void _IterStartWatch(Iter it, void* client_data);
 
 static ExtraData ChainMgrGetExtraData(ChainMgr cm, int frame_no);
 static ExtraData ChainMgrSetData(ChainMgr cm, int frame_no,
-				 ExtraDataRec data);
+                 ExtraDataRec data);
 static Bool ChainIterGetNext(ChainIter ci, int* frame_no, ExtraData d);
 static int _FrameInstIncrement(XimFrame frame, int count);
 static int _FrameInstDecrement(XimFrame frame, int count);
@@ -201,7 +201,7 @@ static Bool _FrameMgrProcessPadding();
 #endif
 
 #define IterGetIterCount(it) ((it)->allow_expansion ? \
-			      NO_VALUE : (it)->max_count)
+                  NO_VALUE : (it)->max_count)
 
 #define IterFixIteration(it) ((it)->allow_expansion = False)
 
@@ -212,9 +212,9 @@ static Bool _FrameMgrProcessPadding();
     Chain tmp, cur = (cm)->top;\
 \
     while (cur) {\
-	tmp = cur->next;\
-	Xfree(cur);\
-	cur = tmp;\
+    tmp = cur->next;\
+    Xfree(cur);\
+    cur = tmp;\
     }\
 }
 #define ChainIterInit(ci, cm) {\
@@ -251,7 +251,7 @@ Bool byte_swap;
 
 #if NeedFunctionPrototypes
 void FrameMgrInitWithData(FrameMgr fm, XimFrame frame, void* area,
-			  Bool byte_swap)
+              Bool byte_swap)
 #else
 void FrameMgrInitWithData(fm, frame, area, byte_swap)
 FrameMgr fm;
@@ -288,7 +288,7 @@ void* area;
 #endif
 {
     if (fm->area) {
-	return FmBufExist;
+    return FmBufExist;
     }
     fm->area = (char *)area;
     return FmSuccess;
@@ -307,112 +307,112 @@ int data_size;
     XimFrameTypeInfoRec info;
 
     if (fm->total_size != NO_VALUE && fm->idx >= fm->total_size)
-	return FmNoMoreData;
+    return FmNoMoreData;
 
     type = FrameInstGetNextType(fm->fi, &info);
 
     if (type & COUNTER_MASK) {
-	unsigned long input_length;
+    unsigned long input_length;
 
-	if (info.counter.is_byte_len) {
-	    if ((input_length = IterGetTotalSize(info.counter.iter))
-		== NO_VALUE) {
-		return FmCannotCalc;
-	    }
-	} else {
-	    if ((input_length = IterGetIterCount(info.counter.iter))
-		== NO_VALUE) {
-		return FmCannotCalc;
-	    }
-	}
-	if (type == COUNTER_BIT8) {
-	    *(CARD8*)(fm->area + fm->idx) = input_length;
-	    fm->idx++;
-	} else if (type == COUNTER_BIT16) {
-	    *(CARD16*)(fm->area + fm->idx) = Swap16(fm, input_length);
-	    fm->idx += 2;
-	} else if (type == COUNTER_BIT32) {
-	    *(CARD32*)(fm->area + fm->idx) = Swap32(fm, input_length);
-	    fm->idx += 4;
-	}
-	_FrameMgrPutToken(fm, data, data_size);
-	return FmSuccess;
+    if (info.counter.is_byte_len) {
+        if ((input_length = IterGetTotalSize(info.counter.iter))
+        == NO_VALUE) {
+        return FmCannotCalc;
+        }
+    } else {
+        if ((input_length = IterGetIterCount(info.counter.iter))
+        == NO_VALUE) {
+        return FmCannotCalc;
+        }
+    }
+    if (type == COUNTER_BIT8) {
+        *(CARD8*)(fm->area + fm->idx) = input_length;
+        fm->idx++;
+    } else if (type == COUNTER_BIT16) {
+        *(CARD16*)(fm->area + fm->idx) = Swap16(fm, input_length);
+        fm->idx += 2;
+    } else if (type == COUNTER_BIT32) {
+        *(CARD32*)(fm->area + fm->idx) = Swap32(fm, input_length);
+        fm->idx += 4;
+    }
+    _FrameMgrPutToken(fm, data, data_size);
+    return FmSuccess;
     }
 
     if (type == BIT8) {
-	if (data_size == sizeof(unsigned char)) {
-	    unsigned long num = *(unsigned char*)data;
-	    *(CARD8*)(fm->area + fm->idx) = num;
-	} else if (data_size == sizeof(unsigned short)) {
-	    unsigned long num = *(unsigned short*)data;
-	    *(CARD8*)(fm->area + fm->idx) = num;
-	} else if (data_size == sizeof(unsigned int)) {
-	    unsigned long num = *(unsigned int*)data;
-	    *(CARD8*)(fm->area + fm->idx) = num;
-	} else if (data_size == sizeof(unsigned long)) {
-	    unsigned long num = *(unsigned long*)data;
-	    *(CARD8*)(fm->area + fm->idx) = num;
-	} else {
-	    ;/* Should never reached */
-	}
-	fm->idx++;
-	return FmSuccess;
+    if (data_size == sizeof(unsigned char)) {
+        unsigned long num = *(unsigned char*)data;
+        *(CARD8*)(fm->area + fm->idx) = num;
+    } else if (data_size == sizeof(unsigned short)) {
+        unsigned long num = *(unsigned short*)data;
+        *(CARD8*)(fm->area + fm->idx) = num;
+    } else if (data_size == sizeof(unsigned int)) {
+        unsigned long num = *(unsigned int*)data;
+        *(CARD8*)(fm->area + fm->idx) = num;
+    } else if (data_size == sizeof(unsigned long)) {
+        unsigned long num = *(unsigned long*)data;
+        *(CARD8*)(fm->area + fm->idx) = num;
+    } else {
+        ;/* Should never reached */
+    }
+    fm->idx++;
+    return FmSuccess;
     } else if (type == BIT16) {
-	if (data_size == sizeof(unsigned char)) {
-	    unsigned long num = *(unsigned char*)data;
-	    *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
-	} else if (data_size == sizeof(unsigned short)) {
-	    unsigned long num = *(unsigned short*)data;
-	    *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
-	} else if (data_size == sizeof(unsigned int)) {
-	    unsigned long num = *(unsigned int*)data;
-	    *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
-	} else if (data_size == sizeof(unsigned long)) {
-	    unsigned long num = *(unsigned long*)data;
-	    *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
-	} else {
-	    ;/* Should never reached */
-	}
-	fm->idx += 2;
-	return FmSuccess;
+    if (data_size == sizeof(unsigned char)) {
+        unsigned long num = *(unsigned char*)data;
+        *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
+    } else if (data_size == sizeof(unsigned short)) {
+        unsigned long num = *(unsigned short*)data;
+        *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
+    } else if (data_size == sizeof(unsigned int)) {
+        unsigned long num = *(unsigned int*)data;
+        *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
+    } else if (data_size == sizeof(unsigned long)) {
+        unsigned long num = *(unsigned long*)data;
+        *(CARD16*)(fm->area + fm->idx) = Swap16(fm, num);
+    } else {
+        ;/* Should never reached */
+    }
+    fm->idx += 2;
+    return FmSuccess;
     } else if (type == BIT32) {
-	if (data_size == sizeof(unsigned char)) {
-	    unsigned long num = *(unsigned char*)data;
-	    *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
-	} else if (data_size == sizeof(unsigned short)) {
-	    unsigned long num = *(unsigned short*)data;
-	    *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
-	} else if (data_size == sizeof(unsigned int)) {
-	    unsigned long num = *(unsigned int*)data;
-	    *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
-	} else if (data_size == sizeof(unsigned long)) {
-	    unsigned long num = *(unsigned long*)data;
-	    *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
-	} else {
-	    ;/* Should never reached */
-	}
-	fm->idx += 4;
-	return FmSuccess;
+    if (data_size == sizeof(unsigned char)) {
+        unsigned long num = *(unsigned char*)data;
+        *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
+    } else if (data_size == sizeof(unsigned short)) {
+        unsigned long num = *(unsigned short*)data;
+        *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
+    } else if (data_size == sizeof(unsigned int)) {
+        unsigned long num = *(unsigned int*)data;
+        *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
+    } else if (data_size == sizeof(unsigned long)) {
+        unsigned long num = *(unsigned long*)data;
+        *(CARD32*)(fm->area + fm->idx) = Swap32(fm, num);
+    } else {
+        ;/* Should never reached */
+    }
+    fm->idx += 4;
+    return FmSuccess;
     }
      else if (type == BARRAY && info.num != NO_VALUE) {
-	if (info.num > 0) {
-	    bcopy(*(char**)data, fm->area + fm->idx, info.num);
-	    fm->idx += info.num;
-	}
-	return FmSuccess;
+    if (info.num > 0) {
+        bcopy(*(char**)data, fm->area + fm->idx, info.num);
+        fm->idx += info.num;
+    }
+    return FmSuccess;
     } else if (type == BARRAY && info.num == NO_VALUE) {
-	return FmInvalidCall;
+    return FmInvalidCall;
     } else if (type == PADDING && info.num != NO_VALUE) {
         fm->idx += info.num;
-	return _FrameMgrPutToken(fm, data, data_size);
+    return _FrameMgrPutToken(fm, data, data_size);
     } else if (type == PADDING && info.num == NO_VALUE) {
         return FmInvalidCall;
     } else if (type == ITER) {
-	return FmInvalidCall;
+    return FmInvalidCall;
     } else if (type == EOL) {
-	return FmEOD;
+    return FmEOD;
     } else {
-	; /* Should never be reached */
+    ; /* Should never be reached */
     }
 }
 
@@ -431,119 +431,119 @@ int data_size;
     FrameIter fitr;
 
     if (fm->total_size != NO_VALUE && fm->idx >= fm->total_size)
-	return FmNoMoreData;
+    return FmNoMoreData;
 
     type = FrameInstGetNextType(fm->fi, &info);
 
     if (type & COUNTER_MASK) {
-	int end;
-	FrameIter client_data;
+    int end;
+    FrameIter client_data;
 
-	type &= ~COUNTER_MASK;
-	if (type == BIT8) {
-	    end = *(CARD8*)(fm->area + fm->idx);
-	}
-	else if (type == BIT16) {
-	    end = Swap16(fm, *(CARD16*)(fm->area + fm->idx));
-	}
-	else if (type == BIT32) {
-	    end = Swap32(fm, *(CARD32*)(fm->area + fm->idx));
-	}
-	if (client_data = _FrameMgrAppendIter(fm, info.counter.iter, end)) {
-	    IterSetStarter(info.counter.iter);
-	    IterSetStartWatch(info.counter.iter, 
-			      _IterStartWatch, (void*)client_data);
-	}
+    type &= ~COUNTER_MASK;
+    if (type == BIT8) {
+        end = *(CARD8*)(fm->area + fm->idx);
+    }
+    else if (type == BIT16) {
+        end = Swap16(fm, *(CARD16*)(fm->area + fm->idx));
+    }
+    else if (type == BIT32) {
+        end = Swap32(fm, *(CARD32*)(fm->area + fm->idx));
+    }
+    if (client_data = _FrameMgrAppendIter(fm, info.counter.iter, end)) {
+        IterSetStarter(info.counter.iter);
+        IterSetStartWatch(info.counter.iter,
+                  _IterStartWatch, (void*)client_data);
+    }
     }
 
     type &= ~COUNTER_MASK;
     if (type == BIT8) {
-	if (data_size == sizeof(unsigned char)) {
-	    *(unsigned char*)data = *(CARD8*)(fm->area + fm->idx);
-	} else if (data_size == sizeof(unsigned short)) {
-	    *(unsigned short*)data = *(CARD8*)(fm->area + fm->idx);
-	} else if (data_size == sizeof(unsigned int)) {
-	    *(unsigned int*)data = *(CARD8*)(fm->area + fm->idx);
-	} else if (data_size == sizeof(unsigned long)) {
-	    *(unsigned long*)data = *(CARD8*)(fm->area + fm->idx);
-	} else {
-	    ;/* Should never reached */
-	}
-	fm->idx++;
-	if (fitr = _FrameIterCounterIncr(fm->iters, 1/*BIT8*/)) {
-	    _FrameMgrRemoveIter(fm, fitr);
-	}
-	return FmSuccess;
+    if (data_size == sizeof(unsigned char)) {
+        *(unsigned char*)data = *(CARD8*)(fm->area + fm->idx);
+    } else if (data_size == sizeof(unsigned short)) {
+        *(unsigned short*)data = *(CARD8*)(fm->area + fm->idx);
+    } else if (data_size == sizeof(unsigned int)) {
+        *(unsigned int*)data = *(CARD8*)(fm->area + fm->idx);
+    } else if (data_size == sizeof(unsigned long)) {
+        *(unsigned long*)data = *(CARD8*)(fm->area + fm->idx);
+    } else {
+        ;/* Should never reached */
+    }
+    fm->idx++;
+    if (fitr = _FrameIterCounterIncr(fm->iters, 1/*BIT8*/)) {
+        _FrameMgrRemoveIter(fm, fitr);
+    }
+    return FmSuccess;
     } else if (type == BIT16) {
-	if (data_size == sizeof(unsigned char)) {
-	    *(unsigned char*)data =
-		Swap16(fm, *(CARD16*)(fm->area + fm->idx));
-	} else if (data_size == sizeof(unsigned short)) {
-	    *(unsigned short*)data =
-		Swap16(fm, *(CARD16*)(fm->area + fm->idx));
-	} else if (data_size == sizeof(unsigned int)) {
-	    *(unsigned int*)data =
-		Swap16(fm, *(CARD16*)(fm->area + fm->idx));
-	} else if (data_size == sizeof(unsigned long)) {
-	    *(unsigned long*)data =
-		Swap16(fm, *(CARD16*)(fm->area + fm->idx));
-	} else {
-	    ;/* Should never reached */
-	}
-	fm->idx += 2;
-	if (fitr = _FrameIterCounterIncr(fm->iters, 2/*BIT16*/)) {
-	    _FrameMgrRemoveIter(fm, fitr);
-	}
-	return FmSuccess;
+    if (data_size == sizeof(unsigned char)) {
+        *(unsigned char*)data =
+        Swap16(fm, *(CARD16*)(fm->area + fm->idx));
+    } else if (data_size == sizeof(unsigned short)) {
+        *(unsigned short*)data =
+        Swap16(fm, *(CARD16*)(fm->area + fm->idx));
+    } else if (data_size == sizeof(unsigned int)) {
+        *(unsigned int*)data =
+        Swap16(fm, *(CARD16*)(fm->area + fm->idx));
+    } else if (data_size == sizeof(unsigned long)) {
+        *(unsigned long*)data =
+        Swap16(fm, *(CARD16*)(fm->area + fm->idx));
+    } else {
+        ;/* Should never reached */
+    }
+    fm->idx += 2;
+    if (fitr = _FrameIterCounterIncr(fm->iters, 2/*BIT16*/)) {
+        _FrameMgrRemoveIter(fm, fitr);
+    }
+    return FmSuccess;
     } else if (type == BIT32) {
-	if (data_size == sizeof(unsigned char)) {
-	    *(unsigned char*)data =
-		Swap32(fm, *(CARD32*)(fm->area + fm->idx));
-	} else if (data_size == sizeof(unsigned short)) {
-	    *(unsigned short*)data =
-		Swap32(fm, *(CARD32*)(fm->area + fm->idx));
-	} else if (data_size == sizeof(unsigned int)) {
-	    *(unsigned int*)data =
-		Swap32(fm, *(CARD32*)(fm->area + fm->idx));
-	} else if (data_size == sizeof(unsigned long)) {
-	    *(unsigned long*)data =
-		Swap32(fm, *(CARD32*)(fm->area + fm->idx));
-	} else {
-	    ;/* Should never reached */
-	}
-	fm->idx += 4;
-	if (fitr = _FrameIterCounterIncr(fm->iters, 4/*BIT32*/)) {
-	    _FrameMgrRemoveIter(fm, fitr);
-	}
-	return FmSuccess;
+    if (data_size == sizeof(unsigned char)) {
+        *(unsigned char*)data =
+        Swap32(fm, *(CARD32*)(fm->area + fm->idx));
+    } else if (data_size == sizeof(unsigned short)) {
+        *(unsigned short*)data =
+        Swap32(fm, *(CARD32*)(fm->area + fm->idx));
+    } else if (data_size == sizeof(unsigned int)) {
+        *(unsigned int*)data =
+        Swap32(fm, *(CARD32*)(fm->area + fm->idx));
+    } else if (data_size == sizeof(unsigned long)) {
+        *(unsigned long*)data =
+        Swap32(fm, *(CARD32*)(fm->area + fm->idx));
+    } else {
+        ;/* Should never reached */
+    }
+    fm->idx += 4;
+    if (fitr = _FrameIterCounterIncr(fm->iters, 4/*BIT32*/)) {
+        _FrameMgrRemoveIter(fm, fitr);
+    }
+    return FmSuccess;
     }
       else if (type == BARRAY && info.num != NO_VALUE) {
-	if (info.num > 0) {
-	    *(char**)data = fm->area + fm->idx;
-	    fm->idx += info.num;
-	    if (fitr = _FrameIterCounterIncr(fm->iters, info.num)) {
-		_FrameMgrRemoveIter(fm, fitr);
-	    }
-	} else {
-	    *(char**)data = NULL;
-	}
-	return FmSuccess;
+    if (info.num > 0) {
+        *(char**)data = fm->area + fm->idx;
+        fm->idx += info.num;
+        if (fitr = _FrameIterCounterIncr(fm->iters, info.num)) {
+        _FrameMgrRemoveIter(fm, fitr);
+        }
+    } else {
+        *(char**)data = NULL;
+    }
+    return FmSuccess;
     } else if (type == BARRAY && info.num == NO_VALUE) {
-	return FmInvalidCall;
+    return FmInvalidCall;
     } else if (type == PADDING && info.num != NO_VALUE) {
         fm->idx += info.num;
-	if (fitr = _FrameIterCounterIncr(fm->iters, info.num)) {
-	    _FrameMgrRemoveIter(fm, fitr);
-	}
-	return _FrameMgrGetToken(fm, data, data_size);
+    if (fitr = _FrameIterCounterIncr(fm->iters, info.num)) {
+        _FrameMgrRemoveIter(fm, fitr);
+    }
+    return _FrameMgrGetToken(fm, data, data_size);
     } else if (type == PADDING && info.num == NO_VALUE) {
         return FmInvalidCall;
     } else if (type == ITER) {
-	return FmInvalidCall;	/* if comes here, it's a bug! */
+    return FmInvalidCall;    /* if comes here, it's a bug! */
     } else if (type == EOL) {
-	return FmEOD;
+    return FmEOD;
     } else {
-	; /* Should never be reached */
+    ; /* Should never be reached */
     }
 }
 
@@ -557,9 +557,9 @@ int barray_size;
 #endif
 {
     if (FrameInstSetSize(fm->fi, barray_size) == FmSuccess)
-	return FmSuccess;
+    return FmSuccess;
     else
-	return FmNoMoreData;
+    return FmNoMoreData;
 }
 
 
@@ -572,9 +572,9 @@ int count;
 #endif
 {
     if (FrameInstSetIterCount(fm->fi, count) == FmSuccess)
-	return FmSuccess;
+    return FmSuccess;
     else
-	return FmNoMoreData;
+    return FmNoMoreData;
 }
 
 
@@ -613,7 +613,7 @@ FrameMgr fm;
 
     ret_size = FrameInstGetSize(fm->fi);
     if (ret_size == NO_VALID_FIELD)
-	return NO_VALUE;
+    return NO_VALUE;
 
     return ret_size;
 }
@@ -632,35 +632,35 @@ int skip_count;
     register int i;
 
     if (fm->total_size != NO_VALUE && fm->idx >= fm->total_size)
-	return FmNoMoreData;
+    return FmNoMoreData;
 
     for (i = 0; i < skip_count; i++) {
-	type = FrameInstGetNextType(fm->fi, &info);
-	type &= ~COUNTER_MASK;
+    type = FrameInstGetNextType(fm->fi, &info);
+    type &= ~COUNTER_MASK;
 
-	if (type == BIT8) {
-	    fm->idx++;
-	} else if (type == BIT16) {
-	    fm->idx += 2;
-	} else if (type == BIT32) {
-	    fm->idx += 4;
-	}
-	  else if (type == BARRAY && info.num != NO_VALUE) {
-	    fm->idx += info.num;
-	} else if (type == BARRAY && info.num == NO_VALUE) {
-	    return FmInvalidCall;
-	} else if (type == PADDING && info.num != NO_VALUE) {
-	    fm->idx += info.num;
-	    return FrameMgrSkipToken(fm, skip_count);
-	} else if (type == PADDING && info.num == NO_VALUE) {
-	    return FmInvalidCall;
-	} else if (type == ITER) {
-	    return FmInvalidCall;
-	} else if (type == EOL) {
-	    return FmEOD;
-	} else {
-	    ; /* Should never be reached */
-	}
+    if (type == BIT8) {
+        fm->idx++;
+    } else if (type == BIT16) {
+        fm->idx += 2;
+    } else if (type == BIT32) {
+        fm->idx += 4;
+    }
+      else if (type == BARRAY && info.num != NO_VALUE) {
+        fm->idx += info.num;
+    } else if (type == BARRAY && info.num == NO_VALUE) {
+        return FmInvalidCall;
+    } else if (type == PADDING && info.num != NO_VALUE) {
+        fm->idx += info.num;
+        return FrameMgrSkipToken(fm, skip_count);
+    } else if (type == PADDING && info.num == NO_VALUE) {
+        return FmInvalidCall;
+    } else if (type == ITER) {
+        return FmInvalidCall;
+    } else if (type == EOL) {
+        return FmEOD;
+    } else {
+        ; /* Should never be reached */
+    }
     }
     return FmSuccess;
 }
@@ -687,11 +687,11 @@ FmStatus* status;
 #endif
 {
     do {
-	if (_FrameMgrIsIterLoopEnd(fm)) {
-	    return(True);
-	}
+    if (_FrameMgrIsIterLoopEnd(fm)) {
+        return(True);
+    }
     } while (_FrameMgrProcessPadding(fm, status));
-    
+
     return(False);
 }
 
@@ -724,19 +724,19 @@ FmStatus* status;
     if ((next_type == PADDING) && (info.num != NO_VALUE)) {
         next_type = FrameInstGetNextType(fm->fi, &info);
         fm->idx += info.num;
-	if (fitr = _FrameIterCounterIncr(fm->iters, info.num)) {
-	    _FrameMgrRemoveIter(fm, fitr);
-	}
-	*status = FmSuccess;
-	return(True);
-    } 
+    if (fitr = _FrameIterCounterIncr(fm->iters, info.num)) {
+        _FrameMgrRemoveIter(fm, fitr);
+    }
+    *status = FmSuccess;
+    return(True);
+    }
     else if ((next_type == PADDING) && (info.num == NO_VALUE)) {
-	*status = FmInvalidCall;
-	return(True);
+    *status = FmInvalidCall;
+    return(True);
     }
     else {
-	*status = FmSuccess;
-	return(False);
+    *status = FmSuccess;
+    return(False);
     }
 }
 
@@ -773,15 +773,15 @@ FrameInst fi;
     ChainIterInit(&ci, &fi->cm);
 
     while (ChainIterGetNext(&ci, &frame_no, &d)) {
-	register XimFrameType type;
-	type = fi->template[frame_no].type;
-	if (type == ITER) {
-	    if (d.iter)
-		IterFree(d.iter);
-	} else if (type == POINTER) {
-	    if (d.fi)
-		FrameInstFree(d.fi);
-	}
+    register XimFrameType type;
+    type = fi->template[frame_no].type;
+    if (type == ITER) {
+        if (d.iter)
+        IterFree(d.iter);
+    } else if (type == POINTER) {
+        if (d.fi)
+        FrameInstFree(d.fi);
+    }
     }
     ChainIterFree(&ci);
     ChainMgrFree(&fi->cm);
@@ -805,110 +805,110 @@ XimFrameTypeInfo info;
       case BIT16 :
       case BIT32 :
       case EOL :
-	fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-	break;
+    fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+    break;
 
       case COUNTER_BIT8 :
       case COUNTER_BIT16 :
       case COUNTER_BIT32 :
-	if (info) {
-	    register int offset, iter_idx;
+    if (info) {
+        register int offset, iter_idx;
 
-	    info->counter.is_byte_len = 
-		((int)fi->template[fi->cur_no].data & 0xff) == FmCounterByte;
-	    offset = (int)fi->template[fi->cur_no].data >> 8;
-	    iter_idx = fi->cur_no + offset;
-	    if (fi->template[iter_idx].type == ITER) {
-		ExtraData d;
-		ExtraDataRec dr;
+        info->counter.is_byte_len =
+        ((int)fi->template[fi->cur_no].data & 0xff) == FmCounterByte;
+        offset = (int)fi->template[fi->cur_no].data >> 8;
+        iter_idx = fi->cur_no + offset;
+        if (fi->template[iter_idx].type == ITER) {
+        ExtraData d;
+        ExtraDataRec dr;
 
-		if ((d = ChainMgrGetExtraData(&fi->cm, iter_idx)) == NULL) {
-		    dr.iter = IterInit(&fi->template[iter_idx + 1], NO_VALUE);
-		    d = ChainMgrSetData(&fi->cm, iter_idx, dr);
-		}
-		info->counter.iter = d->iter;
-	    } else {
-		/* Should not be reached here */
-	    }
-	}
-	fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, iter_idx)) == NULL) {
+            dr.iter = IterInit(&fi->template[iter_idx + 1], NO_VALUE);
+            d = ChainMgrSetData(&fi->cm, iter_idx, dr);
+        }
+        info->counter.iter = d->iter;
+        } else {
+        /* Should not be reached here */
+        }
+    }
+    fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+    break;
 
       case BARRAY :
-	if (info) {
-	    ExtraData d;
+    if (info) {
+        ExtraData d;
 
-	    if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
-		info->num = NO_VALUE;
-	    } else {
-		info->num = d->num;
-	    }
-	}
-	fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
+        info->num = NO_VALUE;
+        } else {
+        info->num = d->num;
+        }
+    }
+    fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+    break;
 
       case PADDING :
-	if (info) {
-	    register int unit, number, size, i;
+    if (info) {
+        register int unit, number, size, i;
 
-	    unit = _UNIT(fi->template[fi->cur_no].data);
-	    number = _NUMBER(fi->template[fi->cur_no].data);
-	    
-	    i = fi->cur_no;
-	    size = 0;
-	    while (number > 0) {
-	        i = _FrameInstDecrement(fi->template, i);
-		size += _FrameInstGetItemSize(fi, i);
-		number--;
-	    }
-	    info->num = (unit - (size % unit)) % unit;
-	}
-	fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-	break;
-	
+        unit = _UNIT(fi->template[fi->cur_no].data);
+        number = _NUMBER(fi->template[fi->cur_no].data);
+
+        i = fi->cur_no;
+        size = 0;
+        while (number > 0) {
+            i = _FrameInstDecrement(fi->template, i);
+        size += _FrameInstGetItemSize(fi, i);
+        number--;
+        }
+        info->num = (unit - (size % unit)) % unit;
+    }
+    fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+    break;
+
       case ITER :
-	{
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    XimFrameType sub_type;
+    {
+        ExtraData d;
+        ExtraDataRec dr;
+        XimFrameType sub_type;
 
 
-	    if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
-		dr.iter = IterInit(&fi->template[fi->cur_no + 1], NO_VALUE);
-		d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
-	    }
-	    sub_type = IterGetNextType(d->iter, info);
-	    if (sub_type == EOL) {
-		fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-		ret_type = FrameInstGetNextType(fi, info);
-	    } else {
-		ret_type = sub_type;
-	    }
-	}
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
+        dr.iter = IterInit(&fi->template[fi->cur_no + 1], NO_VALUE);
+        d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
+        }
+        sub_type = IterGetNextType(d->iter, info);
+        if (sub_type == EOL) {
+        fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+        ret_type = FrameInstGetNextType(fi, info);
+        } else {
+        ret_type = sub_type;
+        }
+    }
+    break;
 
       case POINTER :
-	{
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    XimFrameType sub_type;
+    {
+        ExtraData d;
+        ExtraDataRec dr;
+        XimFrameType sub_type;
 
-	    if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
-		dr.fi = FrameInstInit(fi->template[fi->cur_no + 1].data);
-		d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
-	    }
-	    sub_type = FrameInstGetNextType(d->fi, info);
-	    if (sub_type == EOL) {
-		fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-		ret_type = FrameInstGetNextType(fi, info);
-	    } else {
-		ret_type = sub_type;
-	    }
-	}
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
+        dr.fi = FrameInstInit(fi->template[fi->cur_no + 1].data);
+        d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
+        }
+        sub_type = FrameInstGetNextType(d->fi, info);
+        if (sub_type == EOL) {
+        fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+        ret_type = FrameInstGetNextType(fi, info);
+        } else {
+        ret_type = sub_type;
+        }
+    }
+    break;
       default :
-	/* Should never be reached */
-	break;
+    /* Should never be reached */
+    break;
     }
     return ret_type;
 }
@@ -931,104 +931,104 @@ XimFrameTypeInfo info;
       case BIT16 :
       case BIT32 :
       case EOL :
-	break;
+    break;
 
       case COUNTER_BIT8 :
       case COUNTER_BIT16 :
       case COUNTER_BIT32 :
-	if (info) {
-	    register int offset, iter_idx;
+    if (info) {
+        register int offset, iter_idx;
 
-	    info->counter.is_byte_len = 
-		((int)fi->template[fi->cur_no].data & 0xff) == FmCounterByte;
-	    offset = (int)fi->template[fi->cur_no].data >> 8;
-	    iter_idx = fi->cur_no + offset;
-	    if (fi->template[iter_idx].type == ITER) {
-		ExtraData d;
-		ExtraDataRec dr;
+        info->counter.is_byte_len =
+        ((int)fi->template[fi->cur_no].data & 0xff) == FmCounterByte;
+        offset = (int)fi->template[fi->cur_no].data >> 8;
+        iter_idx = fi->cur_no + offset;
+        if (fi->template[iter_idx].type == ITER) {
+        ExtraData d;
+        ExtraDataRec dr;
 
-		if ((d = ChainMgrGetExtraData(&fi->cm, iter_idx)) == NULL) {
-		    dr.iter = IterInit(&fi->template[iter_idx + 1], NO_VALUE);
-		    d = ChainMgrSetData(&fi->cm, iter_idx, dr);
-		}
-		info->counter.iter = d->iter;
-	    } else {
-		/* Should not be reached here */
-	    }
-	}
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, iter_idx)) == NULL) {
+            dr.iter = IterInit(&fi->template[iter_idx + 1], NO_VALUE);
+            d = ChainMgrSetData(&fi->cm, iter_idx, dr);
+        }
+        info->counter.iter = d->iter;
+        } else {
+        /* Should not be reached here */
+        }
+    }
+    break;
 
       case BARRAY :
-	if (info) {
-	    ExtraData d;
+    if (info) {
+        ExtraData d;
 
-	    if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
-		info->num = NO_VALUE;
-	    } else {
-		info->num = d->num;
-	    }
-	}
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
+        info->num = NO_VALUE;
+        } else {
+        info->num = d->num;
+        }
+    }
+    break;
 
       case PADDING :
-	if (info) {
-	    register int unit, number, size, i;
+    if (info) {
+        register int unit, number, size, i;
 
-	    unit = _UNIT(fi->template[fi->cur_no].data);
-	    number = _NUMBER(fi->template[fi->cur_no].data);
-	    
-	    i = fi->cur_no;
-	    size = 0;
-	    while (number > 0) {
-	        i = _FrameInstDecrement(fi->template, i);
-		size += _FrameInstGetItemSize(fi, i);
-		number--;
-	    }
-	    info->num = (unit - (size % unit)) % unit;
-	}
-	break;
-	
+        unit = _UNIT(fi->template[fi->cur_no].data);
+        number = _NUMBER(fi->template[fi->cur_no].data);
+
+        i = fi->cur_no;
+        size = 0;
+        while (number > 0) {
+            i = _FrameInstDecrement(fi->template, i);
+        size += _FrameInstGetItemSize(fi, i);
+        number--;
+        }
+        info->num = (unit - (size % unit)) % unit;
+    }
+    break;
+
       case ITER :
-	{
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    XimFrameType sub_type;
+    {
+        ExtraData d;
+        ExtraDataRec dr;
+        XimFrameType sub_type;
 
 
-	    if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
-		dr.iter = IterInit(&fi->template[fi->cur_no + 1], NO_VALUE);
-		d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
-	    }
-	    sub_type = IterPeekNextType(d->iter, info);
-	    if (sub_type == EOL) {
-		ret_type = FrameInstPeekNextType(fi, info);
-	    } else {
-		ret_type = sub_type;
-	    }
-	}
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
+        dr.iter = IterInit(&fi->template[fi->cur_no + 1], NO_VALUE);
+        d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
+        }
+        sub_type = IterPeekNextType(d->iter, info);
+        if (sub_type == EOL) {
+        ret_type = FrameInstPeekNextType(fi, info);
+        } else {
+        ret_type = sub_type;
+        }
+    }
+    break;
 
       case POINTER :
-	{
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    XimFrameType sub_type;
+    {
+        ExtraData d;
+        ExtraDataRec dr;
+        XimFrameType sub_type;
 
-	    if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
-		dr.fi = FrameInstInit(fi->template[fi->cur_no + 1].data);
-		d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
-	    }
-	    sub_type = FrameInstPeekNextType(d->fi, info);
-	    if (sub_type == EOL) {
-		ret_type = FrameInstPeekNextType(fi, info);
-	    } else {
-		ret_type = sub_type;
-	    }
-	}
-	break;
+        if ((d = ChainMgrGetExtraData(&fi->cm, fi->cur_no)) == NULL) {
+        dr.fi = FrameInstInit(fi->template[fi->cur_no + 1].data);
+        d = ChainMgrSetData(&fi->cm, fi->cur_no, dr);
+        }
+        sub_type = FrameInstPeekNextType(d->fi, info);
+        if (sub_type == EOL) {
+        ret_type = FrameInstPeekNextType(fi, info);
+        } else {
+        ret_type = sub_type;
+        }
+    }
+    break;
       default :
-	/* If comes here, bug! */
-	break;
+    /* If comes here, bug! */
+    break;
     }
     return ret_type;
 }
@@ -1044,15 +1044,15 @@ FrameInst fi;
     Bool ret = False;
 
     if (fi->template[fi->cur_no].type == ITER) {
-	ExtraData d = ChainMgrGetExtraData(&fi->cm, fi->cur_no);
-	Bool yourself;
+    ExtraData d = ChainMgrGetExtraData(&fi->cm, fi->cur_no);
+    Bool yourself;
 
-	if (d) {
-	    ret = IterIsLoopEnd(d->iter, &yourself);
-	    if (ret && yourself) {
-		fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
-	    }
-	}
+    if (d) {
+        ret = IterIsLoopEnd(d->iter, &yourself);
+        if (ret && yourself) {
+        fi->cur_no = _FrameInstIncrement(fi->template, fi->cur_no);
+        }
+    }
     }
 
     return(ret);
@@ -1071,21 +1071,21 @@ int end;
     FrameIter p = fm->iters;
 
     while (p && p->next) {
-	p = p->next;
+    p = p->next;
     }
     if (!p) {
-	fm->iters = p = (FrameIter)Xmalloc(sizeof(FrameIterRec));
+    fm->iters = p = (FrameIter)Xmalloc(sizeof(FrameIterRec));
     }
     else {
-	p->next = (FrameIter)Xmalloc(sizeof(FrameIterRec));
-	p = p->next;
+    p->next = (FrameIter)Xmalloc(sizeof(FrameIterRec));
+    p = p->next;
     }
     if (p) {
-	p->iter = it;
-	p->counting = False;
-	p->counter = 0;
-	p->end = end;
-	p->next = NULL;
+    p->iter = it;
+    p->counting = False;
+    p->counter = 0;
+    p->end = end;
+    p->next = NULL;
     }
 
     return(p);
@@ -1105,20 +1105,20 @@ FrameIter it;
     prev = NULL;
     p = fm->iters;
     while (p) {
-	if (p == it) {
-	    if (prev) {
-		prev->next = p->next;
-	    }
-	    else {
-		fm->iters = p->next;
-	    }
-	    Xfree(p);
-	    break;
-	}
-	else {
-	    prev = p;
-	    p = p->next;
-	}
+    if (p == it) {
+        if (prev) {
+        prev->next = p->next;
+        }
+        else {
+        fm->iters = p->next;
+        }
+        Xfree(p);
+        break;
+    }
+    else {
+        prev = p;
+        p = p->next;
+    }
     }
 }
 
@@ -1134,14 +1134,14 @@ int i;
     FrameIter p = fitr;
 
     while (p) {
-	if (p->counting) {
-	    p->counter += i;
-	    if (p->counter >= p->end) {
-		IterFixIteration(p->iter);
-		return(p);
-	    }
-	}
-	p = p->next;
+    if (p->counting) {
+        p->counter += i;
+        if (p->counter >= p->end) {
+        IterFixIteration(p->iter);
+        return(p);
+        }
+    }
+    p = p->next;
     }
     return(NULL);
 }
@@ -1176,33 +1176,33 @@ int num;
 
     i = 0;
     while ((type = fi->template[i].type) != EOL) {
-	if (type == BARRAY) {
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.num = -1;
-		d = ChainMgrSetData(&fi->cm, i, dr);
-	    }
-	    if (d->num == NO_VALUE) {
-		d->num = num;
-		return FmSuccess;
-	    }
-	} else if (type == ITER) {
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.iter = IterInit(&fi->template[i + 1], NO_VALUE);
-		d = ChainMgrSetData(&fi->cm, i, dr);
-	    }
-	    if (IterSetSize(d->iter, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	} else if (type == POINTER) {
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(fi->template[i + 1].data);
-		d = ChainMgrSetData(&fi->cm, i, dr);
-	    }
-	    if (FrameInstSetSize(d->fi, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	}
-	i = _FrameInstIncrement(fi->template, i);
+    if (type == BARRAY) {
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.num = -1;
+        d = ChainMgrSetData(&fi->cm, i, dr);
+        }
+        if (d->num == NO_VALUE) {
+        d->num = num;
+        return FmSuccess;
+        }
+    } else if (type == ITER) {
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.iter = IterInit(&fi->template[i + 1], NO_VALUE);
+        d = ChainMgrSetData(&fi->cm, i, dr);
+        }
+        if (IterSetSize(d->iter, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    } else if (type == POINTER) {
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(fi->template[i + 1].data);
+        d = ChainMgrSetData(&fi->cm, i, dr);
+        }
+        if (FrameInstSetSize(d->fi, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    }
+    i = _FrameInstIncrement(fi->template, i);
     }
     return FmNoMoreData;
 }
@@ -1222,31 +1222,31 @@ FrameInst fi;
 
     i = fi->cur_no;
     while ((type = fi->template[i].type) != EOL) {
-	if (type == BARRAY) {
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		return NO_VALUE;
-	    }
-	    return d->num;
-	} else if (type == ITER) {
-	    int ret_size;
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.iter = IterInit(&fi->template[i + 1], NO_VALUE);
-		d = ChainMgrSetData(&fi->cm, i, dr);
-	    }
-	    ret_size = IterGetSize(d->iter);
-	    if (ret_size != NO_VALID_FIELD)
-		return ret_size;
-	} else if (type == POINTER) {
-	    int ret_size;
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(fi->template[i + 1].data);
-		d = ChainMgrSetData(&fi->cm, i, dr);
-	    }
-	    ret_size = FrameInstGetSize(d->fi);
-	    if (ret_size != NO_VALID_FIELD)
-	        return ret_size;
-	}
-	i = _FrameInstIncrement(fi->template, i);
+    if (type == BARRAY) {
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        return NO_VALUE;
+        }
+        return d->num;
+    } else if (type == ITER) {
+        int ret_size;
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.iter = IterInit(&fi->template[i + 1], NO_VALUE);
+        d = ChainMgrSetData(&fi->cm, i, dr);
+        }
+        ret_size = IterGetSize(d->iter);
+        if (ret_size != NO_VALID_FIELD)
+        return ret_size;
+    } else if (type == POINTER) {
+        int ret_size;
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(fi->template[i + 1].data);
+        d = ChainMgrSetData(&fi->cm, i, dr);
+        }
+        ret_size = FrameInstGetSize(d->fi);
+        if (ret_size != NO_VALID_FIELD)
+            return ret_size;
+    }
+    i = _FrameInstIncrement(fi->template, i);
     }
     return NO_VALID_FIELD;
 }
@@ -1268,25 +1268,25 @@ int num;
 
     i = 0;
     while ((type = fi->template[i].type) != EOL) {
-	if (type == ITER) {
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.iter = IterInit(&fi->template[i + 1], num);
-		(void)ChainMgrSetData(&fi->cm, i, dr);
-		return FmSuccess;
-	    }
-	    if (IterSetIterCount(d->iter, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	} else if (type == POINTER) {
-	    if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(fi->template[i + 1].data);
-		d = ChainMgrSetData(&fi->cm, i, dr);
-	    }
-	    if (FrameInstSetIterCount(d->fi, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	}
-	i = _FrameInstIncrement(fi->template, i);
+    if (type == ITER) {
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.iter = IterInit(&fi->template[i + 1], num);
+        (void)ChainMgrSetData(&fi->cm, i, dr);
+        return FmSuccess;
+        }
+        if (IterSetIterCount(d->iter, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    } else if (type == POINTER) {
+        if ((d = ChainMgrGetExtraData(&fi->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(fi->template[i + 1].data);
+        d = ChainMgrSetData(&fi->cm, i, dr);
+        }
+        if (FrameInstSetIterCount(d->fi, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    }
+    i = _FrameInstIncrement(fi->template, i);
     }
     return FmNoMoreData;
 }
@@ -1307,7 +1307,7 @@ FrameInst fi;
 
     while (fi->template[i].type != EOL) {
         size += _FrameInstGetItemSize(fi, i);
-	i = _FrameInstIncrement(fi->template, i);
+    i = _FrameInstIncrement(fi->template, i);
     }
     return size;
 }
@@ -1327,15 +1327,15 @@ FrameInst fi;
     ChainIterInit(&ci, &fi->cm);
 
     while (ChainIterGetNext(&ci, &frame_no, &d)) {
-	register XimFrameType type;
-	type = fi->template[frame_no].type;
-	if (type == ITER) {
-	    if (d.iter)
-		IterReset(d.iter);
-	} else if (type == POINTER) {
-	    if (d.fi)
-		FrameInstReset(d.fi);
-	}
+    register XimFrameType type;
+    type = fi->template[frame_no].type;
+    if (type == ITER) {
+        if (d.iter)
+        IterReset(d.iter);
+    } else if (type == POINTER) {
+        if (d.fi)
+        FrameInstReset(d.fi);
+    }
     }
     ChainIterFree(&ci);
 
@@ -1365,18 +1365,18 @@ int count;
 
     type = frame->type;
     if (type & COUNTER_MASK) {  /* COUNTER_XXX cannot be an item of a ITER */
-	Xfree(it);
-	return NULL;
+    Xfree(it);
+    return NULL;
     }
 
     if (type == BIT8 || type == BIT16 || type == BIT32
-	) {
-	/* Do nothing */;
+    ) {
+    /* Do nothing */;
     } else if (type == BARRAY || type == ITER || type == POINTER) {
-	ChainMgrInit(&it->cm);
+    ChainMgrInit(&it->cm);
     } else {
-	Xfree(it);
-	return NULL;/* This should never occur */
+    Xfree(it);
+    return NULL;/* This should never occur */
     }
     return it;
 }
@@ -1390,29 +1390,29 @@ Iter it;
 #endif
 {
     if (it->template->type == BARRAY) {
-	ChainMgrFree(&it->cm);
+    ChainMgrFree(&it->cm);
     } else if (it->template->type == ITER) {
-	ChainIterRec ci;
-	int count;
-	ExtraDataRec d;
+    ChainIterRec ci;
+    int count;
+    ExtraDataRec d;
 
-	ChainIterInit(&ci, &it->cm);
-	while (ChainIterGetNext(&ci, &count, &d)) {
-	    IterFree(d.iter);
-	}
-	ChainIterFree(&ci);
-	ChainMgrFree(&it->cm);
+    ChainIterInit(&ci, &it->cm);
+    while (ChainIterGetNext(&ci, &count, &d)) {
+        IterFree(d.iter);
+    }
+    ChainIterFree(&ci);
+    ChainMgrFree(&it->cm);
     } else if (it->template->type == POINTER) {
-	ChainIterRec ci;
-	int count;
-	ExtraDataRec dr;
+    ChainIterRec ci;
+    int count;
+    ExtraDataRec dr;
 
-	ChainIterInit(&ci, &it->cm);
-	while (ChainIterGetNext(&ci, &count, &dr)) {
-	    FrameInstFree(dr.fi);
-	}
-	ChainIterFree(&ci);
-	ChainMgrFree(&it->cm);
+    ChainIterInit(&ci, &it->cm);
+    while (ChainIterGetNext(&ci, &count, &dr)) {
+        FrameInstFree(dr.fi);
+    }
+    ChainIterFree(&ci);
+    ChainMgrFree(&it->cm);
     }
     Xfree(it);
 }
@@ -1430,34 +1430,34 @@ Bool* myself;
     *myself = False;
 
     if (!it->allow_expansion && (it->cur_no == it->max_count)) {
-	*myself = True;
-	ret = True;
+    *myself = True;
+    ret = True;
     }
     else if (it->template->type == POINTER) {
-	ExtraData d = ChainMgrGetExtraData(&it->cm, it->cur_no);
-	if (d) {
-	    if (FrameInstIsIterLoopEnd(d->fi)) {
-		ret = True;
-	    }
-	    else {
-		if (FrameInstIsEnd(d->fi)) {
-		    it->cur_no++;
-		    if (!it->allow_expansion && (it->cur_no == it->max_count)) {
-			*myself = True;
-			ret = True;
-		    }
-		}
-	    }
-	}
+    ExtraData d = ChainMgrGetExtraData(&it->cm, it->cur_no);
+    if (d) {
+        if (FrameInstIsIterLoopEnd(d->fi)) {
+        ret = True;
+        }
+        else {
+        if (FrameInstIsEnd(d->fi)) {
+            it->cur_no++;
+            if (!it->allow_expansion && (it->cur_no == it->max_count)) {
+            *myself = True;
+            ret = True;
+            }
+        }
+        }
+    }
     }
     else if (it->template->type == ITER) {
-	ExtraData d = ChainMgrGetExtraData(&it->cm, it->cur_no);
-	if (d) {
-	    Bool yourself;
-	    if (IterIsLoopEnd(d->iter, &yourself)) {
-		ret = True;
-	    }
-	}
+    ExtraData d = ChainMgrGetExtraData(&it->cm, it->cur_no);
+    if (d) {
+        Bool yourself;
+        if (IterIsLoopEnd(d->iter, &yourself)) {
+        ret = True;
+        }
+    }
     }
 
     return(ret);
@@ -1475,69 +1475,69 @@ XimFrameTypeInfo info;
     XimFrameType type = it->template->type;
 
     if (it->start_counter) {
-	(*it->start_watch_proc)(it, it->client_data);
-	it->start_counter = False;
+    (*it->start_watch_proc)(it, it->client_data);
+    it->start_counter = False;
     }
 
     if (it->cur_no >= it->max_count) {
-	if (it->allow_expansion) {
-	    it->max_count = it->cur_no + 1;
-	} else {
-	    return EOL;
-	}
+    if (it->allow_expansion) {
+        it->max_count = it->cur_no + 1;
+    } else {
+        return EOL;
+    }
     }
 
     if (type == BIT8 || type == BIT16 || type == BIT32
-	) {
-	it->cur_no++;
-	return type;
+    ) {
+    it->cur_no++;
+    return type;
     } else if (type == BARRAY) {
-	ExtraData d;
-	ExtraDataRec dr;
+    ExtraData d;
+    ExtraDataRec dr;
 
-	if (info) {
-	    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-		info->num = NO_VALUE;
-	    } else {
-		info->num = d->num;
-	    }
-	}
-	it->cur_no++;
-	return BARRAY;
+    if (info) {
+        if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        info->num = NO_VALUE;
+        } else {
+        info->num = d->num;
+        }
+    }
+    it->cur_no++;
+    return BARRAY;
     } else if (type == ITER) {
-	XimFrameType ret_type;
-	ExtraData d;
-	ExtraDataRec dr;
+    XimFrameType ret_type;
+    ExtraData d;
+    ExtraDataRec dr;
 
-	if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-	    dr.iter = IterInit(it->template + 1, NO_VALUE);
-	    d = ChainMgrSetData(&it->cm, it->cur_no, dr);
-	}
+    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        dr.iter = IterInit(it->template + 1, NO_VALUE);
+        d = ChainMgrSetData(&it->cm, it->cur_no, dr);
+    }
 
-	ret_type = IterGetNextType(d->iter, info);
-	if (ret_type == EOL) {
-	    it->cur_no++;
-	    ret_type = IterGetNextType(it, info);
-	}
-	return ret_type;
+    ret_type = IterGetNextType(d->iter, info);
+    if (ret_type == EOL) {
+        it->cur_no++;
+        ret_type = IterGetNextType(it, info);
+    }
+    return ret_type;
     } else if (type == POINTER) {
-	XimFrameType ret_type;
-	ExtraData d;
-	ExtraDataRec dr;
+    XimFrameType ret_type;
+    ExtraData d;
+    ExtraDataRec dr;
 
-	if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-	    dr.fi = FrameInstInit(it->template[1].data);
-	    d = ChainMgrSetData(&it->cm, it->cur_no, dr);
-	}
-	
-	ret_type = FrameInstGetNextType(d->fi, info);
-	if (ret_type == EOL) {
-	    it->cur_no++;
-	    ret_type = IterGetNextType(it, info);
-	}
-	return ret_type;
+    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        dr.fi = FrameInstInit(it->template[1].data);
+        d = ChainMgrSetData(&it->cm, it->cur_no, dr);
+    }
+
+    ret_type = FrameInstGetNextType(d->fi, info);
+    if (ret_type == EOL) {
+        it->cur_no++;
+        ret_type = IterGetNextType(it, info);
+    }
+    return ret_type;
     } else {
-	;/* This should never occur */
+    ;/* This should never occur */
     }
 }
 
@@ -1553,59 +1553,59 @@ XimFrameTypeInfo info;
     XimFrameType type = it->template->type;
 
     if (!it->allow_expansion && (it->cur_no >= it->max_count)) {
-	return(EOL);
+    return(EOL);
     }
 
     if (type == BIT8 || type == BIT16 || type == BIT32) {
-	return(type);
+    return(type);
     }
     else if (type == BARRAY) {
-	ExtraData d;
-	ExtraDataRec dr;
+    ExtraData d;
+    ExtraDataRec dr;
 
-	if (info) {
-	    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-		info->num = NO_VALUE;
-	    } else {
-		info->num = d->num;
-	    }
-	}
-	return(BARRAY);
+    if (info) {
+        if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        info->num = NO_VALUE;
+        } else {
+        info->num = d->num;
+        }
+    }
+    return(BARRAY);
     }
     else if (type == ITER) {
-	XimFrameType ret_type;
-	ExtraData d;
-	ExtraDataRec dr;
+    XimFrameType ret_type;
+    ExtraData d;
+    ExtraDataRec dr;
 
-	if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-	    dr.iter = IterInit(it->template + 1, NO_VALUE);
-	    d = ChainMgrSetData(&it->cm, it->cur_no, dr);
-	}
+    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        dr.iter = IterInit(it->template + 1, NO_VALUE);
+        d = ChainMgrSetData(&it->cm, it->cur_no, dr);
+    }
 
-	ret_type = IterPeekNextType(d->iter, info);
-	if (ret_type == EOL) {
-	    ret_type = IterPeekNextType(it, info);
-	}
-	return(ret_type);
+    ret_type = IterPeekNextType(d->iter, info);
+    if (ret_type == EOL) {
+        ret_type = IterPeekNextType(it, info);
+    }
+    return(ret_type);
     }
     else if (type == POINTER) {
-	XimFrameType ret_type;
-	ExtraData d;
-	ExtraDataRec dr;
+    XimFrameType ret_type;
+    ExtraData d;
+    ExtraDataRec dr;
 
-	if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-	    dr.fi = FrameInstInit(it->template[1].data);
-	    d = ChainMgrSetData(&it->cm, it->cur_no, dr);
-	}
-	
-	ret_type = FrameInstPeekNextType(d->fi, info);
-	if (ret_type == EOL) {
-	    ret_type = IterPeekNextType(it, info);
-	}
-	return(ret_type);
+    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        dr.fi = FrameInstInit(it->template[1].data);
+        d = ChainMgrSetData(&it->cm, it->cur_no, dr);
+    }
+
+    ret_type = FrameInstPeekNextType(d->fi, info);
+    if (ret_type == EOL) {
+        ret_type = IterPeekNextType(it, info);
+    }
+    return(ret_type);
     }
     else {
-	;/* If comes here, bug! */
+    ;/* If comes here, bug! */
     }
 }
 
@@ -1622,78 +1622,78 @@ int num;
     register int i;
 
     if (!it->allow_expansion && it->max_count == 0) {
-	return FmNoMoreData;
+    return FmNoMoreData;
     }
 
     type = it->template->type;
     if (type == BARRAY) {
-	ExtraData d;
-	ExtraDataRec dr;
-	for (i = 0; i < it->max_count; i++) {
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.num = NO_VALUE;
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    if (d->num == NO_VALUE) {
-		d->num = num;
-		return FmSuccess;
-	    }
-	}
-	if (it->allow_expansion) {
-	    ExtraDataRec dr;
-	    dr.num = num;
-	    (void)ChainMgrSetData(&it->cm, it->max_count, dr);
-	    it->max_count++;
+    ExtraData d;
+    ExtraDataRec dr;
+    for (i = 0; i < it->max_count; i++) {
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.num = NO_VALUE;
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        if (d->num == NO_VALUE) {
+        d->num = num;
+        return FmSuccess;
+        }
+    }
+    if (it->allow_expansion) {
+        ExtraDataRec dr;
+        dr.num = num;
+        (void)ChainMgrSetData(&it->cm, it->max_count, dr);
+        it->max_count++;
 
-	    return FmSuccess;
-	}
-	return FmNoMoreData;
+        return FmSuccess;
+    }
+    return FmNoMoreData;
     } else if (type == ITER) {
-	ExtraData d;
-	ExtraDataRec dr;
-	for (i = 0; i < it->max_count; i++) {
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.iter = IterInit(it->template + 1, NO_VALUE);
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    if (IterSetSize(d->iter, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	}
-	if (it->allow_expansion) {
-	    ExtraDataRec dr;
-	    dr.iter = IterInit(it->template + 1, NO_VALUE);
-	    (void)ChainMgrSetData(&it->cm, it->max_count, dr);
-	    it->max_count++;
+    ExtraData d;
+    ExtraDataRec dr;
+    for (i = 0; i < it->max_count; i++) {
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.iter = IterInit(it->template + 1, NO_VALUE);
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        if (IterSetSize(d->iter, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    }
+    if (it->allow_expansion) {
+        ExtraDataRec dr;
+        dr.iter = IterInit(it->template + 1, NO_VALUE);
+        (void)ChainMgrSetData(&it->cm, it->max_count, dr);
+        it->max_count++;
 
-	    if (IterSetSize(dr.iter, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	}
-	return FmNoMoreData;
+        if (IterSetSize(dr.iter, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    }
+    return FmNoMoreData;
     } else if (type == POINTER) {
-	ExtraData d;
-	ExtraDataRec dr;
-	for (i = 0; i < it->max_count; i++) {
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(it->template[1].data);
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    if (FrameInstSetSize(d->fi, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	}
-	if (it->allow_expansion) {
-	    ExtraDataRec dr;
-	    dr.fi = FrameInstInit(it->template[1].data);
-	    (void)ChainMgrSetData(&it->cm, it->max_count, dr);
-	    it->max_count++;
+    ExtraData d;
+    ExtraDataRec dr;
+    for (i = 0; i < it->max_count; i++) {
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(it->template[1].data);
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        if (FrameInstSetSize(d->fi, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    }
+    if (it->allow_expansion) {
+        ExtraDataRec dr;
+        dr.fi = FrameInstInit(it->template[1].data);
+        (void)ChainMgrSetData(&it->cm, it->max_count, dr);
+        it->max_count++;
 
-	    if (FrameInstSetSize(dr.fi, num) == FmSuccess) {
-		return FmSuccess;
-	    }
-	}
-	return FmNoMoreData;
+        if (FrameInstSetSize(dr.fi, num) == FmSuccess) {
+        return FmSuccess;
+        }
+    }
+    return FmNoMoreData;
     }
     return FmNoMoreData;
 }
@@ -1711,42 +1711,42 @@ Iter it;
     ExtraDataRec dr;
 
     if (it->cur_no >= it->max_count) {
-	return NO_VALID_FIELD;
+    return NO_VALID_FIELD;
     }
 
     if (it->template->type == BARRAY) {
-	if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
-	    return NO_VALUE;
-	}
-	return d->num;
+    if ((d = ChainMgrGetExtraData(&it->cm, it->cur_no)) == NULL) {
+        return NO_VALUE;
+    }
+    return d->num;
     } else if (it->template->type == ITER) {
-	for (i = it->cur_no; i < it->max_count; i++) {
-	    int ret_size;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.iter = IterInit(it->template + 1, NO_VALUE);
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    ret_size = IterGetSize(d->iter);
-	    if (ret_size == NO_VALID_FIELD)
-		continue;
-	    else
-		return ret_size;
-	}
-	return NO_VALID_FIELD;
+    for (i = it->cur_no; i < it->max_count; i++) {
+        int ret_size;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.iter = IterInit(it->template + 1, NO_VALUE);
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        ret_size = IterGetSize(d->iter);
+        if (ret_size == NO_VALID_FIELD)
+        continue;
+        else
+        return ret_size;
+    }
+    return NO_VALID_FIELD;
     } else if (it->template->type == POINTER) {
-	for (i = it->cur_no; i < it->max_count; i++) {
-	    int ret_size;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(it->template[1].data);
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    ret_size = FrameInstGetSize(d->fi);
-	    if (ret_size == NO_VALID_FIELD)
-		continue;
-	    else
-		return ret_size;
-	}
-	return NO_VALID_FIELD;
+    for (i = it->cur_no; i < it->max_count; i++) {
+        int ret_size;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(it->template[1].data);
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        ret_size = FrameInstGetSize(d->fi);
+        if (ret_size == NO_VALID_FIELD)
+        continue;
+        else
+        return ret_size;
+    }
+    return NO_VALID_FIELD;
     }
     return NO_VALID_FIELD;
 }
@@ -1764,55 +1764,55 @@ int num;
     register int i;
 
     if (it->allow_expansion) {
-	it->max_count = num;
-	it->allow_expansion = False;
-	return FmSuccess;
+    it->max_count = num;
+    it->allow_expansion = False;
+    return FmSuccess;
     }
 
     if (it->max_count == 0) {
-	return FmNoMoreData;
+    return FmNoMoreData;
     }
 
     if (it->template->type == ITER) {
-	for (i = 0; i < it->max_count; i++) {
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.iter = IterInit(it->template + 1, num);
-		(void)ChainMgrSetData(&it->cm, i, dr);
-		return FmSuccess;
-	    }
-	    if (IterSetIterCount(d->iter, num) == FmSuccess)
-		return FmSuccess;
-	}
-	if (it->allow_expansion) {
-	    ExtraDataRec dr;
-	    dr.iter = IterInit(it->template + 1, num);
-	    (void)ChainMgrSetData(&it->cm, it->max_count, dr);
-	    it->max_count++;
-	    
-	    return FmSuccess;
-	}
-    } else if (it->template->type == POINTER) {
-	for (i = 0; i < it->max_count; i++) {
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(it->template[1].data);
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    if (FrameInstSetIterCount(d->fi, num) == FmSuccess)
-		return FmSuccess;
-	}
-	if (it->allow_expansion) {
-	    ExtraDataRec dr;
-	    dr.fi = FrameInstInit(it->template[1].data);
-	    (void)ChainMgrSetData(&it->cm, it->max_count, dr);
-	    it->max_count++;
+    for (i = 0; i < it->max_count; i++) {
+        ExtraData d;
+        ExtraDataRec dr;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.iter = IterInit(it->template + 1, num);
+        (void)ChainMgrSetData(&it->cm, i, dr);
+        return FmSuccess;
+        }
+        if (IterSetIterCount(d->iter, num) == FmSuccess)
+        return FmSuccess;
+    }
+    if (it->allow_expansion) {
+        ExtraDataRec dr;
+        dr.iter = IterInit(it->template + 1, num);
+        (void)ChainMgrSetData(&it->cm, it->max_count, dr);
+        it->max_count++;
 
-	    if (FrameInstSetIterCount(dr.fi, num) == FmSuccess)
-		return FmSuccess;
-	}
+        return FmSuccess;
+    }
+    } else if (it->template->type == POINTER) {
+    for (i = 0; i < it->max_count; i++) {
+        ExtraData d;
+        ExtraDataRec dr;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(it->template[1].data);
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        if (FrameInstSetIterCount(d->fi, num) == FmSuccess)
+        return FmSuccess;
+    }
+    if (it->allow_expansion) {
+        ExtraDataRec dr;
+        dr.fi = FrameInstInit(it->template[1].data);
+        (void)ChainMgrSetData(&it->cm, it->max_count, dr);
+        it->max_count++;
+
+        if (FrameInstSetIterCount(dr.fi, num) == FmSuccess)
+        return FmSuccess;
+    }
     }
     return FmNoMoreData;
 }
@@ -1829,57 +1829,57 @@ Iter it;
     XimFrameType type;
 
     if (it->allow_expansion)
-	return NO_VALUE;
+    return NO_VALUE;
     else if (it->max_count == 0)
-	return 0;
+    return 0;
 
     type = it->template->type;
 
     size = 0;
 
     if (type == BIT8)
-	size = it->max_count;
+    size = it->max_count;
     else if (type == BIT16)
-	size = it->max_count * 2;
+    size = it->max_count * 2;
     else if (type == BIT32)
-	size = it->max_count * 4;
+    size = it->max_count * 4;
     else if (type == BARRAY) {
-	for (i = 0; i < it->max_count; i++) {
-	    register int num;
-	    ExtraData d;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		return NO_VALUE;
-	    }
-	    if ((num = d->num) == NO_VALUE)
-		return NO_VALUE;
-	    size += num;
-	}
+    for (i = 0; i < it->max_count; i++) {
+        register int num;
+        ExtraData d;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        return NO_VALUE;
+        }
+        if ((num = d->num) == NO_VALUE)
+        return NO_VALUE;
+        size += num;
+    }
     } else if (type == ITER) {
-	for (i = 0; i < it->max_count; i++) {
-	    register int num;
-	    ExtraData d;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		return NO_VALUE;
-	    }
-	    if ((num = IterGetTotalSize(d->iter)) == NO_VALUE)
-		return NO_VALUE;
-	    size += num;
-	}
+    for (i = 0; i < it->max_count; i++) {
+        register int num;
+        ExtraData d;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        return NO_VALUE;
+        }
+        if ((num = IterGetTotalSize(d->iter)) == NO_VALUE)
+        return NO_VALUE;
+        size += num;
+    }
     } else if (type == POINTER) {
-	for (i = 0; i < it->max_count; i++) {
-	    register int num;
-	    ExtraData d;
-	    ExtraDataRec dr;
-	    if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
-		dr.fi = FrameInstInit(it->template[1].data);
-		d = ChainMgrSetData(&it->cm, i, dr);
-	    }
-	    if ((num = FrameInstGetTotalSize(d->fi)) == NO_VALUE)
-		return NO_VALUE;
-	    size += num;
-	}
+    for (i = 0; i < it->max_count; i++) {
+        register int num;
+        ExtraData d;
+        ExtraDataRec dr;
+        if ((d = ChainMgrGetExtraData(&it->cm, i)) == NULL) {
+        dr.fi = FrameInstInit(it->template[1].data);
+        d = ChainMgrSetData(&it->cm, i, dr);
+        }
+        if ((num = FrameInstGetTotalSize(d->fi)) == NO_VALUE)
+        return NO_VALUE;
+        size += num;
+    }
     } else {
-	;/* Should never reached */
+    ;/* Should never reached */
     }
     return size;
 }
@@ -1893,33 +1893,33 @@ Iter it;
 #endif
 {
     if (it->template->type == ITER) {
-	ChainIterRec ci;
-	int count;
-	ExtraDataRec d;
+    ChainIterRec ci;
+    int count;
+    ExtraDataRec d;
 
-	ChainIterInit(&ci, &it->cm);
-	while (ChainIterGetNext(&ci, &count, &d)) {
-	    IterReset(d.iter);
-	}
-	ChainIterFree(&ci);
+    ChainIterInit(&ci, &it->cm);
+    while (ChainIterGetNext(&ci, &count, &d)) {
+        IterReset(d.iter);
+    }
+    ChainIterFree(&ci);
     } else if (it->template->type == POINTER) {
-	ChainIterRec ci;
-	int count;
-	ExtraDataRec dr;
+    ChainIterRec ci;
+    int count;
+    ExtraDataRec dr;
 
-	ChainIterInit(&ci, &it->cm);
-	while (ChainIterGetNext(&ci, &count, &dr)) {
-	    FrameInstReset(dr.fi);
-	}
-	ChainIterFree(&ci);
+    ChainIterInit(&ci, &it->cm);
+    while (ChainIterGetNext(&ci, &count, &dr)) {
+        FrameInstReset(dr.fi);
+    }
+    ChainIterFree(&ci);
     }
     it->cur_no = 0;
 }
 
 
 #if NeedFunctionPrototypes
-static void IterSetStartWatch(Iter it, 
-			      IterStartWatchProc proc, void* client_data)
+static void IterSetStartWatch(Iter it,
+                  IterStartWatchProc proc, void* client_data)
 #else
 static void IterSetStartWatch(it, proc, client_data)
 Iter it;
@@ -1948,10 +1948,10 @@ ExtraDataRec data;
     cur->next = NULL;
 
     if (cm->top == NULL) {
-	cm->top = cm->tail = cur;
+    cm->top = cm->tail = cur;
     } else {
-	cm->tail->next = cur;
-	cm->tail = cur;
+    cm->tail->next = cur;
+    cm->tail = cur;
     }
     return &cur->d;
 }
@@ -1970,10 +1970,10 @@ int frame_no;
     cur = cm->top;
 
     while (cur) {
-	if (cur->frame_no == frame_no) {
-	    return &cur->d;
-	}
-	cur = cur->next;
+    if (cur->frame_no == frame_no) {
+        return &cur->d;
+    }
+    cur = cur->next;
     }
     return NULL;
 }
@@ -1989,7 +1989,7 @@ ExtraData d;
 #endif
 {
     if (ci->cur == NULL)
-	return False;
+    return False;
 
     *frame_no = ci->cur->frame_no;
     *d = ci->cur->d;
@@ -2012,7 +2012,7 @@ int count;
 
     type = frame[count].type;
     type &= ~COUNTER_MASK;
-    
+
     switch (type) {
       case BIT8:
       case BIT16:
@@ -2022,16 +2022,16 @@ int count;
 #endif
       case BARRAY:
       case PADDING:
-	return count + 1;
+    return count + 1;
         break;
       case POINTER:
-	return count + 2;
-	break;
+    return count + 2;
+    break;
       case ITER:
-	return _FrameInstIncrement(frame, count + 1);
-	break;
+    return _FrameInstIncrement(frame, count + 1);
+    break;
       default:
-	break;
+    break;
     }
     return -1;   /* Error */
 }
@@ -2049,9 +2049,9 @@ int count;
     XimFrameType type;
 
     if (count == 0)
-	return -1;   /* cannot decrement */
+    return -1;   /* cannot decrement */
     else if (count == 1) {
-	return 0;    /* BOGUS - It should check the contents of data */
+    return 0;    /* BOGUS - It should check the contents of data */
     }
 
     type = frame[count - 2].type;
@@ -2064,19 +2064,19 @@ int count;
       case BARRAY:
       case PADDING:
       case PTR_ITEM:
-	return count - 1;
-	break;
+    return count - 1;
+    break;
       case POINTER:
       case ITER:
-	i = count - 3;
-	while (i >= 0) {
-	    if (frame[i].type != ITER)
-	        return i + 1;
-	    i--;
-	}
-	return 0;
+    i = count - 3;
+    while (i >= 0) {
+        if (frame[i].type != ITER)
+            return i + 1;
+        i--;
+    }
+    return 0;
       default:
-	break;
+    break;
     }
     return -1;   /* Error */
 }
@@ -2097,77 +2097,77 @@ int cur_no;
 
     switch (type) {
       case BIT8 :
-	return 1;
-	break;
+    return 1;
+    break;
 
       case BIT16 :
         return 2;
-	break;
+    break;
 
       case BIT32 :
-	return 4;
-	break;
+    return 4;
+    break;
 
       case BARRAY :
-	{
-	  ExtraData d;
-	  
-	  if ((d = ChainMgrGetExtraData(&fi->cm, cur_no)) == NULL)
-	      return NO_VALUE;
-	  if (d->num == NO_VALUE)
-	      return NO_VALUE;
-	  return d->num;
-	}
-	break;
+    {
+      ExtraData d;
+
+      if ((d = ChainMgrGetExtraData(&fi->cm, cur_no)) == NULL)
+          return NO_VALUE;
+      if (d->num == NO_VALUE)
+          return NO_VALUE;
+      return d->num;
+    }
+    break;
 
       case PADDING :
-	{
-	  register int unit, number, size, i;
+    {
+      register int unit, number, size, i;
 
-	  unit = _UNIT(fi->template[cur_no].data);
-	  number = _NUMBER(fi->template[cur_no].data);
+      unit = _UNIT(fi->template[cur_no].data);
+      number = _NUMBER(fi->template[cur_no].data);
 
-	  i = cur_no;
-	  size = 0;
-	  while (number > 0) {
-	      i = _FrameInstDecrement(fi->template, i);
-	      size += _FrameInstGetItemSize(fi, i);
-	      number--;
-	  }
-	  size = (unit - (size % unit)) % unit;
-	  return size;
-	}
-	break;
+      i = cur_no;
+      size = 0;
+      while (number > 0) {
+          i = _FrameInstDecrement(fi->template, i);
+          size += _FrameInstGetItemSize(fi, i);
+          number--;
+      }
+      size = (unit - (size % unit)) % unit;
+      return size;
+    }
+    break;
 
       case ITER :
-	{
-	  ExtraData d;
-	  int sub_size;
-	  
-	  if ((d = ChainMgrGetExtraData(&fi->cm, cur_no)) == NULL)
-	      return NO_VALUE;
-	  sub_size = IterGetTotalSize(d->iter);
-	  if (sub_size == NO_VALUE)
-	      return NO_VALUE;
-	  return sub_size;
-	}
-	break;
+    {
+      ExtraData d;
+      int sub_size;
+
+      if ((d = ChainMgrGetExtraData(&fi->cm, cur_no)) == NULL)
+          return NO_VALUE;
+      sub_size = IterGetTotalSize(d->iter);
+      if (sub_size == NO_VALUE)
+          return NO_VALUE;
+      return sub_size;
+    }
+    break;
 
       case POINTER :
-	{
-	  ExtraData d;
-	  int sub_size;
+    {
+      ExtraData d;
+      int sub_size;
 
-	  if ((d = ChainMgrGetExtraData(&fi->cm, cur_no)) == NULL)
-	      return NO_VALUE;
-	  sub_size = FrameInstGetTotalSize(d->fi);
-	  if (sub_size == NO_VALUE)
-	      return NO_VALUE;
-	  return sub_size;
-	}
-	break;
+      if ((d = ChainMgrGetExtraData(&fi->cm, cur_no)) == NULL)
+          return NO_VALUE;
+      sub_size = FrameInstGetTotalSize(d->fi);
+      if (sub_size == NO_VALUE)
+          return NO_VALUE;
+      return sub_size;
+    }
+    break;
       default :
-	break;
+    break;
     }
     return NO_VALUE;
 }

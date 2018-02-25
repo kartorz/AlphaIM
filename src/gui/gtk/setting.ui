@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<interface>
+  <object class="GtkListBox" id="list_box">
+    <child>
+      <object class="GtkButton" id="btn1">
+        <property name="label">用户词组</property>
+        <signal name="clicked" handler="on_menuItem_clicked"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="btn2">
+        <property name="label">快捷键设置</property>
+        <signal name="clicked" handler="on_menuItem_clicked"/>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -29,7 +29,7 @@ public:
 
     bool open();
     void close();
-	void eventLoop();
+    void eventLoop();
     int handleIMOpen(XIMS ims, IMProtocol *calldata);
     int handleIMCreateIC(XIMS ims, IMProtocol *calldata);
     int handleIMDestroyIC(XIMS ims, IMProtocol *calldata);
@@ -62,7 +62,7 @@ private:
     bool m_bDynamicEvent;
     int m_preModKey;
 
-	ICManager m_icManager;
+    ICManager m_icManager;
     MutexCriticalSection m_cs;
 };
 

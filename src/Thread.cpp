@@ -30,7 +30,7 @@ void* thread_loop(void *v)
 }
 
 Thread::Thread(int sleep, bool once)
-:m_threadId(-1), 
+:m_threadId(-1),
  m_stop(true)
 {
     m_sleepTimeMs = sleep;
@@ -47,12 +47,12 @@ void Thread::start()
 {
 #ifdef _LINUX
     if (pthread_create(&m_threadId, NULL, &thread_loop, this) == 0)
-		m_stop = false;
+        m_stop = false;
 
 #elif defined(WIN32)
     m_thrdHandle = (HANDLE)_beginthreadex(NULL, 0, &thread_loop, this, 0, &m_threadId);
     if (m_thrdHandle)
-		m_stop = false;
+        m_stop = false;
 #endif
 
     if (m_stop)

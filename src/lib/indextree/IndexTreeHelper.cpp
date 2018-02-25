@@ -13,7 +13,7 @@ int IndexTreeHelper::ucs4slen(const u32 *ucs)
 
 int IndexTreeHelper::ucs4CharToUTF8Byte(u32 uchr, char* ub)
 {
-    const char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
+    const unsigned char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
     const u32  codeup[] = {
         0x80,           // U+00000000 ～ U+0000007F
         0x800,          // U+00000080 ～ U+000007FF
@@ -141,22 +141,22 @@ size_t  IndexTreeHelper::utf8StrToUcs4Str(const char *u8s,  u32** u32Ptr)
 /*@return  - offset aganist current pos. caller should use SEEK_CUR */
 off_t IndexTreeHelper::checkBlockBound(off_t pos, int nbytes)
 {
-	off_t remain = INXTREE_BLOCK - pos%INXTREE_BLOCK;
-	if (nbytes > remain){
-		return remain; /* seek to next block */
+    off_t remain = INXTREE_BLOCK - pos%INXTREE_BLOCK;
+    if (nbytes > remain){
+        return remain; /* seek to next block */
     }
-	return 0; /* don't seek */
+    return 0; /* don't seek */
 }
 
 
 void IndexTreeHelper::mergeFile(FILE *det, FILE *src)
 {
-	unsigned char buf[2048];
-	int nr;
+    unsigned char buf[2048];
+    int nr;
 
-	while ((nr = fread(buf, 1, 2048, src)) > 0) {
-		fwrite(buf, 1, nr, det);
-	}
+    while ((nr = fread(buf, 1, 2048, src)) > 0) {
+        fwrite(buf, 1, nr, det);
+    }
 }
 
 int IndexTreeHelper::strComLen(const char* pstr1, const char* pstr2, int start)
@@ -178,7 +178,7 @@ size_t ReadFile::operator()(FILE *f, void *ptr, size_t length)
         return 0;
     do {
         int bytes = length - rdbytes;
-	rsize = fread(ptr, 1, bytes, f);
+    rsize = fread(ptr, 1, bytes, f);
         rdbytes += rsize;
     }while(rsize > 0 && rdbytes < length);
     return rdbytes;
@@ -201,7 +201,7 @@ void* ReadFile::operator()(FILE *f, size_t length)
     size_t rsize;
     do {
         int bytes = length - rdbytes;
-	rsize = fread(ptr, 1, bytes, f);
+    rsize = fread(ptr, 1, bytes, f);
         rdbytes += rsize;
     }while(rsize > 0 && rdbytes < length);
     return ptr;
@@ -212,16 +212,16 @@ MutexCriticalSection::MutexCriticalSection(bool re)
 #ifdef WIN32
     m_mutex = CreateMutex( NULL, FALSE, NULL);
 #else
-	pthread_mutexattr_t attr;
-	pthread_mutexattr_init(&attr);
-	if (re)
-		pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-	else
-		pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    if (re)
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    else
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
 
-	pthread_mutex_init(&m_mutex, &attr);
+    pthread_mutex_init(&m_mutex, &attr);
 
-	pthread_mutexattr_destroy(&attr);
+    pthread_mutexattr_destroy(&attr);
 #endif
 }
 
@@ -229,12 +229,12 @@ MutexCriticalSection::MutexCriticalSection(bool re)
 MutexLock::MutexLock(MutexCriticalSection &mcs)
 :m_criticalSection(mcs)
 {
-	m_criticalSection.lock();
+    m_criticalSection.lock();
 }
 
 MutexLock::~MutexLock()
 {
-	m_criticalSection.unlock();
+    m_criticalSection.unlock();
 }
 
 }

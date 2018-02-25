@@ -22,10 +22,11 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <X11/Xlib.h>
+#include <stdlib.h>
 #include "IMdkit.h"
 #if NeedVarargsPrototypes
 # include <stdarg.h>
@@ -49,8 +50,8 @@ int *total_count;
     *total_count = 0;
 
     for (attr = va_arg(var, char*); attr; attr = va_arg(var, char*)) {
-	va_arg(var, XIMArg*);
-	++(*total_count);
+    va_arg(var, XIMArg*);
+    ++(*total_count);
     }
 }
 
@@ -68,8 +69,8 @@ XIMArg **args_return;
     char   *attr;
 
     if (max_count <= 0) {
-	*args_return = (XIMArg *)NULL;
-	return;
+    *args_return = (XIMArg *)NULL;
+    return;
     }
 
     args = (XIMArg *)malloc((unsigned)(max_count + 1) * sizeof(XIMArg));
@@ -77,9 +78,9 @@ XIMArg **args_return;
     if (!args) return;
 
     for (attr = va_arg(var, char*); attr; attr = va_arg(var, char*)) {
-	args->name = attr;
-	args->value = va_arg(var, XPointer);
-	args++;
+    args->name = attr;
+    args->value = va_arg(var, XPointer);
+    args++;
     }
     args->name = (char*)NULL;
 }
@@ -124,7 +125,7 @@ va_dcl
     va_list var;
     int total_count;
     XIMArg *args;
-    char *ret;  
+    char *ret;
 
     Va_start(var, ims);
     _IMCountVaList(var, &total_count);

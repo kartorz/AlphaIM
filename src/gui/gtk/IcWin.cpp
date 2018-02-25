@@ -21,8 +21,8 @@ void ic_win_refresh(IcWin *win,
                     gint32 y,
                     gint32 w,
                     gint32 h,
-					gchar *input,
-					gchar *items)
+                    gchar *input,
+                    gchar *items)
 {
     GtkWindow *icwin = GTK_WINDOW (win);
     IcWinClass *klass = IC_WIN_GET_CLASS(win);
@@ -32,29 +32,29 @@ void ic_win_refresh(IcWin *win,
     gtk_label_set_markup (GTK_LABEL (klass->input_label), markup.c_str());
     //gtk_label_set_text(GTK_LABEL (klass->input_label), strInput.c_str());
     int pi = 0;
-	gchar ** itemArray = g_strsplit (items, " ", 0);
-	if (itemArray) {
-		for(gchar ** item = itemArray; *item; ++item) {
-			if (g_strcmp0(*item, "") == 0)
-				continue;
-			std::string text = "  ";
-			char pichr = 0x31 + pi;
-			text += pichr;
-			text += ": ";
-			text += *item;
-			//gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), text.c_str());
-			if (pi == 0)
-				markup = "<span foreground=\"blue\" size=\"x-large\" background=\"green\">";
-			else
-				markup = "<span foreground=\"blue\" size=\"x-large\">";
-			markup += text +  "</span>";
-			gtk_label_set_markup (GTK_LABEL (klass->preedit_label[pi]), markup.c_str());
-			if (++pi >= PREEDIT_ITEMS_MAX)
-				break;
-		}
+    gchar ** itemArray = g_strsplit (items, " ", 0);
+    if (itemArray) {
+        for(gchar ** item = itemArray; *item; ++item) {
+            if (g_strcmp0(*item, "") == 0)
+                continue;
+            std::string text = "  ";
+            char pichr = 0x31 + pi;
+            text += pichr;
+            text += ": ";
+            text += *item;
+            //gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), text.c_str());
+            if (pi == 0)
+                markup = "<span foreground=\"blue\" size=\"x-large\" background=\"green\">";
+            else
+                markup = "<span foreground=\"blue\" size=\"x-large\">";
+            markup += text +  "</span>";
+            gtk_label_set_markup (GTK_LABEL (klass->preedit_label[pi]), markup.c_str());
+            if (++pi >= PREEDIT_ITEMS_MAX)
+                break;
+        }
 
-		g_strfreev(itemArray);
-	}
+        g_strfreev(itemArray);
+    }
 
     for (; pi < PREEDIT_ITEMS_MAX; pi++)
         gtk_label_set_text(GTK_LABEL (klass->preedit_label[pi]), " ");
@@ -78,7 +78,7 @@ IcWin *ic_win_new()
     IcWinClass *klass = IC_WIN_GET_CLASS(icwin);
 
     GtkWidget *window = ( GtkWidget *)(GTK_WINDOW(icwin));
-    //gtk_widget_set_size_request(window, ICWIN_W, ICWIN_H);    
+    //gtk_widget_set_size_request(window, ICWIN_W, ICWIN_H);
    // GtkWidget *gridc = gtk_grid_new();
     GtkWidget *gridc = (GtkWidget *) g_object_new(GTK_TYPE_GRID,
                                                   "row-spacing", 10,

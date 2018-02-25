@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <X11/Xlib.h>
 #include "IMdkit.h"
@@ -50,13 +50,13 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(geometry_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -65,7 +65,7 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, geometry_CB->icid);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_GEOMETRY, 0, reply, total_size);
+              XIM_GEOMETRY, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -78,7 +78,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nPreeditStartCallback(XIMS ims,
-			   IMProtocol *call_data)
+               IMProtocol *call_data)
 #else
 _Xi18nPreeditStartCallback(ims, call_data)
 XIMS ims;
@@ -96,12 +96,12 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(preedit_start_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -110,7 +110,7 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, preedit_CB->icid);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_PREEDIT_START, 0, reply, total_size);
+              XIM_PREEDIT_START, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -121,7 +121,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nPreeditDrawCallback(XIMS ims,
-			  IMProtocol *call_data)
+              IMProtocol *call_data)
 #else
 _Xi18nPreeditDrawCallback(ims, call_data)
 XIMS ims;
@@ -147,7 +147,7 @@ IMProtocol *call_data;
       status = 0x00000002;
     /* create FrameMgr */
     fm = FrameMgrInit(preedit_draw_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* set length of preedit string */
     FrameMgrSetSize(fm, draw->text->length);
@@ -161,8 +161,8 @@ IMProtocol *call_data;
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -174,10 +174,10 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, status);
     FrameMgrPutToken(fm, draw->text->string);
     for (i = 0; i < feedback_count; i++) {
-	FrameMgrPutToken(fm, draw->text->feedback[i]);
+    FrameMgrPutToken(fm, draw->text->feedback[i]);
     }
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_PREEDIT_DRAW, 0, reply, total_size);
+              XIM_PREEDIT_DRAW, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -190,7 +190,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nPreeditCaretCallback(XIMS ims,
-			   IMProtocol *call_data)
+               IMProtocol *call_data)
 #else
 _Xi18nPreeditCaretCallback(ims, call_data)
 XIMS ims;
@@ -210,13 +210,13 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(preedit_caret_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -228,7 +228,7 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, caret->style);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_PREEDIT_CARET, 0, reply, total_size);
+              XIM_PREEDIT_CARET, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -239,7 +239,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nPreeditDoneCallback(XIMS ims,
-			  IMProtocol *call_data)
+              IMProtocol *call_data)
 #else
 _Xi18nPreeditDoneCallback(ims, call_data)
 XIMS ims;
@@ -257,13 +257,13 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(preedit_done_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -272,7 +272,7 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, preedit_CB->icid);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_PREEDIT_DONE, 0, reply, total_size);
+              XIM_PREEDIT_DONE, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -285,7 +285,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nStatusStartCallback(XIMS ims,
-			  IMProtocol *call_data)
+              IMProtocol *call_data)
 #else
 _Xi18nStatusStartCallback(ims, call_data)
 XIMS ims;
@@ -303,12 +303,12 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(status_start_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -317,7 +317,7 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, status_CB->icid);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_STATUS_START, 0, reply, total_size);
+              XIM_STATUS_START, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -330,7 +330,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nStatusDrawCallback(XIMS ims,
-			 IMProtocol *call_data)
+             IMProtocol *call_data)
 #else
 _Xi18nStatusDrawCallback(ims, call_data)
 XIMS ims;
@@ -352,62 +352,62 @@ IMProtocol *call_data;
 
     switch (draw->type) {
       case XIMTextType:
-	/* create FrameMgr */
-	fm = FrameMgrInit(status_draw_text_fr, NULL,
-			  _Xi18nNeedSwap(i18n_core, connect_id));
+    /* create FrameMgr */
+    fm = FrameMgrInit(status_draw_text_fr, NULL,
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
-	if (draw->data.text->length == 0)
-	  status = 0x00000001;
-	else if (draw->data.text->feedback[0] == 0)
-	  status = 0x00000002;
+    if (draw->data.text->length == 0)
+      status = 0x00000001;
+    else if (draw->data.text->feedback[0] == 0)
+      status = 0x00000002;
 
-	/* set length of status string */
-	FrameMgrSetSize(fm, draw->data.text->length);
-	/* set iteration count for list of feedback */
-	for (i = 0; draw->data.text->feedback[i] != 0; i++)
-	  ;
-	feedback_count = i;
-	FrameMgrSetIterCount(fm, feedback_count);
+    /* set length of status string */
+    FrameMgrSetSize(fm, draw->data.text->length);
+    /* set iteration count for list of feedback */
+    for (i = 0; draw->data.text->feedback[i] != 0; i++)
+      ;
+    feedback_count = i;
+    FrameMgrSetIterCount(fm, feedback_count);
 
-	total_size = FrameMgrGetTotalSize(fm);
-	reply = (unsigned char *)malloc(total_size);
-	if (!reply) {
-	    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	    return False;
-	}
-	memset(reply, 0, total_size);
-	FrameMgrSetBuffer(fm, reply);
+    total_size = FrameMgrGetTotalSize(fm);
+    reply = (unsigned char *)malloc(total_size);
+    if (!reply) {
+        _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+        return False;
+    }
+    memset(reply, 0, total_size);
+    FrameMgrSetBuffer(fm, reply);
 
-	FrameMgrPutToken(fm, connect_id);
-	FrameMgrPutToken(fm, status_CB->icid);
-	FrameMgrPutToken(fm, draw->type);
-	FrameMgrPutToken(fm, status);
-	FrameMgrPutToken(fm, draw->data.text->string);
-	for (i = 0; i < feedback_count; i++) {
-	    FrameMgrPutToken(fm, draw->data.text->feedback[i]);
-	}
-	break;
+    FrameMgrPutToken(fm, connect_id);
+    FrameMgrPutToken(fm, status_CB->icid);
+    FrameMgrPutToken(fm, draw->type);
+    FrameMgrPutToken(fm, status);
+    FrameMgrPutToken(fm, draw->data.text->string);
+    for (i = 0; i < feedback_count; i++) {
+        FrameMgrPutToken(fm, draw->data.text->feedback[i]);
+    }
+    break;
       case XIMBitmapType:
-	/* create FrameMgr */
-	fm = FrameMgrInit(status_draw_bitmap_fr, NULL,
-			  _Xi18nNeedSwap(i18n_core, connect_id));
+    /* create FrameMgr */
+    fm = FrameMgrInit(status_draw_bitmap_fr, NULL,
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
-	total_size = FrameMgrGetTotalSize(fm);
-	reply = (unsigned char *)malloc(total_size);
-	if (!reply) {
-	    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	    return False;
-	}
-	memset(reply, 0, total_size);
-	FrameMgrSetBuffer(fm, reply);
+    total_size = FrameMgrGetTotalSize(fm);
+    reply = (unsigned char *)malloc(total_size);
+    if (!reply) {
+        _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+        return False;
+    }
+    memset(reply, 0, total_size);
+    FrameMgrSetBuffer(fm, reply);
 
-	FrameMgrPutToken(fm, connect_id);
-	FrameMgrPutToken(fm, status_CB->icid);
-	FrameMgrPutToken(fm, draw->data.bitmap);
-	break;
+    FrameMgrPutToken(fm, connect_id);
+    FrameMgrPutToken(fm, status_CB->icid);
+    FrameMgrPutToken(fm, draw->data.bitmap);
+    break;
     }
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_STATUS_DRAW, 0, reply, total_size);
+              XIM_STATUS_DRAW, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -420,7 +420,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nStatusDoneCallback(XIMS ims,
-			 IMProtocol *call_data)
+             IMProtocol *call_data)
 #else
 _Xi18nStatusDoneCallback(ims, call_data)
 XIMS ims;
@@ -438,13 +438,13 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(status_done_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -453,7 +453,7 @@ IMProtocol *call_data;
     FrameMgrPutToken(fm, status_CB->icid);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_STATUS_DONE, 0, reply, total_size);
+              XIM_STATUS_DONE, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -466,7 +466,7 @@ IMProtocol *call_data;
 int
 #if NeedFunctionPrototypes
 _Xi18nStringConversionCallback(XIMS ims,
-			       IMProtocol *call_data)
+                   IMProtocol *call_data)
 #else
 _Xi18nStringConversionCallback(ims, call_data)
 XIMS ims;
@@ -486,7 +486,7 @@ IMProtocol *call_data;
 
     /* create FrameMgr */
     fm = FrameMgrInit(str_conversion_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 #if 0
     /* set length of preedit string */
     FrameMgrSetSize(fm, strconv->text->length);
@@ -494,8 +494,8 @@ IMProtocol *call_data;
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return False;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return False;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -512,7 +512,7 @@ IMProtocol *call_data;
 #else
 #endif
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_STR_CONVERSION, 0, reply, total_size);
+              XIM_STR_CONVERSION, 0, reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
     XFree(reply);
@@ -520,7 +520,7 @@ IMProtocol *call_data;
     /* XIM_STR_CONVERSION is a syncronous protocol,
        so should wait here for XIM_STR_CONVERSION_REPLY. */
     if (i18n_core->methods.wait(ims, connect_id,
-				XIM_STR_CONVERSION_REPLY, 0) == False)
+                XIM_STR_CONVERSION_REPLY, 0) == False)
       return False;
     return True;
 }

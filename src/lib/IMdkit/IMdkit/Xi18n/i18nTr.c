@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <stdio.h>
 #include <X11/Xlib.h>
@@ -41,9 +41,9 @@ extern void _Xi18nDeleteClient(Xi18n, CARD16);
 static Bool TransRead(XtransConnInfo, char *, int, int *);
 static Bool TransWrite(XtransConnInfo, char *, int);
 static void Xi18nWaitTransListen(Display *,
-				 int, XPointer);
+                 int, XPointer);
 static void Xi18nWaitTransAccept(Display *, int,
-				 XPointer);
+                 XPointer);
 #else
 extern Xi18nClient *_Xi18nFindClient();
 extern Xi18nClient *_Xi18nNewClient();
@@ -74,76 +74,76 @@ int *connect_id;
     unsigned char *p = NULL;
     unsigned char *pp;
     int read_length;
-    XimProtoHdr	*hdr;
+    XimProtoHdr    *hdr;
     Bool isConnect = False;
     CARD8 major_opcode, minor_opcode;
     CARD16 length;
 
     while (client != NULL) {
-	tr_client = (TransClient *)client->trans_rec;
-	if (tr_client->accept_fd == fd) {
-	    *connect_id = client->connect_id;
-	    break;
-	}
-	client = client->next;
+    tr_client = (TransClient *)client->trans_rec;
+    if (tr_client->accept_fd == fd) {
+        *connect_id = client->connect_id;
+        break;
+    }
+    client = client->next;
     }
 
     if ((hdr = (XimProtoHdr *)malloc(sizeof(hdr))) == NULL)
       return (unsigned char *)NULL;
 
     if (!TransRead(tr_client->accept_conn, (char *)hdr,
-		   sizeof(hdr), &read_length) ||
-	read_length != sizeof(hdr)) {
-	goto read_error;
+           sizeof(hdr), &read_length) ||
+    read_length != sizeof(hdr)) {
+    goto read_error;
     } else {
-	if (client->byte_order == '?') {
-	    if (hdr->major_opcode == XIM_CONNECT) {
-		CARD8 byte_order;
-		if (!TransRead(tr_client->accept_conn, (char *)&byte_order,
-			       sizeof(CARD8), &read_length) ||
-		    read_length != sizeof(CARD8)) {
-		    goto read_error;
-		}
-		isConnect = True;
-		client->byte_order = (CARD8)byte_order;
-	    } else {
-		return (unsigned char *)NULL;	/* can do nothing */
-	    }
-	}
-	fm = FrameMgrInit(packet_header_fr, (char *)hdr,
-			  _Xi18nNeedSwap(i18n_core, *connect_id));
-	total_size = FrameMgrGetTotalSize(fm);
-	/* get data */
-	FrameMgrGetToken(fm, major_opcode);
-	FrameMgrGetToken(fm, minor_opcode);
-	FrameMgrGetToken(fm, length);
-	/* free FrameMgr */
-	FrameMgrFree(fm);
+    if (client->byte_order == '?') {
+        if (hdr->major_opcode == XIM_CONNECT) {
+        CARD8 byte_order;
+        if (!TransRead(tr_client->accept_conn, (char *)&byte_order,
+                   sizeof(CARD8), &read_length) ||
+            read_length != sizeof(CARD8)) {
+            goto read_error;
+        }
+        isConnect = True;
+        client->byte_order = (CARD8)byte_order;
+        } else {
+        return (unsigned char *)NULL;    /* can do nothing */
+        }
+    }
+    fm = FrameMgrInit(packet_header_fr, (char *)hdr,
+              _Xi18nNeedSwap(i18n_core, *connect_id));
+    total_size = FrameMgrGetTotalSize(fm);
+    /* get data */
+    FrameMgrGetToken(fm, major_opcode);
+    FrameMgrGetToken(fm, minor_opcode);
+    FrameMgrGetToken(fm, length);
+    /* free FrameMgr */
+    FrameMgrFree(fm);
 
-	if ((p = (unsigned char *)malloc(total_size + length * 4)) == NULL)
-	  return (unsigned char *)NULL;
-	pp = p;
-	memmove(pp, &major_opcode, sizeof(CARD8)); pp += sizeof(CARD8);
-	memmove(pp, &minor_opcode, sizeof(CARD8)); pp += sizeof(CARD8);
-	memmove(pp, &length, sizeof(CARD16)); pp += sizeof(CARD16);
-	XFree(hdr);
-	if (!isConnect) {
-	    if (length > 0) {
-		if (!TransRead(tr_client->accept_conn, (char *)pp,
-			       length * 4, &read_length) ||
-		    read_length != length * 4) {
-		    goto read_error;
-		}
-	    }
-	} else {
-	    memmove(pp, &client->byte_order, sizeof(CARD8));
-	    pp += sizeof(CARD8);
-	    if (!TransRead(tr_client->accept_conn, (char *)pp,
-			   length * 4 - sizeof(CARD8), &read_length) ||
-		read_length != length * 4 - sizeof(CARD8)) {
-		goto read_error;
-	    }
-	}
+    if ((p = (unsigned char *)malloc(total_size + length * 4)) == NULL)
+      return (unsigned char *)NULL;
+    pp = p;
+    memmove(pp, &major_opcode, sizeof(CARD8)); pp += sizeof(CARD8);
+    memmove(pp, &minor_opcode, sizeof(CARD8)); pp += sizeof(CARD8);
+    memmove(pp, &length, sizeof(CARD16)); pp += sizeof(CARD16);
+    XFree(hdr);
+    if (!isConnect) {
+        if (length > 0) {
+        if (!TransRead(tr_client->accept_conn, (char *)pp,
+                   length * 4, &read_length) ||
+            read_length != length * 4) {
+            goto read_error;
+        }
+        }
+    } else {
+        memmove(pp, &client->byte_order, sizeof(CARD8));
+        pp += sizeof(CARD8);
+        if (!TransRead(tr_client->accept_conn, (char *)pp,
+               length * 4 - sizeof(CARD8), &read_length) ||
+        read_length != length * 4 - sizeof(CARD8)) {
+        goto read_error;
+        }
+    }
     }
     return (unsigned char *)p;
   read_error:
@@ -153,7 +153,7 @@ int *connect_id;
     return (unsigned char *)NULL;
 }
 
-static Bool 
+static Bool
 #if NeedFunctionPrototypes
 Xi18nTransBegin(XIMS ims)
 #else
@@ -167,14 +167,14 @@ XIMS ims;
     int fd;
 
     if (((spec->trans_conn = (struct _XtransConnInfo *)
-	  TRANS(OpenCOTSServer)(address)) == NULL) ||
-	  (TRANS(CreateListener)(spec->trans_conn, spec->port, 0) != 0)) {
-	return False;
+      TRANS(OpenCOTSServer)(address)) == NULL) ||
+      (TRANS(CreateListener)(spec->trans_conn, spec->port, 0) != 0)) {
+    return False;
     }
     fd = TRANS(GetConnectionNumber)(spec->trans_conn);
     return _XRegisterInternalConnection(i18n_core->address.dpy, fd,
-			(_XInternalConnectionProc)Xi18nWaitTransListen,
-			(XPointer)ims);
+            (_XInternalConnectionProc)Xi18nWaitTransListen,
+            (XPointer)ims);
 }
 
 static Bool
@@ -188,7 +188,7 @@ XIMS ims;
     Xi18n i18n_core = ims->protocol;
     TransSpecRec *spec = (TransSpecRec *)i18n_core->address.connect_addr;
     int fd;
-    
+
     fd = TRANS(GetConnectionNumber)(spec->trans_conn);
     if (fd == 0) return False;
     _XUnregisterInternalConnection(i18n_core->address.dpy, fd);
@@ -200,7 +200,7 @@ XIMS ims;
 static Bool
 #if NeedFunctionPrototypes
 Xi18nTransSend(XIMS ims, CARD16 connect_id,
-		unsigned char *reply, long length)
+        unsigned char *reply, long length)
 #else
 Xi18nTransSend(ims, connect_id, reply, length)
 XIMS ims;
@@ -215,7 +215,7 @@ long length;
 
     if (length > 0)
       if (TransWrite(tr_client->accept_conn, (char *)reply, length) != length)
-	return False;
+    return False;
 
     return True;
 }
@@ -223,7 +223,7 @@ long length;
 static Bool
 #if NeedFunctionPrototypes
 Xi18nTransWait(XIMS ims, CARD16 connect_id,
-		CARD8 major_opcode, CARD8 minor_opcode)
+        CARD8 major_opcode, CARD8 minor_opcode)
 #else
 Xi18nTransWait(ims, connect_id, major_opcode, minor_opcode)
 XIMS ims;
@@ -238,18 +238,18 @@ CARD8 minor_opcode;
     int fd = TRANS(GetConnectionNumber)(tr_client->accept_conn);
 
     for (;;) {
-	unsigned char *packet;
-	XimProtoHdr *hdr;
-	int connect_id_ret;
+    unsigned char *packet;
+    XimProtoHdr *hdr;
+    int connect_id_ret;
 
-	packet = ReadTrIMMessage(ims, fd, &connect_id_ret);
-	hdr = (XimProtoHdr *)packet;
+    packet = ReadTrIMMessage(ims, fd, &connect_id_ret);
+    hdr = (XimProtoHdr *)packet;
 
-	if ((hdr->major_opcode == major_opcode) &&
-	    (hdr->minor_opcode == minor_opcode))
-	  return True;
-	else if (hdr->major_opcode == XIM_ERROR)
-	  return False;
+    if ((hdr->major_opcode == major_opcode) &&
+        (hdr->minor_opcode == minor_opcode))
+      return True;
+    else if (hdr->major_opcode == XIM_ERROR)
+      return False;
     }
 }
 
@@ -269,7 +269,7 @@ CARD16 connect_id;
     TRANS(Disconnect)(tr_client->accept_conn);
     (void)TRANS(Close)(tr_client->accept_conn);
     _XUnregisterInternalConnection(i18n_core->address.dpy,
-				   tr_client->accept_fd);
+                   tr_client->accept_fd);
     XFree(tr_client);
     _Xi18nDeleteClient(i18n_core, connect_id);
     return True;
@@ -278,7 +278,7 @@ CARD16 connect_id;
 static Bool
 #if NeedFunctionPrototypes
 TransRead(XtransConnInfo accept_conn, char *buf,
-	  int buf_len, int *ret_len)
+      int buf_len, int *ret_len)
 #else
 TransRead(accept_conn, buf, buf_len, ret_len)
 XtransConnInfo accept_conn;
@@ -308,10 +308,10 @@ int len;
     register int nbyte;
 
     while (len > 0) {
-	if ((nbyte = TRANS(Write)(accept_conn, buf, len)) <= 0)
-	  return False;
-	len -= nbyte;
-	buf += nbyte;
+    if ((nbyte = TRANS(Write)(accept_conn, buf, len)) <= 0)
+      return False;
+    len -= nbyte;
+    buf += nbyte;
     }
     return True;
 }
@@ -319,7 +319,7 @@ int len;
 Bool
 #if NeedFunctionPrototypes
 _Xi18nCheckTransAddress(Xi18n i18n_core, TransportSW *transSW,
-			char *address)
+            char *address)
 #else
 _Xi18nCheckTransAddress(i18n_core, transSW, address)
 Xi18n i18n_core;
@@ -338,11 +338,11 @@ char *address;
       strcpy(hostname, address);
 
     if (p = (char *)index(hostname, ':')) {
-	*p = 0; p++;
-	spec->port = p;
+    *p = 0; p++;
+    spec->port = p;
     } else {
-	XFree(hostname);
-	return False;
+    XFree(hostname);
+    return False;
     }
     i18n_core->address.connect_addr = (TransSpecRec *)spec;
     i18n_core->methods.begin = Xi18nTransBegin;
@@ -392,12 +392,12 @@ XPointer arg;
     int status;
 
     if ((new_client = (struct _XtransConnInfo *)
-	 TRANS(Accept)(spec->trans_conn, &status)) != NULL) {
-	client = NewTrClient(i18n_core, new_client);
-	(void)_XRegisterInternalConnection(i18n_core->address.dpy,
-		     client->accept_fd,
-		     (_XInternalConnectionProc)Xi18nWaitTransAccept,
-		     (XPointer)ims);
+     TRANS(Accept)(spec->trans_conn, &status)) != NULL) {
+    client = NewTrClient(i18n_core, new_client);
+    (void)_XRegisterInternalConnection(i18n_core->address.dpy,
+             client->accept_fd,
+             (_XInternalConnectionProc)Xi18nWaitTransAccept,
+             (XPointer)ims);
     }
     return;
 }
@@ -417,7 +417,7 @@ XPointer arg;
 #if NeedFunctionPrototypes
      XIMS, CARD16, unsigned char *, Bool *
 #endif
-				     );
+                     );
     Bool delete = True;
     unsigned char *packet;
     int connect_id;

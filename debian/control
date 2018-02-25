@@ -1,0 +1,29 @@
+Source: alphaim
+Section: utils
+Priority: optional
+Maintainer: Li Liqiong <joni_lee@outlook.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ g++,
+ make,
+ pkg-config,
+ libboost-filesystem-dev | libboost-filesystem1.83-dev,
+ libboost-system-dev,
+ libx11-dev,
+ libgtk-3-dev,
+ libayatana-appindicator3-dev,
+ libsystemd-dev,
+ qt6-base-dev,
+ qt6-base-private-dev,
+ qt6-base-dev-tools
+Standards-Version: 4.7.0
+Homepage: https://github.com/jonilee/AlphaIM
+Rules-Requires-Root: no
+
+Package: alphaim
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ dbus
+Description: Chinese input method

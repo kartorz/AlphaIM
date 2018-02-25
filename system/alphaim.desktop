@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment[en_US]=Chinese pinyin input method.
+Comment=Chinese pinyin input method.
+Exec=/usr/bin/alphaim-ui
+GenericName[en_US]=AlphaIM
+GenericName=AlphaIM
+Icon=
+MimeType=
+Name[en_US]=AlphaIM
+Name=AlphaIM
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

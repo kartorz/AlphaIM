@@ -9,10 +9,6 @@
 #include "IMPreedit.h"
 #include "Log.h"
 
-#undef PRINTF
-//#define PRINTF(fmt, args...)  printf(fmt, ##args)
-#define PRINTF(fmt, args...)
-
 IMPreedit::IMPreedit():m_bTrigger(false), m_bCN(false),
 m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 {
@@ -20,7 +16,7 @@ m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 
 IMPreedit::~IMPreedit()
 {
-    //log.d(":~IMPreedit\n");
+    //logger.d(":~IMPreedit\n");
 }
 
 // ret:
@@ -33,7 +29,7 @@ bool IMPreedit::commit(int i)
     {
         //printf("commit candidate %s\n", m_items[i].val.c_str());
         if (m_items.size() > 0)
-			gApp->curIM()->onCommit(m_items[i]);
+            gApp->curIM()->onCommit(m_items[i]);
         return true;
     }
 
@@ -68,7 +64,7 @@ bool IMPreedit::commit(int i)
             }
         }
 
-        log.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
+        logger.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
         return true; //Something wrong, just commit, don't lose user input.
     }
     return false;
@@ -107,7 +103,7 @@ u32 IMPreedit::mapCNPun(char key)
         return 0x3010;
     case ']':
         return 0x3011;
-	case '-':
+    case '-':
         return 0xFF0D;
     case '_':
         return 0xFF3F;
@@ -115,7 +111,7 @@ u32 IMPreedit::mapCNPun(char key)
         return 0x300A;
     case '>':
         return 0x300B;
-	case '{':
+    case '{':
         return 0xFF5B;
     case '}':
         return 0xFF5D;
@@ -134,7 +130,7 @@ string IMPreedit::mapCNPunToU8Str(char key)
         ret += ub;
         free(ub);
     }
-	PRINTF("mapCNPunToU8Str, %c --> %s\n", key, ret.c_str());
+    PRINTF("mapCNPunToU8Str, %c --> %s\n", key, ret.c_str());
     return ret;
 }
 
@@ -201,10 +197,10 @@ void IMPreedit::del()
         m_input = it.key + m_input;
     }
 
-	if (m_input != "") {
-		m_candidate = lookup(m_input);
-		page(1);
-	}
+    if (m_input != "") {
+        m_candidate = lookup(m_input);
+        page(1);
+    }
 #endif
 }
 
@@ -216,7 +212,7 @@ string IMPreedit::lookup(string input)
     m_pageWin[1] = 0;
     m_candidate = "";
 
-    m_items.clear(); 
+    m_items.clear();
     ret = gApp->curIM()->lookup(input, m_items);
     return ret;
 }
@@ -251,15 +247,15 @@ void IMPreedit::close()
 /*
  * The items number of a page is variable depending on length of phrase.
  * eg:   1 xx  2 xx                 .. 9 xx
- *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx 
+ *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx
  *
  */
 
 /*
  * The items number of a page is variable depending on length of phrase.
  * eg:   1 xx  2 xx                 .. 9 xx
- *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx 
- *  
+ *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx
+ *
  * Current page: ( m_pageWin[0] , m_pageWin[1] ]
  */
 void IMPreedit::page(int pg)
@@ -305,8 +301,8 @@ void IMPreedit::page(int pg)
     } else {
         //printf("pg:%d, [%d, %d]\n", m_curPage, m_pageWin[0], m_pageWin[1]);
         if (bPgDown) {
-            //  win[0] ... win[1] | 
-            //             start ... end   
+            //  win[0] ... win[1] |
+            //             start ... end
             start = m_pageWin[1];
             end = start + maxItems;
             end = m_items.size() < end ? m_items.size() : end;
@@ -345,7 +341,7 @@ void IMPreedit::page(int pg)
     if (candiItem.val != "") {
         m_bCandiItem = true;
         m_uiItems.push_front(candiItem);
-    }   
+    }
 }
 
 void IMPreedit::doSwitchCEPun()
@@ -432,22 +428,22 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 
 void IMPreedit::guiAction(int id)
 {
-	PRINTF("IMPreedit::guiAction id: %d\n", id);
-	gApp->getMessageQ()->push(id);
+    PRINTF("IMPreedit::guiAction id: %d\n", id);
+    gApp->getMessageQ()->push(id);
 }
 
 void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
 {
     if (m_bStart && m_uiItems.size() > 0) {
         ICRect rect = callback->onGetRect();
-        
+
         string input = m_ci + m_input;
         string candidate = m_ci + m_candidate;
         string items = "";
 
-		for (int i=0; i < m_uiItems.size(); i++) {
-			items += m_uiItems.at(i).val + " ";
-		}
+        for (int i=0; i < m_uiItems.size(); i++) {
+            items += m_uiItems.at(i).val + " ";
+        }
 
         PRINTF("preEdit %s, %d, %d , %d %d\n", input.c_str(), rect.x, rect.y, rect.w, rect.h);
 
@@ -469,7 +465,7 @@ void IMPreedit::guiReload(IMPreeditCallback *callback)
 {
     PRINTF("guiReload %d\n", m_bTrigger);
 
-    if (!m_bTrigger) {        
+    if (!m_bTrigger) {
         guiAction(MSG_IM_CLOSE);
         return;
     }
@@ -491,19 +487,19 @@ bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
     int modifier2_mask;
 
     for (i = 0; trigger[i].keysym != 0; i++) {
-	    modifier2      = trigger[i].modifier;
-	    modifier2_mask = trigger[i].modifier_mask;
-	    if (((KeySym)trigger[i].keysym == keysym)
-	        && ((modifier & modifier2_mask) == modifier2))
-	    return True;
+        modifier2      = trigger[i].modifier;
+        modifier2_mask = trigger[i].modifier_mask;
+        if (((KeySym)trigger[i].keysym == keysym)
+            && ((modifier & modifier2_mask) == modifier2))
+        return True;
     }
     return False;
 }
 
 /*bool IMPreedit::ispinyin( unsigned int key)
 {
-	if (key )
-	}*/
+    if (key )
+    }*/
 
 void IMPreedit::handleMessage(int msg)
 {
@@ -516,4 +512,3 @@ void IMPreedit::handleMessage(int msg)
         return;
     }
 }
-

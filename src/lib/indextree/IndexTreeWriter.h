@@ -1,5 +1,5 @@
 /**
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -73,7 +73,7 @@ private:
     void addToIndextree(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,
                         const off_t d_off, u32 *keyStartPtr, u32 *keyEndPtr);
 
-    int bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,u32 key, int min, int max);    
+    int bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,u32 key, int min, int max);
 
     void trimIndexTree(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent, int depth, FILE* sinxfile);
 

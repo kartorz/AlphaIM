@@ -1,9 +1,9 @@
 关于 “阿尔法输入法”
 ==================
 版本号: 1.0
-作者:   李力琼 (joni lee) <joni.kartorz.lee@gmail.com>
+作者:   李力琼 (joni lee) <joni_lee@outlook.com>
 
-它是一款快速智能的输入法。不收集用户数据，也不依赖网络词典，不需要更新词库，
+它是一款Linux平台的快速智能的输入法。不收集用户数据，也不依赖网络词典，不需要更新词库，
 更加不会弹广告，资源消耗低， 是众多输入法中的一个简洁版, 同win10自带的输入法比较类似。
 
 功能特性:
@@ -69,7 +69,7 @@ ubuntu14.04:
     sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev 
              libx11-dev  libgtk-3-dev  libsystemd-dev
 sudo apt-get install libqt5qml5 libqt5quick5  qtdeclarative5-dev qtbase5-private-dev 
-libappindicator3-dev
+libayatana-appindicator3-dev
 
 
 如何编译
@@ -79,44 +79,26 @@ linux,unix
 ----------
 $ ./configure  
 $ ./configure --help
-  can give you some useful information, if you get trouble and want to set some 
-  custom configurations to fix it.
-
 $ make 
-
 $ make install
 
-windows
--------
-暂不支持window 版本。
-
-
-X11系统配置
-==========
-. 卸载/删除已经安装的输入法。 (可选)
-   sudo im-config  , 选择 auto/xim
-    ~/.xinputrc  run_im auto
-
-. 打开或创建 ~/.xprofile
-. 加入下列内容:
-  export GTK_IM_MODULE=AlphaIM
-  export QT_IM_MODULE=AlphaIM
-  export QT_IM_MODULE=AlphaIM
-  export XMODIFIERS=@im=AlphaIM
-  eval `dbus-launch --sh-syntax --exit-with-session`
-  AlphaIM
-
-. AlphaIM.desktop 拷贝到 .config/autostart
-. libalphaimplatforminputcontextplugin.so 拷贝到 qt 的插件目录/...../qt5/plugins/platforminputcontexts/
+运行
+====
+sudo im-config，选择AlphaIM后，需要注销或者重启。
+如果，输入法不能使用，可能是之前的输入法还在运行中，
+需要关闭它们自动启动——
+1）/etc/xdg/autostart/ 里面删除。
+2) systemctl disable xx
+3) 检查其它的autostart 项。 
 
 软件兼容性
-========
+=========
 目前这个输入法支持xim和QtIM协议， 我测试了GTK/QT下的一些常用软件：
    kate, gedit, thunderbird, firefox, chrome, libreoffice,  emacs, ....
 都可以支持，如果碰到不能支持的软件， 可以使用kate/gedit 来临时替代输入。
 
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系
-========================================
-我的email是: joni.kartorz.lee@gmail.com.
+=============================================
+我的email是: joni_lee@outlook.com.
 任何同软件相关的问题，你都可以联系我。

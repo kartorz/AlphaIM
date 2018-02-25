@@ -18,7 +18,7 @@ SysMessager::~SysMessager()
     if (!m_stop) {
         stop();
     }
-	delete m_msgQ;
+    delete m_msgQ;
 }
 
 void SysMessager::stop()
@@ -33,7 +33,7 @@ void SysMessager::onStartup()
 
 void SysMessager::onExit()
 {
-    log(LOG_DEBUG, "SysMessager: onExit()\n");
+    logger(LOG_DEBUG, "SysMessager: onExit()\n");
 }
 
 void SysMessager::doWork()
@@ -47,17 +47,17 @@ void SysMessager::processMessage()
     bool ret = m_msgQ->pop(msg);
     if (ret == false) {
         //printf("{SysMessager} no message, exit\n");
-        log(LOG_ERROR,"SysMessager: ret == false, exit\n");
+        logger(LOG_ERROR,"SysMessager: ret == false, exit\n");
         return;
     }
-    //log(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
-	switch (msg.id) {
-		case MSG_QUIT:
-			abort();
-			break;
-		default:
-			DBusDaemon::getRefrence().notify(msg);
-			break;
-	}
-	//printf("Message done\n");
+    //logger(LOG_DEBUG,"SysMessager: processMessage() id:%d\n", msg.id);
+    switch (msg.id) {
+        case MSG_QUIT:
+            abort();
+            break;
+        default:
+            DBusDaemon::getRefrence().notify(msg);
+            break;
+    }
+    //printf("Message done\n");
 }

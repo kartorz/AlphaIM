@@ -28,31 +28,31 @@ unsigned int Util::getTimeMS()
 #if defined(WIN32)
   return timeGetTime();
 #else
-	static unsigned long long start_mstime = 0;
-	unsigned long long now_mstime;
-	struct timespec ts;
+    static unsigned long long start_mstime = 0;
+    unsigned long long now_mstime;
+    struct timespec ts;
 
     clock_gettime(CLOCK_MONOTONIC, &ts);
-	now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-	if (start_mstime == 0) {
-		start_mstime = now_mstime;
-	}
-    /*printf("{getTimeMS} (%lu, %lu) --> (%lu, %lu), %u\n", 
+    now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+    if (start_mstime == 0) {
+        start_mstime = now_mstime;
+    }
+    /*printf("{getTimeMS} (%lu, %lu) --> (%lu, %lu), %u\n",
        ts.tv_sec, ts.tv_nsec, now_mstime, start_mstime, now_mstime - start_mstime);*/
-	return(now_mstime - start_mstime);
+    return(now_mstime - start_mstime);
 #endif
 }
 
 unsigned long long Util::getAbsTimeSeconds()
 {
 #if defined(WIN32)
-	LARGE_INTEGER  large_interger;
-	QueryPerformanceFrequency(&large_interger);
-	double dff = large_interger.QuadPart;
-	QueryPerformanceCounter(&large_interger);
-	return (unsigned long long)(large_interger.QuadPart * 1000 / dff);
+    LARGE_INTEGER  large_interger;
+    QueryPerformanceFrequency(&large_interger);
+    double dff = large_interger.QuadPart;
+    QueryPerformanceCounter(&large_interger);
+    return (unsigned long long)(large_interger.QuadPart * 1000 / dff);
 #else
-	struct timespec ts;
+    struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec;
 #endif
@@ -69,11 +69,11 @@ string Util::getDate()
     string dateformat = "YYYY-MM-DD";
     string format = "YYYY";
     boost::algorithm::replace_first(dateformat, format, year);
-    
-	format = "MM";
+
+    format = "MM";
     boost::algorithm::replace_first(dateformat, format, mon);
 
-	format = "DD";
+    format = "DD";
     boost::algorithm::replace_first(dateformat, format, day);
 
     return dateformat;
@@ -122,9 +122,9 @@ bool Util::createDir(const string& path)
 bool Util::copyFile(const string& from, const string& to)
 {
     try {
-        copy_file(from, to, copy_option::overwrite_if_exists);
+        copy_file(from, to, copy_options::overwrite_existing);
     } catch (const filesystem_error& ex) {
-         printf("%s", ex.what());   
+         printf("%s", ex.what());
          return false;
     }
     return true;
@@ -207,7 +207,7 @@ string Util::execDir()
 #endif
    return strpath;
 }
- 
+
 string Util::tempDir(string app)
 {
 #ifdef _LINUX
@@ -344,7 +344,7 @@ void* ReadFile::operator()(FILE *f, size_t length)
     if (length == -1) {
         fseek(f, 0, SEEK_END);
         length = ftello(f);
-        fseek(f, 0, SEEK_SET); 
+        fseek(f, 0, SEEK_SET);
     }
     ptr = malloc(length);
     memset(ptr, 0, length);
@@ -355,7 +355,7 @@ void* ReadFile::operator()(FILE *f, size_t length)
         rsize = fread(ptr, 1, bytes, f);
         rdbytes += rsize;
     }while(rsize > 0 && rdbytes < length);
-    return ptr;	
+    return ptr;
 }
 #if 0
 XMLElement* XMLUtil::Child(XMLElement *parent, int n /*0..n*/)

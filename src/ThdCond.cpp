@@ -75,7 +75,7 @@ int ThdCond::consume(void *v, int timeout)
             DWORD result = WaitForSingleObject(m_cv, timeout);
             if (result == WAIT_TIMEOUT) {
                 return -1;
-	    }
+        }
         #else
             struct timespec to;
             int sec = timeout/1000;
@@ -148,7 +148,7 @@ int ThdCond::waitEvent(int timeout/*ms*/)
             DWORD result = WaitForSingleObject(m_cv, timeout);
             if (result == WAIT_TIMEOUT) {
                 return -1;
-	    }
+        }
     #else
         struct timespec to;
         clock_gettime(CLOCK_REALTIME, &to); /* sync with Util::GetTimeMS */
@@ -165,7 +165,7 @@ int ThdCond::waitEvent(int timeout/*ms*/)
             pthread_mutex_unlock(&m_mutex);
             //printf("%u: waitEvent timeout ending\n", Util::getTimeMS());
             return -1;
-	}
+    }
     #endif
     }
 

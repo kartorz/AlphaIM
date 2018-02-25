@@ -1,171 +1,188 @@
 ##=======================================================
-## Makefile for AlphaDict.                                
-##                                                        
+## Makefile for AlphaDict.
 ##
 ##=======================================================
+
+empty :=
+space := $(empty) $(empty)
+.RECIPEPREFIX := $(space)
 
 ##=== funtions ===##
 # tree -d -L 1  -i
 
-FUN_LOCAL_DIRS = $(shell ls $(1) -lA | grep ^d  | awk '{print $$9}')
+FUN_LOCAL_DIRS = $(shell ls $(1) -lA | grep ^d | awk '{print $$9}')
 
 include config.mak
 
 DEPS :=
 
-subdirs := tool  lib gui protocol
-incs := $(foreach dir, $(subdirs), $(dir)/Makefile.inc)
+SYSTEMDIR := ../system
+DESKTOP_FILE := ../debian/alphaim.desktop
+AUTOSTARTDIR := $(DESTDIR)/etc/xdg/autostart
+IM_CONFIG_DATA_DIR := $(DESTDIR)/usr/share/im-config/data
+
+subdirs := tool lib gui protocol
+incs := $(foreach dir,$(subdirs),$(dir)/Makefile.inc)
 include $(incs)
 
-SRCS_ALPHAIM += main.cpp      \
-			 Application.cpp  \
-             Log.cpp          \
-             MutexLock.cpp    \
-             SpinLock.cpp     \
-             ThdCond.cpp      \
-             Thread.cpp       \
-			 MessageQueue.cpp \
-			 SysMessager.cpp  \
-			 TaskManager.cpp  \
-             Util.cpp         \
-			 CharUtil.cpp     \
-             TDFParser.cpp    \
-             PY.cpp           \
-			 IMPreedit.cpp    \
-	         X11IMPreedit.cpp \
-			 QtIMPreedit.cpp  \
-             UsrPhrase.cpp \
-             Configure.cpp \
-             DBusDaemon.cpp
-
+SRCS_ALPHAIMD += main.cpp \
+    Application.cpp \
+    Log.cpp \
+    MutexLock.cpp \
+    SpinLock.cpp \
+    ThdCond.cpp \
+    Thread.cpp \
+    MessageQueue.cpp \
+    SysMessager.cpp \
+    TaskManager.cpp \
+    Util.cpp \
+    CharUtil.cpp \
+    TDFParser.cpp \
+    PY.cpp \
+    IMPreedit.cpp \
+    X11IMPreedit.cpp \
+    QtIMPreedit.cpp \
+    GtkIMPreedit.cpp \
+    UsrPhrase.cpp \
+    Configure.cpp \
+    DBusDaemon.cpp
 
 #ifeq ($(DEBUG), yes)
-SRCS_ALPHAIM += Signal.cpp
+SRCS_ALPHAIMD += Signal.cpp
 #endif
 
-SRCS_AIMTOOL += SpinLock.cpp  \
-				ThdCond.cpp   \
-				Log.cpp       \
-                Util.cpp      \
-				CharUtil.cpp  \
-                TDFParser.cpp
+SRCS_AIMCTL += SpinLock.cpp \
+    ThdCond.cpp \
+    Log.cpp \
+    Util.cpp \
+    CharUtil.cpp \
+    TDFParser.cpp
 
-SRCS_GUI-yes += Util.cpp
+SRCS_GUI-$(GUI) += Util.cpp
 
 OBJS_TINYXML := $(SRCS_TINYXML:%.cpp=%.o)
-OBJS_INDEXTREE := $(SRCS_INDEXTREE:%.cpp=%.o) 
-OBJS_ALPHAIM := $(SRCS_ALPHAIM:%.cpp=%.o)
+OBJS_INDEXTREE := $(SRCS_INDEXTREE:%.cpp=%.o)
+OBJS_ALPHAIMD := $(SRCS_ALPHAIMD:%.cpp=%.o)
 
-OBJS_ALPHAIM +=	$(OBJS_PROTOCOL) \
-                lib/tinyxml2/libtinyxml2.a \
-				lib/indextree/libindextree.a \
-				lib/IMdkit/Ximd/Ximd.a
+OBJS_ALPHAIMD += $(OBJS_PROTOCOL) \
+    lib/tinyxml2/libtinyxml2.a \
+    lib/indextree/libindextree.a \
+    lib/IMdkit/Ximd/Ximd.a
 
-OBJS_AIMTOOL := $(SRCS_AIMTOOL:%.cpp=%.o)
-OBJS_AIMTOOL += lib/tinyxml2/libtinyxml2.a \
-			    lib/indextree/libindextree.a
+OBJS_AIMCTL := $(SRCS_AIMCTL:%.cpp=%.o)
+OBJS_AIMCTL += lib/tinyxml2/libtinyxml2.a \
+    lib/indextree/libindextree.a
 
-OBJS_GUI := $(SRCS_GUI-yes:%.cpp=%.o)
+OBJS_GUI_CPP := $(SRCS_GUI-$(GUI):%.c=%.cpp)
+OBJS_GUI := $(OBJS_GUI_CPP:%.cpp=%.o)
 
-DEPS += $(SRCS_ALPHAIM:%.cpp=%.d)
-DEPS += $(SRCS_AIMTOOL:%.cpp=%.d)
-DEPS += $(SRCS_GUI-yes:%.cpp=%.d)
+DEPS += $(SRCS_ALPHAIMD:%.cpp=%.d)
+DEPS += $(SRCS_AIMCTL:%.cpp=%.d)
+DEPS += $(OBJS_GUI_CPP:%.cpp=%.d)
 
-INSTALL_TARGETS-yes = install-system install-AlphaIM install-AIMTool install-AIMGui install-QtPlugin
+INSTALL_TARGETS-yes = install-alphaimd install-aimctl install-alphaim-ui install-system
+INSTALL_TARGETS-yes += install-aim-qt install-aim-gtk
 
-DIRS = .  \
-    tool  \
-	lib/indextree \
-	lib/kary_tree \
-	lib/sqlite3   \
-	lib/tinyxml2  \
-	gui/gtk       \
-    gui/qt        \
-	protocol	  \
-	protocol/xim  \
-	protocol/qt  \
-	protocol/qt/plugin
+DIRS = . \
+    tool \
+    lib/indextree \
+    lib/kary_tree \
+    lib/sqlite3 \
+    lib/tinyxml2 \
+    gui/gtk \
+    gui/qt \
+    protocol \
+    protocol/xim \
+    protocol/qt \
+    protocol/gtk
 
-ADDSUFFIXES     = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
-ADD_ALL_DIRS    = $(call ADDSUFFIXES,$(1),$(DIRS))
-ADD_ALL_EXESUFS = $(1) $(call ADDSUFFIXES,$(EXESUFS_ALL),$(1))
+ADDSUFFIXES = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
+ADD_ALL_DIRS = $(call ADDSUFFIXES,$(1),$(DIRS))
 
-a11: IMdkit AlphaIM  AIMTool AIMGui QtPlugin
+a11: IMdkit alphaimd aimctl alphaim-ui aim-gtk aim-qt
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
-	$(AR) -r $@  $^
+ $(AR) -r $@ $^
 
 lib/indextree/libindextree.a: $(OBJS_INDEXTREE)
-	$(AR) -r $@  $^
+ $(AR) -r $@ $^
 
 IMdkit:
-	$(MAKE) -C lib/IMdkit
+ $(MAKE) -C lib/IMdkit
 
-AlphaIM: $(OBJS_ALPHAIM)
-	$(CXX) $^ $(LIBS) -lstdc++  -o $@
+alphaimd: $(OBJS_ALPHAIMD)
+ $(CXX) $^ $(LIBS) -lstdc++ -o $@
 
-AIMTool: $(OBJS_AIMTOOL)
-	$(CXX) $^ $(LIBS) -lstdc++ -o $@ 
+aimctl: $(OBJS_AIMCTL)
+ $(CXX) $^ $(LIBS) -lstdc++ -o $@
 
-AIMGui: $(OBJS_GUI)
-	$(CXX) $^ $(LIBS) -lstdc++ -o $@ 
+alphaim-ui: $(OBJS_GUI)
+ $(CXX) $^ $(LIBS) -lstdc++ -o $@
 
-QtPlugin:
-	$(MAKE) -C  protocol/qt/plugin
+aim-qt:
+ $(MAKE) -C protocol/qt
 
-#$(QT_PLUGIN): protocol/qt/plugin/main.moc  $(OBJS_QIM)
-#	$(CXX) $(OBJS_QIM) $(LIBS)  -lQt5DBus  -shared  -o $@
+aim-gtk:
+ $(MAKE) -C protocol/gtk
 
-#%.d : %.cpp
-#	$(CC) -MM $< -o $@
+gui/gtk/resource.c: gui/gtk/aimapp.gresource.xml gui/gtk/menu.ui
+ glib-compile-resources gui/gtk/aimapp.gresource.xml --target=gui/gtk/resource.c --generate-source
 
-%.o : %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS)  -c $< -o $@
+#$(QT_PLUGIN): protocol/qt/main.moc $(OBJS_QIM)
+# $(CXX) $(OBJS_QIM) $(LIBS) -lQt5DBus -shared -o $@
 
-%.o : %.c
-	$(CC) $(CFLAGS)  -c $< -o $@
+%.o: %.cpp
+ $(CXX) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+
+%.o: %.c
+ $(CC) $(CFLAGS) -c $< -o $@
 
 -include $(DEPS)
-
-
 
 ###### installation / clean / generic rules #######
 
 install: $(INSTALL_TARGETS-yes)
 
 install-dirs:
-	$(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/theme
+ $(INSTALL) -d $(BINDIR) $(DATADIR) $(DATADIR)/theme
 
 install-%: % install-dirs
-	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
+ $(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
 
 install-system: install-dirs
-	install -m 0666  system/pinyin-utf8.imdb       "$(DATADIR)/"
-	install -m 0666  system/phrase-utf8.imdb       "$(DATADIR)/"
-	install -m 0666  system/han-utf8.imdb          "$(DATADIR)/"
-	install -m 0755  system/app.png                "$(DATADIR)/"
-	cp     -av       system/theme/*                "$(DATADIR)/theme/"
+ $(INSTALL) -m 0755 "$(SYSTEMDIR)/run-alphaim.sh"   "$(BINDIR)/"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/pinyin-utf8.imdb" "$(DATADIR)/"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/phrase-utf8.imdb" "$(DATADIR)/"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/han-utf8.imdb"    "$(DATADIR)/"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/app.png"          "$(DATADIR)/"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/configure.xml.in" "$(DATADIR)/"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/alphaim.desktop"  "$(AUTOSTARTDIR)/alphaim.desktop"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/im-config/28_alphaim.conf" "$(IM_CONFIG_DATA_DIR)/28_alphaim.conf"
+ $(INSTALL) -m 0644 "$(SYSTEMDIR)/im-config/28_alphaim.rc" "$(IM_CONFIG_DATA_DIR)/28_alphaim.rc"
+ cp -a "$(SYSTEMDIR)/theme/." "$(DATADIR)/theme/"
 
-install-QtPlugin:
-	$(INSTALL) -m 0644 protocol/qt/plugin/$(QT_PLUGIN)  "$(QTDIR)/plugins/platforminputcontexts/$(QT_PLUGIN)"
+install-aim-qt: aim-qt
+ $(MAKE) -C protocol/qt install DESTDIR=$(DESTDIR)
+
+install-aim-gtk: aim-gtk
+ $(MAKE) -C protocol/gtk install DESTDIR=$(DESTDIR)
 
 uninstall:
-	rm -f $(BINDIR)/AlphaIM $(BINDIR)/AIMTool
-	rm -f $(DATADIR)/theme -r
+ rm -f $(BINDIR)/alphaimd $(BINDIR)/aimctl $(BINDIR)/alphaim-ui
+ rm -f "$(AUTOSTARTDIR)/alphaim.desktop"
+ rm -f "$(IM_CONFIG_DATA_DIR)/28_alphaim.conf" "$(IM_CONFIG_DATA_DIR)/28_alphaim.rc"
+ rm -rf "$(DATADIR)"
+ $(MAKE) -C protocol/gtk uninstall DESTDIR=$(DESTDIR)
+ $(MAKE) -C protocol/qt uninstall DESTDIR=$(DESTDIR)
 
 clean:
-#	@find . -name "*.[oadi]" | xargs -I{} rm {}
-#	-@rm protocol/qt/plugin/moc_*
-#	-@rm protocol/qt/plugin/main.moc
-	-rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
-	-rm -f $(call ADD_ALL_EXESUFS, AlphaIM AIMTool)
-	-$(MAKE) -C lib/IMdkit clean
-	-$(MAKE) -C protocol/qt/plugin clean
+ -rm -f $(call ADD_ALL_DIRS,/*.o /*.d /*.a /*.i /*~)
+ -rm -f  alphaimd aimctl alphaim-ui
+ -$(MAKE) -C lib/IMdkit clean
+ -$(MAKE) -C protocol/qt clean
+ -$(MAKE) -C protocol/gtk clean
 
 distclean: clean
-	-@rm -rf config.*
+ -@rm -rf config.*
 
-echo:
-	@echo $(DEPS)
-
-.PHONY : IMdkit install uninstall clean distclean  echo
+.PHONY: IMdkit aim-qt aim-gtk install install-dirs install-system install-aim-qt install-aim-gtk uninstall clean distclean

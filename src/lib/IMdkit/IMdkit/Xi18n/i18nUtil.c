@@ -22,8 +22,8 @@ OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
 Author:
-    Hidetoshi Tajima	Hewlett-Packard Company.
-			(tajima@kobe.hp.com)
+    Hidetoshi Tajima    Hewlett-Packard Company.
+            (tajima@kobe.hp.com)
 ******************************************************************/
 #include <X11/Xlib.h>
 #include "IMdkit.h"
@@ -37,7 +37,7 @@ Xi18nClient *_Xi18nFindClient();
 #endif
 
 #if NeedFunctionPrototypes
-_Xi18nNeedSwap(Xi18n i18n_core, CARD16 connect_id)
+int _Xi18nNeedSwap(Xi18n i18n_core, CARD16 connect_id)
 #else
 _Xi18nNeedSwap(i18n_core, connect_id)
 Xi18n i18n_core;
@@ -46,7 +46,7 @@ CARD16 connect_id;
 {
     CARD8 im_byteOrder = i18n_core->address.im_byteOrder;
     Xi18nClient *client = _Xi18nFindClient(i18n_core, connect_id);
-    
+
     return (client->byte_order != im_byteOrder);
 }
 
@@ -62,16 +62,16 @@ Xi18n i18n_core;
     Xi18nClient *client;
 
     if (i18n_core->address.free_clients != NULL) {
-	client = i18n_core->address.free_clients;
-	i18n_core->address.free_clients = client->next;
+    client = i18n_core->address.free_clients;
+    i18n_core->address.free_clients = client->next;
     } else {
-	client = (Xi18nClient *)malloc(sizeof(Xi18nClient));
+    client = (Xi18nClient *)malloc(sizeof(Xi18nClient));
     }
     memset(client, 0, sizeof(Xi18nClient));
     client->connect_id = ++connect_id;
     client->pending = (XIMPending *)NULL;
     client->sync = False;
-    client->byte_order = '?';	/* initial value */
+    client->byte_order = '?';    /* initial value */
     memset(&client->pending, 0, sizeof(XIMPending *));
     client->next = i18n_core->address.clients;
     i18n_core->address.clients = client;
@@ -91,9 +91,9 @@ CARD16 connect_id;
     Xi18nClient *client = i18n_core->address.clients;
 
     while (client != NULL) {
-	if (client->connect_id == connect_id)
-	  return client;
-	client = client->next;
+    if (client->connect_id == connect_id)
+      return client;
+    client = client->next;
     }
     return NULL;
 }
@@ -111,19 +111,19 @@ CARD16 connect_id;
     Xi18nClient *ccp, *ccp0;
 
     for (ccp = i18n_core->address.clients, ccp0 = NULL;
-	 ccp != NULL;
-	 ccp0 = ccp, ccp = ccp->next) {
-	if (ccp == target) {
-	    if (ccp0 == NULL) {
-		i18n_core->address.clients = ccp->next;
-	    } else {
-		ccp0->next = ccp->next;
-	    }
-	    /* put it back to free list */
-	    target->next = i18n_core->address.free_clients;
-	    i18n_core->address.free_clients = target;
-	    return;
-	}
+     ccp != NULL;
+     ccp0 = ccp, ccp = ccp->next) {
+    if (ccp == target) {
+        if (ccp0 == NULL) {
+        i18n_core->address.clients = ccp->next;
+        } else {
+        ccp0->next = ccp->next;
+        }
+        /* put it back to free list */
+        target->next = i18n_core->address.free_clients;
+        i18n_core->address.free_clients = target;
+        return;
+    }
     }
     return;
 }
@@ -131,11 +131,11 @@ CARD16 connect_id;
 void
 #if NeedFunctionPrototypes
 _Xi18nSendMessage(XIMS ims, CARD16 connect_id,
-		  CARD8 major_opcode, CARD8 minor_opcode,
-		  unsigned char *data, long length)
+          CARD8 major_opcode, CARD8 minor_opcode,
+          unsigned char *data, long length)
 #else
 _Xi18nSendMessage(ims, connect_id, major_opcode, minor_opcode,
-		  data, length)
+          data, length)
 XIMS ims;
 CARD16 connect_id;
 CARD8 major_opcode;
@@ -156,13 +156,13 @@ long length;
 
     /* create FrameMgr */
     fm = FrameMgrInit(packet_header_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     header_size = FrameMgrGetTotalSize(fm);
     reply_hdr = (unsigned char *)malloc(header_size);
     if (!reply_hdr) {
-	_Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
-	return;
+    _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+    return;
     }
     FrameMgrSetBuffer(fm, reply_hdr);
 
@@ -212,7 +212,7 @@ CARD16 connect_id;
 
     /* create FrameMgr */
     fm = FrameMgrInit(register_triggerkeys_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     /* set iteration count for on-keys list */
     FrameMgrSetIterCount(fm, on_key_num);
@@ -224,7 +224,7 @@ CARD16 connect_id;
 
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	return;
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
@@ -236,18 +236,18 @@ CARD16 connect_id;
     im_id = 0;
     FrameMgrPutToken(fm, im_id); /* input-method-id */
     for (i = 0; i < on_key_num; i++) {
-	FrameMgrPutToken(fm, on_keys[i].keysym);
-	FrameMgrPutToken(fm, on_keys[i].modifier);
-	FrameMgrPutToken(fm, on_keys[i].modifier_mask);
+    FrameMgrPutToken(fm, on_keys[i].keysym);
+    FrameMgrPutToken(fm, on_keys[i].modifier);
+    FrameMgrPutToken(fm, on_keys[i].modifier_mask);
     }
     for (i = 0; i < off_key_num; i++) {
-	FrameMgrPutToken(fm, off_keys[i].keysym);
-	FrameMgrPutToken(fm, off_keys[i].modifier);
-	FrameMgrPutToken(fm, off_keys[i].modifier_mask);
+    FrameMgrPutToken(fm, off_keys[i].keysym);
+    FrameMgrPutToken(fm, off_keys[i].modifier);
+    FrameMgrPutToken(fm, off_keys[i].modifier_mask);
     }
 
     _Xi18nSendMessage(ims, connect_id, XIM_REGISTER_TRIGGERKEYS, 0,
-		      reply, total_size);
+              reply, total_size);
     /* free FrameMgr */
     FrameMgrFree(fm);
 
@@ -257,11 +257,11 @@ CARD16 connect_id;
 void
 #if NeedFunctionPrototypes
 _Xi18nSetEventMask(XIMS ims, CARD16 connect_id,
-		   CARD16 im_id, CARD16 ic_id,
-		   CARD32 forward_mask, CARD32 sync_mask)
+           CARD16 im_id, CARD16 ic_id,
+           CARD32 forward_mask, CARD32 sync_mask)
 #else
 _Xi18nSetEventMask(ims, connect_id, im_id, ic_id,
-		   forward_mask, sync_mask)
+           forward_mask, sync_mask)
 XIMS ims;
 CARD16 connect_id;
 CARD16 im_id;
@@ -278,23 +278,23 @@ CARD32 sync_mask;
 
     /* create FrameMgr */
     fm = FrameMgrInit(set_event_mask_fr, NULL,
-		      _Xi18nNeedSwap(i18n_core, connect_id));
+              _Xi18nNeedSwap(i18n_core, connect_id));
 
     total_size = FrameMgrGetTotalSize(fm);
     reply = (unsigned char *)malloc(total_size);
     if (!reply) {
-	return;
+    return;
     }
     memset(reply, 0, total_size);
     FrameMgrSetBuffer(fm, reply);
 
-    FrameMgrPutToken(fm, im_id);	/* input-method-id */
-    FrameMgrPutToken(fm, ic_id);	/* input-context-id */
+    FrameMgrPutToken(fm, im_id);    /* input-method-id */
+    FrameMgrPutToken(fm, ic_id);    /* input-context-id */
     FrameMgrPutToken(fm, forward_mask);
     FrameMgrPutToken(fm, sync_mask);
 
     _Xi18nSendMessage(ims, connect_id,
-		      XIM_SET_EVENT_MASK, 0, reply, total_size);
+              XIM_SET_EVENT_MASK, 0, reply, total_size);
 
     /* free FrameMgr */
     FrameMgrFree(fm);

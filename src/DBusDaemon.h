@@ -1,5 +1,5 @@
-/** 
- *	@Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+/**
+ *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -15,24 +15,24 @@
 class DBusDaemon :public Thread
 {
 public:
-	static DBusDaemon& getRefrence();
+    static DBusDaemon& getRefrence();
 
     DBusDaemon();
     virtual ~DBusDaemon() {}
 
-	int setup();
-	void listen();
-	int notify(Message& msg);
-	int qimCommit(std::string& candidate);
-	int signal(int id);
-	void finish();
-	int  callGuiMessage(int id);
+    int setup();
+    void listen();
+    int notify(Message& msg);
+    int dbusIMCommit(std::string& candidate);
+    int signal(int id);
+    void finish();
+    int  callGuiMessage(int id);
 
-	virtual void stop();
+    virtual void stop();
 
 protected:
     virtual void doWork();
-	virtual void onExit();
+    virtual void onExit();
 };
 
 #endif

@@ -108,14 +108,14 @@ void GuiMessager::doWork()
 
 void GuiMessager::abort()
 {
-	if(m_thread && m_thread->isRunning())
-	{
-	    m_reqAbort = true;
+    if(m_thread && m_thread->isRunning())
+    {
+        m_reqAbort = true;
             m_msgQ->push(MSG_QUIT);
             //m_msgQ->unblockAll();
-	    m_thread->quit();
-	    m_thread->wait();
-	}
+        m_thread->quit();
+        m_thread->wait();
+    }
 }
 
 void GuiMessager::onExit()

@@ -64,7 +64,7 @@ HelpWin *help_win_new(int x, int y)
     markup += "      . 左(Ctr + Shift)";
     markup += "\n";
     markup += "  - 中英文符号切换\n";
-	markup += "      . 右(Ctr + Shift)";
+    markup += "      . 右(Ctr + Shift)";
     markup += "\n";
     markup += "  - 提交\n";
     markup += "      . SPACE\n";
@@ -78,14 +78,14 @@ HelpWin *help_win_new(int x, int y)
     markup += "      . Ctr + F\n";
     markup += "      . PgUp\n";
     markup += "      . 左方向键\n";
-	markup += "      . 上方向键\n";
+    markup += "      . 上方向键\n";
     markup += "      . '-'键\n";
     markup += "\n";
     markup += "  - 向后翻页\n";
     markup += "      . Ctr + J\n";
     markup += "      . PgDn\n";
     markup += "      . 右方向键\n";
-	markup += "      . 下方向键\n";
+    markup += "      . 下方向键\n";
     markup += "      . '=' 键\n";
     markup += "</span>";
     gtk_label_set_markup (GTK_LABEL (input_label), markup.c_str());

@@ -34,79 +34,79 @@ namespace indextree {
 
 class ReadFile {
 public:
-	ReadFile()
-	:ptr(NULL)
-	{ }
+    ReadFile()
+    :ptr(NULL)
+    { }
 
-	~ReadFile()
-	{
-		if (ptr != NULL)
-			free(ptr);
-	}
-	size_t operator()(FILE *f, void *ptr, size_t length);
-	void*  operator()(FILE *f, size_t length);
+    ~ReadFile()
+    {
+        if (ptr != NULL)
+            free(ptr);
+    }
+    size_t operator()(FILE *f, void *ptr, size_t length);
+    void*  operator()(FILE *f, size_t length);
 
-	void *ptr;
+    void *ptr;
 };
 
 
 class Malloc {
 public:
-	Malloc()
-	:ptr(NULL) { }
-	void* operator()(size_t size) {
-	    ptr = malloc(size);
-		return ptr;
-	}
-	~Malloc()
+    Malloc()
+    :ptr(NULL) { }
+    void* operator()(size_t size) {
+        ptr = malloc(size);
+        return ptr;
+    }
+    ~Malloc()
     {
-		if (ptr != NULL)
-			free(ptr);
-	}
-	void *ptr;
+        if (ptr != NULL)
+            free(ptr);
+    }
+    void *ptr;
 };
 
 class MutexCriticalSection {
 public:
-	MutexCriticalSection(bool re=false);
+    MutexCriticalSection(bool re=false);
 
-	~MutexCriticalSection()
-	{
+    ~MutexCriticalSection()
+    {
         #ifdef WIN32
             CloseHandle(m_mutex);
         #else
-	    pthread_mutex_destroy(&m_mutex);
+        pthread_mutex_destroy(&m_mutex);
         #endif
-	}
+    }
 
-	void lock()
-	{
-	#ifdef WIN32
+    void lock()
+    {
+    #ifdef WIN32
             WaitForSingleObject(m_mutex, INFINITE);
         #else
-	    pthread_mutex_lock(&m_mutex);
+        pthread_mutex_lock(&m_mutex);
         #endif
-	}
+    }
 
     void trylock()
-	{
+    {
         #ifdef WIN32
             WaitForSingleObject(m_mutex, INFINITE);
-	#else
-	    pthread_mutex_trylock(&m_mutex);
+    #else
+        pthread_mutex_trylock(&m_mutex);
         #endif
-	}
+    }
 
-	void unlock()
-	{
+    void unlock()
+    {
         #ifdef WIN32
             ReleaseMutex(m_mutex);
-	#else
-	    pthread_mutex_unlock(&m_mutex);
+    #else
+        pthread_mutex_unlock(&m_mutex);
         #endif
-	}
+    }
 
-	mutex_handle& acquire() {return m_mutex;}
+    mutex_handle& acquire() {return m_mutex;}
 
 private:
     mutex_handle m_mutex;
@@ -114,10 +114,10 @@ private:
 
 class MutexLock {
 public:
-	MutexLock(MutexCriticalSection &mcs);
-	~MutexLock();
+    MutexLock(MutexCriticalSection &mcs);
+    ~MutexLock();
 private:
-	MutexCriticalSection& m_criticalSection;
+    MutexCriticalSection& m_criticalSection;
 };
 
 }
@@ -129,7 +129,7 @@ private:
 // #include <boost/lexical_cast.hpp>
 // #include <boost/algorithm/string.hpp>   /* above boost 1.32.0 */
 #define inxtree_helper_w_version(header, strver) do {\
-	vector<string> splitVec;\
+    vector<string> splitVec;\
     boost::split(splitVec, strver, boost::is_any_of("."), boost::algorithm::token_compress_on);\
     if (splitVec.size() > 1) {\
         header.d_version[0] = boost::lexical_cast<int>(splitVec[1]);\
