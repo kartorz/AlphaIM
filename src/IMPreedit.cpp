@@ -500,6 +500,10 @@ bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
     return False;
 }
 
+/*bool IMPreedit::ispinyin( unsigned int key)
+{
+	if (key )
+	}*/
 
 void IMPreedit::handleMessage(int msg)
 {

@@ -48,9 +48,10 @@ QtIMPreedit::QtIMPreedit()
    ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x4
    ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x40000004  // short press, no this event.
 */
+
+
 int QtIMPreedit::handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback)
 {
-	int ret = m_bCN ? NONE_KEY : FORWARD_KEY;
 	unsigned int mask = state & 0xff;
 
     if (isMatchKeys(keyval, mask, ForwardKeys)
@@ -60,24 +61,10 @@ int QtIMPreedit::handleKey(unsigned int keyval, unsigned int keycode, unsigned i
 
 	//printf("QtIMPreedit, doHandleKey keysym(%u), modifier(%u), key(%u)\n", keyval, mask, keyval);
 
-	if ((state & 0x40000000) == 0) {
-		m_preMask = mask;
-		//printf("m_preMask 0x:%x\n", m_preMask);
-		if (!(keyval == XK_space && mask != 0))
-			return ret;
+	if ((state & 0x40000000) == 0) { // Press key
+		m_preRetKey = doHandleKey(keyval, mask, keyval, callback);
 	} else {
-		if (mask != 0) {
-			if (isModifier(keyval)) {
-				if (m_preMask == mask) {
-					//printf("is a modifier mask key\n");
-					return ret;
-				}  
-			}
-			if (keyval == XK_space) {
-				return ret;
-			}
-		}
+		return m_preRetKey;
 	}
-
-    return doHandleKey(keyval, mask, keyval, callback);
 }
+

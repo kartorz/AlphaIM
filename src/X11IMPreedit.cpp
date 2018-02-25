@@ -34,6 +34,7 @@ static TriggerKey PageUpKeys[] = {
     {XK_f, ControlMask, ControlMask},
     {XK_Page_Up, 0, 0},
     {XK_Left, 0L, 0L},
+	{XK_Up, 0L, 0L},	
     {XK_minus, 0L, 0L},
     {0L, 0L, 0L}
 };
@@ -43,6 +44,7 @@ static TriggerKey PageDownKeys[] = {
     {XK_Page_Down, 0, 0},
     {XK_Right, 0L, 0L},
     {XK_equal, 0L, 0L},
+	{XK_Down, 0L, 0L},
     {0L, 0L, 0L}
 };
 
@@ -59,7 +61,8 @@ static TriggerKey CESwitchKeys[] = {
 };
 
 static TriggerKey CEPSwitchKeys[] = {
-    {XK_Shift_R, ShiftMask, ShiftMask},
+	{XK_Shift_R, ControlMask, ControlMask},
+	{XK_Control_R, ShiftMask, ShiftMask},
     {0L, 0L, 0L}
 };
 
@@ -98,35 +101,18 @@ bool X11IMPreedit::isModifier(unsigned int keysym)
 int X11IMPreedit::handleKey(unsigned int keysym, unsigned int modifier, char *key, int evtype, IMPreeditCallback *callback)
 {
     //MutexLock lock(m_cs);
+	//  #define KeyPress		2
+	//  #define KeyRelease		3
     if (isMatchKeys(keysym, modifier, ForwardKeys)
 		|| ((keysym & 0xff) == (XK_BackSpace & 0xff) && m_input == "")){
         return FORWARD_KEY;
     }
 
-    // Check Shift + key
-    if (keysym == XK_Shift_L || keysym == XK_Shift_R) {
-        if (evtype == KeyPress) {
-            if (modifier != ControlMask) // by pass: Ctrl + shift
-                return FORWARD_KEY;
-        } else {
-            //printf("m_preModKey == %d --> %d\n", m_preModKey, ShiftMask);
-            if ((m_preModKey & ShiftMask) == ShiftMask) {
-                m_preModKey = 0;
-                return FORWARD_KEY;
-            }
-        }
-    } else {
-        //  #define KeyPress		2
-        //  #define KeyRelease		3
-        if (evtype == KeyRelease) {
-            m_preModKey = modifier;
-            return m_preRetKey;
-        }
-        //printf("m_preModKey == %d, current == %d\n", m_preModKey, modifier);
+	if (evtype == KeyPress) {
+		m_preRetKey = doHandleKey(keysym,  modifier, *key,  callback);
     }
-    m_preRetKey = NONE_KEY;
 
-	return doHandleKey(keysym,  modifier, *key,  callback);
+	return m_preRetKey;	
 }
 
 int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsigned int key, IMPreeditCallback *callback)
@@ -152,7 +138,6 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         return TRIGGER_OFF_KEY;
     }
     if (!m_bTrigger) {
-        m_preRetKey = FORWARD_KEY;
         return FORWARD_KEY;
     }
 	PRINTF("doHandleKey has checked trigger\n");
@@ -163,7 +148,6 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         return SWITCH_CE_KEY;
     }
     if (!m_bCN) {
-        m_preRetKey = FORWARD_KEY;printf("X11IMPreedit bCN false\n");
         return FORWARD_KEY;
     }
 
@@ -175,7 +159,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
 
     // Check if start
     if (!m_bStart) {
-        if (modifier == 0  && isalpha(key)) {
+        if (modifier == 0  && isascii(key) && islower(key)) {
             doInput(key);
             guiShowCandidate(callback);
             return CONVERT_KEY;
@@ -192,15 +176,18 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         }
 		PRINTF("doHandleKey, not start, forward key\n");
 
-        m_preRetKey = FORWARD_KEY;
         return FORWARD_KEY;
     }
 	PRINTF("doHandleKey has checked starting\n");
 
     if (isMatchKeys(keysym, modifier, CommitKeys)) {
-        doCommit(1, callback);
-        guiShowCandidate(callback);
-        return COMMIT_KEY;
+		if (m_bStart) {
+			doCommit(1, callback);
+			guiShowCandidate(callback);
+			return COMMIT_KEY;
+		} else {
+			return FORWARD_KEY;
+		}
     }
 
     if (isMatchKeys(keysym, modifier, PageUpKeys))   {
@@ -222,8 +209,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
 	PRINTF("doHandleKey has checked some control keys.\n");
 
     if (modifier == 0 || modifier == 1) {
-        if (isdigit(key)) {
-			printf("is digit key\n");
+        if (isascii(key) && isdigit(key)) {
             int i = key - 0x30;
             doCommit(i, callback);
             guiShowCandidate(callback);
@@ -240,13 +226,12 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
 
 		PRINTF("doHandleKey has checked backspace, now do input\n");
         // Must at the end. 
-        if (isascii(key) && isgraph(key)/* 'Shift' returns true */) {
+		if (isascii(key) && islower(key)/* 'Shift' returns true */) {
             doInput(key);
             guiShowCandidate(callback);
             return CONVERT_KEY;
         }
     }
-    m_preRetKey = FORWARD_KEY;
     return FORWARD_KEY;
 }
 
