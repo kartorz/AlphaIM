@@ -29,7 +29,7 @@ int CharUtil::ucs4CharToUTF16Byte(u32 uchr, u16* ub)
 
 int CharUtil::ucs4CharToUTF8Byte(u32 uchr, char* ub)  
 {
-    const char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};  
+    const unsigned char prefix[] = {0, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
     const u32  codeup[] = {  
         0x80,           // U+00000000 бл U+0000007F  
         0x800,          // U+00000080 бл U+000007FF  
