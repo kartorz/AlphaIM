@@ -20,7 +20,7 @@ m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 
 IMPreedit::~IMPreedit()
 {
-    //log.d(":~IMPreedit\n");
+    //gLog.d(":~IMPreedit\n");
 }
 
 // ret:
@@ -68,7 +68,7 @@ bool IMPreedit::commit(int i)
             }
         }
 
-        log.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
+        gLog.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
         return true; //Something wrong, just commit, don't lose user input.
     }
     return false;

@@ -14,16 +14,16 @@ typedef enum {
 
 class Log {
 public:
-	Log();
-	~Log();
-	void d(const char *msg, ...);
+    Log();
+    ~Log();
+    void d(const char *msg, ...);
     void i(const char *msg, ...);
     void w(const char *msg, ...);
-	void e(const char *msg, ...);
-	void operator()(LogLevel l, const char *msg, ...);
+    void e(const char *msg, ...);
+    void operator()(LogLevel l, const char *msg, ...);
 
-	void setLevel(LogLevel l) { m_level = l; }
-	LogLevel getLevel(LogLevel l) const { return m_level; }
+    void setLevel(LogLevel l) { m_level = l; }
+    LogLevel getLevel(LogLevel l) const { return m_level; }
 
 private:
     LogLevel m_level;
@@ -31,6 +31,6 @@ private:
     SpinCriticalSection m_crs;
 };
 
-extern  Log log;
+extern  Log gLog;
 
 #endif

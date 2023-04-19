@@ -38,7 +38,7 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
     if (m_phraseTmp.length() - m_roundBase >=  USRPHTMP_ROUND_SIZE) {
         m_roundBase = m_phraseTmp.length();
         //printf("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
-        log.d("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
+        gLog.d("is USRPHTMP_ROUND_SIZE %s %d\n", m_phraseTmp.c_str(), m_phraseTmp.length());
         parseUsrInput(m_phraseTmp, phrases);
 
         if (m_phraseTmp.length() >= USRPHTMP_MAX_SZIE) {
@@ -50,7 +50,7 @@ void UsrPhrase::trackUsrInput(const string phrase,   vector<string> &phrases)
             m_fileCache.clear();
 
             if (ftello(m_phraseFile)  >=  USRPHFILE_MAX_SZIE) {
-                log.d("clear phrase file\n");
+                gLog.d("clear phrase file\n");
 
                 util::ReadFile read;
                 const char *ptr = (const char *)read(m_phraseFile, -1);               

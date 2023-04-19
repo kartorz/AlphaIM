@@ -4,7 +4,7 @@
 void PushMessageJob::doWork()
 {
     //printf("PushMessageJob dowork\n");
-    //log.d("slowjob dowork\n");
+    //gLog.d("slowjob dowork\n");
     if (owner->m_queueTimeout.size() == 0) {
         if (owner->m_qtCond.waitEvent() == -2)
             return;

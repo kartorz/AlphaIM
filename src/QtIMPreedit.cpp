@@ -63,6 +63,7 @@ int QtIMPreedit::handleKey(unsigned int keyval, unsigned int keycode, unsigned i
 
 	if ((state & 0x40000000) == 0) { // Press key
 		m_preRetKey = doHandleKey(keyval, mask, keyval, callback);
+		return NONE_KEY;
 	} else {
 		return m_preRetKey;
 	}

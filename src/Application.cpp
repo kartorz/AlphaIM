@@ -37,7 +37,7 @@ Application::Application()
     TaskManager::getInstance()->addTask(new SlowJob(this), 0);
 	py.initialization();
 
-    log.d("start Application ...\n");
+    gLog.d("start Application ...\n");
 }
 
 iIM*  Application::curIM()
@@ -57,8 +57,8 @@ void Application::slowJob()
 
 Application::~Application()
 {
-    log.d("~ Application start\n");
+    gLog.d("~ Application start\n");
     //delete m_sysMsgr;
-    log.d("~Application done\n");
+    gLog.d("~Application done\n");
 
 }

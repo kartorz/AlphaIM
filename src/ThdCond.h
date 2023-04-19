@@ -23,8 +23,8 @@
 class ThdCond
 {
 public:
-	ThdCond();
-	virtual ~ThdCond();
+    ThdCond();
+    virtual ~ThdCond();
 
     /* Common Arguments:
      * @timeout == 0 meas waitting infintily. otherwise, waitting 'timeout' millisecods
@@ -42,9 +42,9 @@ public:
     void unblockAll(int blocthrds=1);   /* unblock all blocked threads. */
 
 protected:
-	virtual void onConsume(void *v) {}
-	virtual void onProduce(void *v) {}
-	virtual bool canConsume(void *v) {return false;}
+    virtual void onConsume(void *v) {}
+    virtual void onProduce(void *v) {}
+    virtual bool canConsume(void *v) {return false;}
 
 private:
     cond_handle  m_cv;

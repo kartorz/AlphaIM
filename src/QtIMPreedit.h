@@ -7,10 +7,10 @@ class QtIMPreedit : public X11IMPreedit {
 public:
     QtIMPreedit();
     virtual ~QtIMPreedit() {}
-	virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback);
+    virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback);
 
 private:
-	unsigned int  m_preMask;
+    unsigned int  m_preMask;
 };
 
 #endif

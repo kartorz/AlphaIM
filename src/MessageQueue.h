@@ -56,7 +56,7 @@ public:
 
     ~Message() { }
 
-	int id;
+    int id;
     int iArg1;
     int iArg2;
     float fArg1;

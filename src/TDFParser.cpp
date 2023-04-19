@@ -26,7 +26,7 @@ bool TDFParser::parser(const string& file, const string conding)
 {
     FILE *fDB = fopen(file.c_str(), "rb");
     if (fDB == NULL) {
-        log.e("{TDFParser}: can't open %s\n", file.c_str());
+        gLog.e("{TDFParser}: can't open %s\n", file.c_str());
         return false;
     }
 

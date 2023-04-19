@@ -698,12 +698,12 @@ fi
 if test $_qtgui = "no" ; then
   echocheck "gtk+-3.0"
   gtk_incs=`pkg-config --cflags gtk+-3.0`
-  test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0"
+  test "$?" != 0 && die "pkg-config can't get includes, Please check and install gtk+-3.0, or libgtk-3-dev"
   cflags="$cflags -DGTK3"
   includes="$includes $gtk_incs"
   includes="$includes -I\$(TOPDIR)/gui/gtk"
   gtk_libs=`pkg-config --libs gtk+-3.0`
-  test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0"
+  test "$?" != 0 && die "pkg-config can't get libs, Please check and install gtk+-3.0, or libgtk-3-dev"
   ldflags="$ldflags  $gtk_libs"
 
   _gtk3=yes

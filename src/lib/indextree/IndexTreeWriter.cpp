@@ -315,6 +315,7 @@ bool IndexTreeWriter::write(string output)
         printf("    char index: %d\n", m_totalChrindex);
         //printf("    costs: (%u)s\n", Util::getTimeMS()/1000);
     }
+    return true;
 }
 
 int IndexTreeWriter::bsearch(ktree::tree_node<inxtree_chrindex>::treeNodePtr parent,

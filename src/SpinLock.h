@@ -17,29 +17,29 @@ typedef MutexLock  SpinLock;
 
 class SpinCriticalSection {
 public:
-	SpinCriticalSection()
-	{
-		pthread_spin_init(&m_spinlock, PTHREAD_PROCESS_PRIVATE);
-	}
+    SpinCriticalSection()
+    {
+        pthread_spin_init(&m_spinlock, PTHREAD_PROCESS_PRIVATE);
+    }
 
-	~SpinCriticalSection()
-	{
-		pthread_spin_destroy(&m_spinlock);
-	}
+    ~SpinCriticalSection()
+    {
+        pthread_spin_destroy(&m_spinlock);
+    }
 
-	void lock()
-	{
-		pthread_spin_lock(&m_spinlock);
-	}
+    void lock()
+    {
+        pthread_spin_lock(&m_spinlock);
+    }
 
-	void trylock()
-	{
-		pthread_spin_trylock(&m_spinlock);
-	}
-	void unlock()
-	{
-		pthread_spin_unlock(&m_spinlock);
-	}
+    void trylock()
+    {
+        pthread_spin_trylock(&m_spinlock);
+    }
+    void unlock()
+    {
+        pthread_spin_unlock(&m_spinlock);
+    }
 
 private:
         pthread_spinlock_t m_spinlock;
@@ -47,12 +47,12 @@ private:
 
 class SpinLock {
 public:
-	SpinLock(SpinCriticalSection &scs);
-	~SpinLock();
+    SpinLock(SpinCriticalSection &scs);
+    ~SpinLock();
 private:
-	SpinCriticalSection& m_criticalSection;
+    SpinCriticalSection& m_criticalSection;
 
-	SpinLock(); /* Not allowed default contruct function */
+    SpinLock(); /* Not allowed default contruct function */
 };
 #endif
 #endif

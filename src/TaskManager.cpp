@@ -59,7 +59,7 @@ TaskManager::TaskManager():m_curTask(NULL)
 
 TaskManager::~TaskManager()
 {
-    log(LOG_INFO, "TaskManager::~TaskManager\n");
+    gLog(LOG_INFO, "TaskManager::~TaskManager\n");
     stop();
 
     std::list<Task*>::const_iterator iter = m_taskQueue.begin();
@@ -89,7 +89,7 @@ void TaskManager::start(int thread_number)
         #endif
 	    m_threadid.push_back(tid);
 	}
-	//log.d("TaskManager::start(%d)\n", thread_number);
+	//gLog.d("TaskManager::start(%d)\n", thread_number);
 }
 
 // This stop function may be called more then once.
@@ -100,7 +100,7 @@ void TaskManager::stop()
         m_queueCond.unblockAll();
         m_taskCond.unblockAll(m_threadid.size()-1/*execute threads*/);
         waitForThrdExit();
-        log.d("TaskManager::stop\n");
+        gLog.d("TaskManager::stop\n");
     }
 }
 
@@ -160,7 +160,7 @@ void TaskManager::waitForThrdExit()
         pthread_join(m_threadid[i], NULL);
     }
 #endif
-    log.d("TaskManager::waitForThrdExit, done\n");
+    gLog.d("TaskManager::waitForThrdExit, done\n");
 }
 
 bool TaskManager::IsExistTask(Task *tsk)
@@ -264,7 +264,7 @@ void* schedule(void *owner)
 			 */
 			int timeout = start - now;
 			//printf("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
-			//log.d("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
+			//gLog.d("schedul timeout:%d, start:%u, now:%u\n", timeout, start, now);
 			int wait_status = tmgr->m_queueCond.waitEvent(timeout);
 			if (wait_status == -2) {
 				goto EXIT;
@@ -292,7 +292,7 @@ void* schedule(void *owner)
 		#endif
 	}
 EXIT:
-	log.d("{schedule} thread exit\n");
+	gLog.d("{schedule} thread exit\n");
 	return NULL;
 }
 #ifdef WIN32
@@ -333,12 +333,12 @@ void* execute(void *owner)
                 //printf("{execute} doWork\n");
             } else {
                 work->m_callback->onTaskAbort();
-                log.d("{execute} onTaskAbort\n");
+                gLog.d("{execute} onTaskAbort\n");
                 delete work;
             }
         }
     }
-    log.d("{execute} thread exit\n");
+    gLog.d("{execute} thread exit\n");
     return NULL;
 }
 

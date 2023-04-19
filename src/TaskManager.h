@@ -34,24 +34,24 @@ public:
 class Task 
 {
 public:
-	Task(int inv=60, bool rept=true, TaskCallBack* callback=NULL, std::string identifier="");
-	virtual ~Task();
-	virtual void doWork() = 0;
+    Task(int inv=60, bool rept=true, TaskCallBack* callback=NULL, std::string identifier="");
+    virtual ~Task();
+    virtual void doWork() = 0;
     virtual void abort() { m_abort = true; m_repeat = false;}
 
-	int getInterval() { return m_interval; }
-	unsigned int getStartRunningTime() { return m_starRunningTime; }
-	void setStartRunningTime(unsigned int time) { m_starRunningTime = time; }
-	bool isRepeat() { return m_repeat; }
+    int getInterval() { return m_interval; }
+    unsigned int getStartRunningTime() { return m_starRunningTime; }
+    void setStartRunningTime(unsigned int time) { m_starRunningTime = time; }
+    bool isRepeat() { return m_repeat; }
     void setRepeat(bool rept) {m_repeat = rept;}
     std::string& getIdentify() {return m_identify;}
     bool isAbort() { return m_abort; }
-	TaskCallBack* m_callback;
+    TaskCallBack* m_callback;
 
 protected:
-	int m_interval;
-	unsigned int m_starRunningTime;
-	bool m_repeat;
+    int m_interval;
+    unsigned int m_starRunningTime;
+    bool m_repeat;
     bool m_abort;
     std::string m_identify;
 };
@@ -66,36 +66,36 @@ friend void* execute(void *owner);
 #endif
 
 public:
-	TaskManager();
-	~TaskManager();
-	void start(int thread_number);
-	void stop();
-	bool isRunning() { return m_bRunning; }
+    TaskManager();
+    ~TaskManager();
+    void start(int thread_number);
+    void stop();
+    bool isRunning() { return m_bRunning; }
 
-	void addTask(Task *tsk, int delay=0);
-	bool deleteTask(Task *tsk);
+    void addTask(Task *tsk, int delay=0);
+    bool deleteTask(Task *tsk);
     Task* getTask(std::string identify);
 
-	void dump();
-	int  getTaskNumber();
+    void dump();
+    int  getTaskNumber();
 
     static TaskManager* getInstance();
 private:
-	bool IsExistTask(Task *tsk);
-	void waitForThrdExit();
+    bool IsExistTask(Task *tsk);
+    void waitForThrdExit();
 
-	std::vector<pthread_t> m_threadid;
+    std::vector<pthread_t> m_threadid;
 #ifdef WIN32
         std::vector<HANDLE> m_thrdhandle;
 #endif
 
-	std::list<Task*>  m_taskQueue;
-	Task* m_curTask;
-	MutexCriticalSection  m_taskQueueLock;
-	MutexCriticalSection  m_curTaskLock;
-	ThdCond m_queueCond;
-	ThdCond m_taskCond;
-	bool m_bRunning;
+    std::list<Task*>  m_taskQueue;
+    Task* m_curTask;
+    MutexCriticalSection  m_taskQueueLock;
+    MutexCriticalSection  m_curTaskLock;
+    ThdCond m_queueCond;
+    ThdCond m_taskCond;
+    bool m_bRunning;
 };
 
 #endif

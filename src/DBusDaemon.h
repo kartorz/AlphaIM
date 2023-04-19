@@ -15,24 +15,24 @@
 class DBusDaemon :public Thread
 {
 public:
-	static DBusDaemon& getRefrence();
+    static DBusDaemon& getRefrence();
 
     DBusDaemon();
     virtual ~DBusDaemon() {}
 
-	int setup();
-	void listen();
-	int notify(Message& msg);
-	int qimCommit(std::string& candidate);
-	int signal(int id);
-	void finish();
-	int  callGuiMessage(int id);
+    int setup();
+    void listen();
+    int notify(Message& msg);
+    int qimCommit(std::string& candidate);
+    int signal(int id);
+    void finish();
+    int  callGuiMessage(int id);
 
-	virtual void stop();
+    virtual void stop();
 
 protected:
     virtual void doWork();
-	virtual void onExit();
+    virtual void onExit();
 };
 
 #endif

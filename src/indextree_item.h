@@ -5,8 +5,8 @@
 #include "indextree/indextree_inner.h"
 
 struct han_item {
-	u8 priority     [ BP(1, 1) ];
-  	u8 pystr        [1];
+    u8 priority     [ BP(1, 1) ];
+    u8 pystr        [1];
 };
 
 class HanItem {
@@ -24,8 +24,8 @@ public:
 };
 
 struct phrase_item {
-	u8 priority     [ BP(1, 1) ];
-  	u8 phstr        [1];
+    u8 priority     [ BP(1, 1) ];
+    u8 phstr        [1];
 };
 
 class PhraseItem {

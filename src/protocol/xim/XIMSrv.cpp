@@ -151,7 +151,7 @@ bool XIMSrv::open()
     long filter_mask = KeyPressMask | KeyReleaseMask;
 
 	if ((m_dpy = XOpenDisplay(NULL)) == NULL) {
-		log.e("{XIMSrv} Can't Open Display:\n");
+		gLog.e("{XIMSrv} Can't Open Display:\n");
 		return false;
 	}
 
@@ -167,7 +167,7 @@ bool XIMSrv::open()
         imlocale = (char *)DEF_LOCALATE;
     }
 
-    log.d("imlocale  %s\n", imlocale);
+    gLog.d("imlocale  %s\n", imlocale);
 
     int screen_num = DefaultScreen(m_dpy);
     IC::dpyW  = DisplayWidth(m_dpy, screen_num);
@@ -196,7 +196,7 @@ bool XIMSrv::open()
 
     if (ims == (XIMS)NULL) {
         fprintf(stderr, "{XIMSrv} Can't Open Input Method Service:\n");
-        log.e("{XIMSrv} Can't Open Input Method Service:\n\n");
+        gLog.e("{XIMSrv} Can't Open Input Method Service:\n\n");
         close();
         return false;
     }
@@ -217,7 +217,7 @@ bool XIMSrv::open()
     m_ims = ims;
     //XSelectInput(dpy, imwin, StructureNotifyMask);
     //XSetErrorHandler(aim_err_handler);
-   log.d("imopen\n");
+   gLog.d("imopen\n");
 
    return true;
 }
@@ -236,14 +236,14 @@ void XIMSrv::close()
 {
     if (m_imwin > 0) {
         PRINTF("{XIMSrv} close: XDestroyWindow\n");
-        log.d("{XIMSrv} close: XDestroyWindow\n");
+        gLog.d("{XIMSrv} close: XDestroyWindow\n");
         XDestroyWindow(m_dpy, m_imwin);
         m_imwin = 0;
     }
 
     if (m_ims != (XIMS)NULL) {
         PRINTF("{XIMSrv} close:  im\n");
-        log.d("{XIMSrv} close:  im\n");
+        gLog.d("{XIMSrv} close:  im\n");
         IMCloseIM(m_ims);
         m_ims = (XIMS)NULL;
     }
@@ -317,7 +317,7 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     last_kevtime = kev->time;
 
 #ifdef AL_DEBUG
-//    log.d("handleForwardEvent, type:%d\n",  calldata->forwardevent.event.type);
+//    gLog.d("handleForwardEvent, type:%d\n",  calldata->forwardevent.event.type);
 #endif
 
     char strbuf[KEVBUF_LEN];
@@ -348,6 +348,7 @@ void XIMSrv::handleUIMessage(int msg)
 
 int XIMSrv::doModifierKeyEvent(XIMS ims, IMProtocol *calldata)
 {
+    return 0;
 }
 
 void XIMSrv::onIMOff(void *priv)

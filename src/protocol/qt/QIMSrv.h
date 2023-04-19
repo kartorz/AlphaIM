@@ -19,23 +19,23 @@
 class QIC : public IC {
 public:
     QIC() {
-		preedit = new QtIMPreedit();
-	}
-	virtual ~QIC(){}
+        preedit = new QtIMPreedit();
+    }
+    virtual ~QIC(){}
 };
 
 class QIMSrv : public IMPreeditCallback {
 public:
     QIMSrv();
-	~QIMSrv();
-	void processFocusIn(unsigned int id);
-	bool processKeyEvent(unsigned int keyval, unsigned int keycode, unsigned int state);
-	unsigned int createIC();
-	virtual void onIMOff(void* priv);
+    ~QIMSrv();
+    void processFocusIn(unsigned int id);
+    bool processKeyEvent(unsigned int keyval, unsigned int keycode, unsigned int state);
+    unsigned int createIC();
+    virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candidate);
     virtual ICRect onGetRect();
-	IC* getFocus();
-	ICManager icManager;
+    IC* getFocus();
+    ICManager icManager;
 };
 
 extern int qic_process_keyevent(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);

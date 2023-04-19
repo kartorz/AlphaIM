@@ -16,7 +16,7 @@
 
 #define  LOG_FILENAME "alphaim.log"
 
-Log log;
+Log gLog;
 
 Log::Log()
 : m_level(LOG_DEBUG)

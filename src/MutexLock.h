@@ -18,45 +18,42 @@
 
 class MutexCriticalSection {
 public:
-	MutexCriticalSection(bool re=false);
+    MutexCriticalSection(bool re=false);
 
-	~MutexCriticalSection()
-	{
-        #ifdef WIN32
-            CloseHandle(m_mutex);
-        #else
-	    pthread_mutex_destroy(&m_mutex);
-        #endif   
-	}
+    ~MutexCriticalSection()
+    {
+    #ifdef WIN32
+        CloseHandle(m_mutex);
+    #else
+        pthread_mutex_destroy(&m_mutex);
+    #endif
+    }
 
-	void lock()
-	{
-	#ifdef WIN32
-            WaitForSingleObject(m_mutex, INFINITE);
-        #else
-	    pthread_mutex_lock(&m_mutex);
-        #endif
-	}
+    void lock() {
+    #ifdef WIN32
+        WaitForSingleObject(m_mutex, INFINITE);
+    #else
+        pthread_mutex_lock(&m_mutex);
+    #endif
+    }
 
-        void trylock()
-	{
-        #ifdef WIN32
-            WaitForSingleObject(m_mutex, INFINITE);
-	#else
-	    pthread_mutex_trylock(&m_mutex);
-        #endif
-	}
+    void trylock() {
+    #ifdef WIN32
+        WaitForSingleObject(m_mutex, INFINITE);
+    #else
+    pthread_mutex_trylock(&m_mutex);
+    #endif
+    }
 
-	void unlock()
-	{
-        #ifdef WIN32
-            ReleaseMutex(m_mutex);
-	#else 
-	    pthread_mutex_unlock(&m_mutex);
-        #endif 
-	}
+    void unlock() {
+    #ifdef WIN32
+        ReleaseMutex(m_mutex);
+    #else
+        pthread_mutex_unlock(&m_mutex);
+    #endif
+    }
 
-	mutex_handle& acquire() {return m_mutex;}
+   mutex_handle& acquire() {return m_mutex;}
 
 private:
     mutex_handle m_mutex;
@@ -64,10 +61,10 @@ private:
 
 class MutexLock {
 public:
-	MutexLock(MutexCriticalSection &mcs);
-	~MutexLock();
+    MutexLock(MutexCriticalSection &mcs);
+    ~MutexLock();
 private:
-	MutexCriticalSection& m_criticalSection;
+    MutexCriticalSection& m_criticalSection;
 };
 
 #endif

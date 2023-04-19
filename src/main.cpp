@@ -15,7 +15,7 @@ extern void init_singals();
 void cleanup(void)
 {
     if (gApp) {
-        log.d("app exit, cleanup in main\n");
+        gLog.d("app exit, cleanup in main\n");
 		DBusDaemon::getRefrence().stop();
         gApp->xim.close();
     //#ifdef AL_DEBUG
@@ -43,13 +43,13 @@ static void run_as_daemon()
     /* Create a new SID for the child process */
     sid = setsid();
     if (sid < 0) {
-        /* Log the failure */
+        /* GLog the failure */
         exit(EXIT_FAILURE);
     }
 #if 0
     /* Change the current working directory */
     if ((chdir("/")) < 0) {
-        /* Log the failure */
+        /* GLog the failure */
         exit(EXIT_FAILURE);
     }
 #endif
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     run_as_daemon();
     atexit(cleanup);
 	if (DBusDaemon::getRefrence().setup() != 0) {
-		log.e("Can't register dbus daemon\n");
+		gLog.e("Can't register dbus daemon\n");
 		return -1;
 	}
 

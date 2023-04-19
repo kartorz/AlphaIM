@@ -26,12 +26,12 @@ int PY::initialization()
     string phPath = Configure::getRefrence().m_homeDir + "/phrase-utf8.imdb";
 	string phPathOri = Configure::getRefrence().m_dataDir + "/phrase-utf8.imdb";
     if (!Util::isFileExist(phPath)) {
-        log.d("copy phrase db to home\n");
+        gLog.d("copy phrase db to home\n");
         boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
     }
 
     if (!m_phDB.load(phPath, 0xB4B3)) {
-		log.d("load phrase failure, copy db to home and reload\n");
+		gLog.d("load phrase failure, copy db to home and reload\n");
         boost::filesystem::copy_file(phPathOri, phPath, copy_option::overwrite_if_exists);
 		m_phDB.load(phPath, 0xB4B3);
 	}
@@ -39,7 +39,7 @@ int PY::initialization()
     string hanPath = Configure::getRefrence().m_homeDir + "/han-utf8.imdb";
 	string hanPathOri = Configure::getRefrence().m_dataDir + "/han-utf8.imdb";
     if (!Util::isFileExist(hanPath)) {
-        log.d("copy han db to home\n");
+        gLog.d("copy han db to home\n");
         boost::filesystem::copy_file(hanPathOri, hanPath, copy_option::overwrite_if_exists);
         //permissions(file_path, add_perms|owner_write|group_write|others_write);
     }
@@ -56,11 +56,11 @@ int PY::initialization()
     if (!m_usrPhDB.load(usrPhPath, 0xB4B3, true)) {
         bool load =  false;
 
-        log.d("Load usr phd, failure. check backup file. \n");
+        gLog.d("Load usr phd, failure. check backup file. \n");
         if (Util::isFileExist(usrPhPathOk)) {
             boost::filesystem::copy_file(usrPhPathOk, usrPhPath, copy_option::overwrite_if_exists);
             load = m_usrPhDB.load(usrPhPath, 0xB4B3, true);
-            log.d("Load backup user phrase : %d \n", load);
+            gLog.d("Load backup user phrase : %d \n", load);
         }
 
         if (!load) {
@@ -88,7 +88,7 @@ int PY::initialization()
 
 PY::~PY()
 {
-    log(LOG_INFO, "~PY write userphd\n");
+    gLog(LOG_INFO, "~PY write userphd\n");
     if (m_addCnt > 0) {
         m_addCnt = 0;
         m_usrPhDB.write();
@@ -395,7 +395,7 @@ int PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
-            log(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han);
+            gLog(LOG_INFO, "getPhraseKey: no py with han(%s), return.\n", han);
             return 0;
         }
 
@@ -435,7 +435,7 @@ void PY::refreshHanPriority(IndexTreeWriter& hanDB)
     if (buf != NULL)
         free(buf);
 
-    log(LOG_INFO, "refreshHanPriority\n");
+    gLog(LOG_INFO, "refreshHanPriority\n");
 }
 
 // Reresh prprity by decreasing -1.
@@ -454,7 +454,7 @@ void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
     if (buf != NULL)
         free(buf);
 
-    log(LOG_INFO, "refreshPhrasePriority\n");
+    gLog(LOG_INFO, "refreshPhrasePriority\n");
 }
 
 void PY::onCommit(const IMItem& imitem)
@@ -673,7 +673,7 @@ void PY::addToUsrDB(const string& phrase)
         vector<inxtree_dataitem> pyitems;
         m_hanDB.lookup(han, pyitems);
         if (pyitems.size() == 0) {
-            log(LOG_INFO, "addToUsrDB: no py with han(%s), return.\n", han);
+            gLog(LOG_INFO, "addToUsrDB: no py with han(%s), return.\n", han);
             return;
         }
 
@@ -701,7 +701,7 @@ void PY::addToUsrDB(const string& phrase)
 
             m_addCnt = 0;
 
-            log(LOG_INFO, "addToUsrDB: > MAX_USRDB_ENTRY, clean up user db. \n");
+            gLog(LOG_INFO, "addToUsrDB: > MAX_USRDB_ENTRY, clean up user db. \n");
         }
 
         for (int i = 0; i < pyitems.size(); i++) {
@@ -726,7 +726,7 @@ void PY::addToUsrDB(const string& phrase)
             }
         }
     } else {
-        log(LOG_ERROR, "addUserPhrase: got a invalid phrase(%s).\n",phrase.c_str()); 
+        gLog(LOG_ERROR, "addUserPhrase: got a invalid phrase(%s).\n",phrase.c_str());
     }
 }
 

@@ -44,9 +44,9 @@ typedef struct {
 } ICRect;
 
 typedef struct {
-    int	keysym;
-    int	modifier;
-    int	modifier_mask;
+    int keysym;
+    int modifier;
+    int modifier_mask;
 } TriggerKey;
 
 enum PREEDIT_KEY {
@@ -78,7 +78,7 @@ public:
     IMPreedit();
     virtual ~IMPreedit();
     virtual int handleKey(unsigned int keycode, unsigned int modifier, char *key, int evtype, IMPreeditCallback *callback) {return NONE_KEY;}
-	virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback) {return NONE_KEY;}
+    virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback) {return NONE_KEY;}
     virtual void handleMessage(int msg);
 
     void guiReload(IMPreeditCallback *callback);

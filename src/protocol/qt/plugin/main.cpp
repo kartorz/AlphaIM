@@ -39,6 +39,8 @@
 
 #include <qpa/qplatforminputcontextplugin_p.h>
 #include <QtCore/QStringList>
+//#include <QtCore/private/qplugin_p.h>
+
 #include "qaimplatforminputcontext.h"
 
 QT_BEGIN_NAMESPACE

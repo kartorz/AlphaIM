@@ -8,7 +8,7 @@ class SysMessager: public Thread
 {
 public:
     SysMessager(MessageQueue* queuq);
-	SysMessager();
+    SysMessager();
     virtual ~SysMessager();
     
     void processMessage();
