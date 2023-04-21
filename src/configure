@@ -265,9 +265,15 @@ exit 0
 } # show_help
 
 _prefix=/usr/local
-_qtdir=
+_qt_libdir=
 _qt5=auto
-_qt5extras=no
+_qt_includes=
+_qt_libs=
+_qt_plugin=
+_qtmoc=
+_qtuic=
+_qtrcc=
+
 _gtk3=no
 _qtgui=no
 _appinc3=no
@@ -304,7 +310,7 @@ for ac_option do
     _bindir=$(option_value $ac_option)
     ;;
   --with-qttool=*)
-    _qtdir=$(option_value $ac_option)
+    _qt_libdir=$(option_value $ac_option)
     ;;
   --with-install=*)
     _install=$(option_value $ac_option)
@@ -563,17 +569,7 @@ echores "$_xlib"
 test "$_xlib" = no && die "Please check and install xlib (libx11-dev)"
 cflags="$cflags -DX11"
 
-#echocheck "Xtrans"
-#header_check(X11/Xtrans/transport.c) 
-
-#cat > $TMPC  <<EOF
-#//#include <X11/Xtrans/Xtrans.h>
-#include <X11/Xtrans/transport.c>
-#int main(void) {
-#return 0;
-#}
-#EOF
-
+echocheck "Xtrans"
 if header_check X11/Xtrans/transport.c ; then
     echores "yes"
 else
@@ -604,96 +600,48 @@ echores "$_systemd"
 test "$_systemd" = no && die "Please check and install libsystemd-dev"
 
 if test "$_qt5" = "auto" ; then
-echocheck "QT5 header"
-  _qt5_headers="no"
-  inc_tmp=""
-  ld_tmp=""
-  res_comment="check if the qt5 dev(el) packages are installed"
+  modules="Qt5Core Qt5Gui Qt5Widgets Qt5X11Extras Qt5DBus"
+  echocheck "QT5 libraries: $modules"
 
-  if header_check  QtWidgets/QMainWindow ; then
-    res_comment=""
-    _qt5_headers="yes"
+  _qt_includes=`pkg-config --cflags $modules`
+  test "$?" != 0 && die "pkg-config can't get includes, Please check and install $modules"
+
+  _qt_libs=`pkg-config --libs $modules`
+  test "$?" != 0 && die "pkg-config can't get libs, Please check and install $modules"
+  echo "yes"
+
+  # Drop duplicate include dir -- xx/qt5
+  _qt_includes=`echo $_qt_includes | sed -r 's/-I\/usr\/include\/x86_64-linux-gnu\/qt5 //g'`
+
+  cflags="$cflags -DQT5 $_qt_includes"
+  _qt5=yes
+
+  ver=`pkg-config  --modversion Qt5Core`
+  bin=`pkg-config --variable=host_bins Qt5Core`
+  libdir=`pkg-config --variable=libdir Qt5Core`
+  includedir=`pkg-config  --variable=includedir Qt5Core`
+
+  echocheck "qtbase5-private-dev"
+  targetfile="QtCore/$ver/QtCore/private/qplugin_p.h"
+
+  if test -f "$includedir/$targetfile" ; then
+    echo "yes"
+
+    for m in QtCore QtGui ; do
+      _qt_includes="$_qt_includes -I$includedir/$m/$ver"
+      _qt_includes="$_qt_includes -I$includedir/$m/$ver/$m"
+    done
   else
-    for I in $(echo $extra_cflags | sed s/-I//g) /usr/include  /usr/include/x86_64-linux-gnu \
-      /usr/include/i386-linux-gnu /usr/local/include; do
-      if test -f "$I/qt5/QtWidgets/QMainWindow" ; then
-        inc_tmp="-I$I/qt5 -I$I/qt5/QtWidgets -I$I/qt5/QtGui  -I$I/qt5/QtCore  -I$I/qt5/QtDBus -I$I/qt5/QtGui/5.5.1/QtGui "
-        res_comment=""
-        _qt5_headers="yes"
-        break
-      fi
-    done
+    die "Please check and install qtbase5-private-dev"
   fi
-echores "$_qt5_headers"
-fi
 
-echocheck "QT5 libraries"
-  if test "$_qt5" = "auto" ; then
-    _qt5="no";
-    if test "$_qt5_headers" = "yes" ; then
-      for I in "" /usr/lib/x86_64-linux-gnu   /usr/lib/i386-linux-gnu /usr/local/lib /usr/lib32 /usr/lib ; do
-        if test -f "$I/libQt5Widgets.so" -o -L "$I/libQt5Widgets.so" ; then
-          def_qt5='#define CONFIG_QT5 1'
-          ld_tmp="-L$I -lQt5Core -lQt5Gui -lQt5Widgets"
-          qt_libs="$ld_tmp"
-          includes="$inc_tmp"
-		  qt_includes="$inc_tmp"
-          cflags="$cflags -DQT5"
-          _qt5="yes"
-        fi
+  _qt_plugin=libalphaimplatforminputcontextplugin.so
+  _qtmoc="$bin/moc"
+  _qtuic="$bin/uic"
+  _qtrcc="$bin/rcc"
+  _qt_libdir=$libdir/qt5
 
-        if test -f "$I/libQt5X11Extras.so" -o -L "$I/libQt5X11Extras.so" ; then
-          ld_tmp="-L$I -lQt5X11Extras  -lX11"
-          def_qt5extras='#define CONFIG_QT5EXTRAS 1'
-          qt_libs="$qt_libs $ld_tmp"
-          _qt5extras="yes"
-        fi
-
-        if test $_qt5 = "yes" -a $_qt5extras = "yes" ; then
-          break
-        fi
-      done
-    fi
-  fi
-echores "$_qt5"
-
-echocheck "QT tools"
-if test -z $_qtdir ; then
-  if test $_qt5 = "yes" ; then
-    for I in /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu ; do
-      if test -f "$I/qt5/bin/moc" ; then
-        _qtdir=$I/qt5
-        break 
-      fi
-      if test -f "$I/qt5/bin/moc" ; then
-        _qtdir=$I/qt4
-        break
-      fi
-    done
-
-    #if test -z "$_moc" ; then    
-    #  ver_tmp=$(moc -v 2>&1 | tail -n 1 | cut -d ' ' -f 6)
-    #  if test $ver_tmp != "" ; then
-    #    _moc=moc
-    #    _uic=uic
-    #    _rcc=rcc
-    #  fi
-    #fi
-  fi
-  echores "$_qtdir"
-fi
-
-if test $_qt5 = "yes" ; then
-qt_plugin=libalphaimplatforminputcontextplugin.so
-moc="$_qtdir/bin/moc"
-uic="$_qtdir/bin/uic"
-rcc="$_qtdir/bin/rcc"
-else
-qt_plugin=
-moc=
-uic=
-rcc=
-fi
+fi # test "$_qt5" = "auto" 
 
 if test $_qtgui = "no" ; then
   echocheck "gtk+-3.0"
@@ -710,7 +658,7 @@ if test $_qtgui = "no" ; then
   echocheck "yes"
   echo ""
 else
-  ldflags="$ldflags $qt_libs"
+  ldflags="$ldflags $_qt_libs"
 fi
 
 if test $_show_imwin = "yes" ; then
@@ -749,21 +697,21 @@ CFLAGS   = $cflags $includes
 CFLAGS += -I\$(TOPDIR) -I\$(TOPDIR)/lib -I\$(TOPDIR)/lib/IMdkit/ -I\$(TOPDIR)/protocol -I\$(TOPDIR)/protocol/xim -I\$(TOPDIR)/protocol/qt
 CXXFLAGS = $cxxflags
 CC_DEPFLAGS = $DEPFLAGS
-QTINCLUDES = $qt_includes
-QTLIBS = $qt_libs
-LIBS  = $ldflags $ld_static  $extra_libs
+LIBS  = $ldflags $ld_static  $extra_libs $_qt_libs
 
 DEBUG=$_debug
 GTK3=$_gtk3
 QT5=$_qt5
 
+QTLIBDIR=$_qt_libdir
+MOC=$_qtmoc
+UIC=$_qtuic
+RCC=$_qtrcc
+QT_PLUGIN=$_qt_plugin
 
-QTDIR=$_qtdir
-MOC=$moc
-UIC=$uic
-RCC=$rcc
-QT_PLUGIN=$qt_plugin
-
+# Used by qt plugin
+QTINCLUDES = $_qt_includes
+QTLIBS = $_qt_libs
 EOF
 
 
