@@ -21,6 +21,8 @@ public:
     int  initialization();
     int  readSelcnt();
     void writeSelcnt(int cnt);
+    int  readICMode();
+    void writeICMode(int mode);
 
     void writeXml();
 
@@ -30,10 +32,10 @@ public:
 private:
     int  load(const string& xmlpath);
 
-
     tinyxml2::XMLDocument m_doc;
     bool m_dirty;
     int m_selcnt;
+    int m_icMode;
     string m_configFile;
     SpinCriticalSection m_cs;
 };

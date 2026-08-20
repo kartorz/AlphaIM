@@ -168,7 +168,7 @@ static gboolean aim_app_on_hide_imwin(gpointer user_data)
 
 static void aim_app_message_action(int action)
 {
-    //printf("aim_app_message_action: action:%d\n", action);
+    PRINTF("aim_app_message_action: action:%d\n", action);
     switch (action) {
     case MSG_IM_ON: {
         //g_signal_emit(data, klass->active_im_id, 0);
@@ -181,7 +181,7 @@ static void aim_app_message_action(int action)
         break;
     }
 
-    case MSG_IM_CLOSE: {
+    case MSG_IM_CLOSE: {        
         gdk_threads_add_idle(aim_app_on_hide_icwin, NULL);
         break;
     }
@@ -391,7 +391,7 @@ static void aim_app_activate (GApplication *app)
     app_indicator_set_menu(klass->systray, klass->setmenu);
     app_indicator_set_status(klass->systray, APP_INDICATOR_STATUS_ACTIVE);
     aim_app_systray_connect_popup(klass);
-    klass->bshow_imwin = true;
+    klass->bshow_imwin = false;
     aim_app_dbus_init();
 }
 

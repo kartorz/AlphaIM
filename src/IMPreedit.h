@@ -49,6 +49,8 @@ typedef struct {
     int    modifier_mask;
 } TriggerKey;
 
+class ICManager;
+
 enum PREEDIT_KEY {
     NONE_KEY,
     FORWARD_KEY,
@@ -61,6 +63,7 @@ enum PREEDIT_KEY {
     PAGEUP_KEY,
     PAGEDOWN_KEY,
     CANCEL_KEY,
+    PREEDIT_KEY
 };
 
 class IMPreeditCallback {
@@ -69,24 +72,23 @@ public:
     virtual void onIMOn(void* priv) {};
     virtual void onIMOff(void* priv) {};
     virtual void onCommit(void* priv, string candidate) = 0;
-    virtual ICRect onGetRect() = 0;
     void *opaque;
 };
 
 class IMPreedit {
+    friend class ICManager;
 public:
-    IMPreedit();
+    IMPreedit(ICManager* icm=NULL);
     virtual ~IMPreedit();
-    virtual int handleKey(unsigned int keycode, unsigned int modifier, char *key, int evtype, IMPreeditCallback *callback) {return NONE_KEY;}
-    virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback) {return NONE_KEY;}
+    virtual int handleKey(u32 ic, u32 keycode, u32 modifier, char *key, int evtype, IMPreeditCallback *callback) {return NONE_KEY;}
+    virtual int handleKey(u32 ic, u32 keyval, u32 keycode, u32 state, IMPreeditCallback *callback) {return NONE_KEY;}
     virtual void handleMessage(int msg);
 
-    void guiReload(IMPreeditCallback *callback);
+    void guiReload();
+    bool isActive() const { return m_bTrigger && m_bCN; }
     void clear();
     void close();
     void reset();
-
-    bool bRefreshWin;
 
 protected:
     void add(char key);
@@ -94,8 +96,8 @@ protected:
     void page(int pg);
     bool commit(int i);
 
-    void doSwitchCE(IMPreeditCallback *callback);
-    void doSwitchCEPun();
+    bool doSwitchCE();
+    bool doSwitchCEPun();
     void doPageup();
     void doPagedown();
     bool doInput(char key);
@@ -103,7 +105,7 @@ protected:
     void doCommit(int i, IMPreeditCallback *callback);
 
     void guiAction(int id);
-    void guiShowCandidate(IMPreeditCallback *callback);
+    void guiShowCandidate(u32 ic);
 
     bool isMatchKeys(int keycode, int modifier, TriggerKey *trigger);
     u32  mapCNPun(char key);
@@ -125,6 +127,7 @@ protected:
     bool   m_bPreQuo;
     bool   m_bUsrSelectCandidate;
 
+    ICManager*  m_icm;
     MutexCriticalSection m_cs;
 
     deque<IMItem> m_items;

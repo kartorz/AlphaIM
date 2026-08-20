@@ -5,12 +5,12 @@
 
 class QtIMPreedit : public X11IMPreedit {
 public:
-    QtIMPreedit();
+    QtIMPreedit(ICManager* icm);
     virtual ~QtIMPreedit() {}
-    virtual int handleKey(unsigned int keyval, unsigned int keycode, unsigned int state, IMPreeditCallback *callback);
+    virtual int handleKey(u32 ic, u32 keyval,u32 keycode, u32 state, IMPreeditCallback *callback);
 
 private:
-    unsigned int  m_preMask;
+    u32  m_preMask;
 };
 
 #endif

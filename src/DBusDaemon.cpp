@@ -38,13 +38,13 @@ static int im_gui_message(sd_bus_message *m, void *userdata, sd_bus_error *ret_e
 static int im_create_inputcontext(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     const char *s;
+    const char *sender = sd_bus_message_get_sender(m);
     sd_bus_message_read(m, "s", &s);
-    logger.d("create_inputcontext: %s\n", s);
-    if (gApp->dim.getCurrentClient(s) != DBUS_CLIENT_UNKNOWN) {
-        unsigned int u = gApp->dim.createIC(s);
+    if (sender && (gApp->dim.getClient(s) != DBUS_CLIENT_UNKNOWN)) {
+        unsigned int u = gApp->dim.createIC(s, sender);
         return sd_bus_reply_method_return(m, "u", u);
     }
-    logger.e("im_create_inputcontext: a error client\n");
+    logger.e("im_create_inputcontext: sender is NULL\n");
     return sd_bus_reply_method_return(m, NULL);
 }
 
@@ -54,6 +54,7 @@ static int im_exit(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
     return 0;
 }
 
+/* A custom command line: eg: got im activate */
 static int im_ping(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     PRINTF("ping\n");
@@ -74,18 +75,18 @@ static  sd_bus_vtable im_vtable[] = {
 static  sd_bus_vtable ic_vtable[] = {
     SD_BUS_VTABLE_START(0),
 
-    SD_BUS_METHOD("ProcessKeyEvent", "uuu", "b", ic_process_keyevent, 0),
-    SD_BUS_METHOD("SetCursorLocation", "iiii", "", ic_set_cursorlocation, 0),
-    SD_BUS_METHOD("FocusIn", "u", "", ic_focusin, 0),
-    SD_BUS_METHOD("FocusOut", "", "", ic_focusout, 0),
-    SD_BUS_METHOD("Reset", "", "", ic_reset, 0),
-    SD_BUS_METHOD("Enable", "", "", ic_enable, 0),
-    SD_BUS_METHOD("Disable", "", "", ic_disable, 0),
-    SD_BUS_METHOD("IsEnabled", "", "b", ic_is_enabled, 0),
-    SD_BUS_METHOD("SetCapabilities", "u", "", ic_set_capabilities, 0),
-    SD_BUS_METHOD("PropertyActivate", "si", "", ic_property_activate, 0),
-    SD_BUS_METHOD("SetSurroundingText", "vuu", "", ic_set_surroundingtext, 0),
-    SD_BUS_METHOD("Destroy", "", "", ic_destroy, 0),
+    SD_BUS_METHOD("ProcessKeyEvent", "uuuu", "i", ic_process_keyevent, 0),
+    SD_BUS_METHOD("SetCursorLocation", "uiiii", "i", ic_set_cursorlocation, 0),
+    SD_BUS_METHOD("FocusIn", "u", "i", ic_focusin, 0),
+    SD_BUS_METHOD("FocusOut", "u", "i", ic_focusout, 0),
+    SD_BUS_METHOD("Reset", "u", "i", ic_reset, 0),
+    SD_BUS_METHOD("Enable", "u", "i", ic_enable, 0),
+    SD_BUS_METHOD("Disable", "u", "i", ic_disable, 0),
+    SD_BUS_METHOD("IsEnabled", "u", "b", ic_is_enabled, 0),
+    SD_BUS_METHOD("SetCapabilities", "uu", "i", ic_set_capabilities, 0),
+    SD_BUS_METHOD("PropertyActivate", "usi", "i", ic_property_activate, 0),
+    SD_BUS_METHOD("SetSurroundingText", "uvuu", "i", ic_set_surroundingtext, 0),
+    SD_BUS_METHOD("Destroy", "u", "i", ic_destroy, 0),
 
     SD_BUS_VTABLE_END
 };
@@ -232,7 +233,7 @@ int DBusDaemon::notify(Message& msg)
         logger.e("DBusDaemon::notify send error, err: %s\n", strerror(-r));
         return -3;
     }
-    PRINTF("DBusDaemon::notify id: %d\n", msg.id);
+    //PRINTF("DBusDaemon::notify id: %d\n", msg.id);
     return 0;
 }
 

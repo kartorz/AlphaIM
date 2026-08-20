@@ -9,9 +9,10 @@
 #include "IMPreedit.h"
 #include "Log.h"
 
-IMPreedit::IMPreedit():m_bTrigger(false), m_bCN(false),
+IMPreedit::IMPreedit(ICManager* icm):m_bTrigger(false), m_bCN(false),
 m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 {
+    m_icm = icm;
 }
 
 IMPreedit::~IMPreedit()
@@ -130,7 +131,7 @@ string IMPreedit::mapCNPunToU8Str(char key)
         ret += ub;
         free(ub);
     }
-    PRINTF("mapCNPunToU8Str, %c --> %s\n", key, ret.c_str());
+    //PRINTF("mapCNPunToU8Str, %c --> %s\n", key, ret.c_str());
     return ret;
 }
 
@@ -231,10 +232,14 @@ void IMPreedit::clear()
     m_uiItems.clear();
 }
 
+/* 
+ * Click at a input
+ * gtk:
+ *   focus_in(41)
+ *   reset(41)
+ */
 void IMPreedit::reset()
 {
-    guiAction(MSG_IM_OFF);
-    gApp->curIM()->reset();
 }
 
 void IMPreedit::close()
@@ -344,24 +349,21 @@ void IMPreedit::page(int pg)
     }
 }
 
-void IMPreedit::doSwitchCEPun()
+bool IMPreedit::doSwitchCEPun()
 {
     m_bCNPun = !m_bCNPun;
     if (m_bCNPun)
         guiAction(MSG_IM_CPUN);
     else
         guiAction(MSG_IM_EPUN);
+    return m_bCNPun;
 }
 
-void IMPreedit::doSwitchCE(IMPreeditCallback *callback)
+bool IMPreedit::doSwitchCE()
 {
     m_bCN = !m_bCN;
 
     if (!m_bCN) {
-        if (callback) {
-            string candidate = m_input;
-            callback->onCommit(callback->opaque, candidate);
-        }
         guiAction(MSG_IM_EN);
         doClose();
     } else {
@@ -369,6 +371,7 @@ void IMPreedit::doSwitchCE(IMPreeditCallback *callback)
     }
 
     m_bCNPun = m_bCN;
+    return m_bCN;
 }
 
 void IMPreedit::doPageup()
@@ -413,7 +416,7 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
         if (commit(i)) {
             // commit candidte string.
             string candidate = m_ci + m_candidate;
-            PRINTF("commit %s, %d\n", candidate.c_str(), i);
+            //PRINTF("commit %s, %d\n", candidate.c_str(), i);
             callback->onCommit(callback->opaque, candidate);
 
             doClose();
@@ -428,14 +431,14 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 
 void IMPreedit::guiAction(int id)
 {
-    PRINTF("IMPreedit::guiAction id: %d\n", id);
+    PRINTF("IMPreedit::guiAction id: %d, %px\n", id, this);
     gApp->getMessageQ()->push(id);
 }
 
-void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
+void IMPreedit::guiShowCandidate(u32 ic)
 {
     if (m_bStart && m_uiItems.size() > 0) {
-        ICRect rect = callback->onGetRect();
+        ICRect rect = (*m_icm)[ic]->getRect();
 
         string input = m_ci + m_input;
         string candidate = m_ci + m_candidate;
@@ -445,7 +448,8 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
             items += m_uiItems.at(i).val + " ";
         }
 
-        PRINTF("preEdit %s, %d, %d , %d %d\n", input.c_str(), rect.x, rect.y, rect.w, rect.h);
+        /*PRINTF("guiShowCandidate %s-->%s,[%d,%d,%d,%d], \n",
+               input.c_str(), items.c_str(), rect.x, rect.y, rect.w, rect.h);*/
 
         Message msg;
         msg.id = MSG_IM_INPUT;
@@ -461,11 +465,14 @@ void IMPreedit::guiShowCandidate(IMPreeditCallback *callback)
     //gApp->pSysMsgQ->push(MSG_IM_OFF);
 }
 
-void IMPreedit::guiReload(IMPreeditCallback *callback)
+/*
+ * OPEN/CLOSE: im state, indicated by ic win
+ * CN/EN     : lan state.
+ */
+void IMPreedit::guiReload()
 {
-    PRINTF("guiReload %d\n", m_bTrigger);
-
     if (!m_bTrigger) {
+        guiAction(MSG_IM_OFF);
         guiAction(MSG_IM_CLOSE);
         return;
     }
@@ -477,7 +484,6 @@ void IMPreedit::guiReload(IMPreeditCallback *callback)
     else
         guiAction(MSG_IM_EN);
 
-    guiShowCandidate(callback);
 }
 
 bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
@@ -496,7 +502,7 @@ bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
     return False;
 }
 
-/*bool IMPreedit::ispinyin( unsigned int key)
+/*bool IMPreedit::ispinyin( u32 key)
 {
     if (key )
     }*/
@@ -505,7 +511,7 @@ void IMPreedit::handleMessage(int msg)
 {
     switch(msg) {
     case MSG_UI_LAN:
-        doSwitchCE(NULL);
+        doSwitchCE();
         return;
     case MSG_UI_PUN:
         doSwitchCEPun();

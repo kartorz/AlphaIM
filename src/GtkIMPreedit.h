@@ -5,7 +5,7 @@
 
 class GtkIMPreedit : public QtIMPreedit {
 public:
-    GtkIMPreedit();
+    GtkIMPreedit(ICManager* icm);
     virtual ~GtkIMPreedit() {}
 };
 

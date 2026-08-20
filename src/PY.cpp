@@ -97,10 +97,6 @@ void PY::close()
 
 void PY::reset()
 {
-    if (m_addCnt > 0) {
-        m_addCnt = 0;
-        m_usrPhDB.write();
-    }
 }
 
 string PY::lookup(const string& input, deque<IMItem>& items)
@@ -330,8 +326,8 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempLis
         imitem.priority = item->d.buf[0];
         imitem.number = number;
 
-        PRINTF("\n[FOUND] %s, priority %d, match val:%s remain key: %s, imkey(%s) \n",
-               phstr, imitem.priority, imval.c_str(), key.c_str(), imkey.c_str());
+        /*PRINTF("\n[FOUND] %s, priority %d, match val:%s remain key: %s, imkey(%s) \n",
+               phstr, imitem.priority, imval.c_str(), key.c_str(), imkey.c_str());*/
 
         // input: guojia
         // guo'jia   guo'ji
@@ -339,16 +335,16 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempLis
             imitem.off = found;
             imitemTempList[0].push_back(imitem);
 
-            PRINTF("[perfect match] %s, pinyin remained:%d, number:%d\n", phstr, found, number);
+            //PRINTF("[perfect match] %s, pinyin remained:%d, number:%d\n", phstr, found, number);
         } else {
             if (firstRound) {
                 imitem.off = key.length() + found;
                 imitemTempList[1].push_back(imitem);
-                PRINTF("[non-perfect] firstRound: offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
+                //PRINTF("[non-perfect] firstRound: offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
             } else if (found == 0) {
                 imitem.off = key.length();
                 imitemTempList[1].push_back(imitem);
-                PRINTF("[non-perfect] non-firsetRound offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
+                //PRINTF("[non-perfect] non-firsetRound offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
             }
        }
     }

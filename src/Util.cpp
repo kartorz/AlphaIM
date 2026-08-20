@@ -178,7 +178,7 @@ string Util::usrProfileDir(string appname)
         userHome = getenv("HOME");
     else
         userHome = "/root";
-    path = userHome + "/." + appname;
+    path = userHome + "/.config/" + appname;
 #else
     WIN32Util::getProfilePath(userHome);
     path = userHome + "/" + appname;

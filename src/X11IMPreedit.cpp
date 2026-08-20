@@ -6,10 +6,33 @@
 #include "X11IMPreedit.h"
 #include "Log.h"
 
+/* Forward Keys List */
+TriggerKey ForwardKeys[] = {
+    {XK_Tab, 0, 0},
+    {XK_ISO_Left_Tab, 0, 0},
+    {XK_Caps_Lock, 0, 0},
+    {XK_Num_Lock, 0, 0},
+    {XK_Scroll_Lock, 0, 0},
+    {XK_F1, 0, 0},
+    {XK_F2, 0, 0},
+    {XK_F3, 0, 0},
+    {XK_F4, 0, 0},
+    {XK_F5, 0, 0},
+    {XK_F6, 0, 0},
+    {XK_F7, 0, 0},
+    {XK_F8, 0, 0},
+    {XK_F9, 0, 0},
+    {XK_F10, 0, 0},
+    {XK_F11, 0, 0},
+    {XK_F12, 0, 0},
+    {0L, 0L, 0L}
+};
+
 /* Trigger Keys List */
 static TriggerKey OnOffKeys[] = {
     {XK_space, ShiftMask, ShiftMask},
     {XK_space, ControlMask, ControlMask},
+    {XK_space, ControlMask | Mod4Mask, ControlMask | Mod4Mask},
     {0L, 0L, 0L}
 };
 
@@ -17,12 +40,6 @@ static TriggerKey OnOffKeys[] = {
 static TriggerKey CommitKeys[] = {
     {XK_space, 0L, 0L},
     {XK_Return, 0, 0},
-    {0L, 0L, 0L}
-};
-
-/* Forward Keys List */
-static TriggerKey ForwardKeys[] = {
-    {XK_Tab, 0, 0},
     {0L, 0L, 0L}
 };
 
@@ -62,11 +79,11 @@ static TriggerKey CEPSwitchKeys[] = {
     {0L, 0L, 0L}
 };
 
-X11IMPreedit::X11IMPreedit():m_preModKey(0),m_preRetKey(0)
+X11IMPreedit::X11IMPreedit(ICManager* icm):IMPreedit(icm),m_preModKey(0),m_preRetKey(0)
 {
 }
 
-bool X11IMPreedit::isModifier(unsigned int keysym)
+bool X11IMPreedit::isModifier(u32 keysym)
 {
     if (keysym >= XK_Shift_L  && keysym <= XK_Hyper_R)
         return true;
@@ -74,12 +91,12 @@ bool X11IMPreedit::isModifier(unsigned int keysym)
 }
 
 
-/*
+/* 
  * There are some pains when comes to precess x11 keys.
  * 1) modifier + key (eg, Shit_L + w)
          kev type: 2 state 0 --> code ffe1 --> 0
          kev type: 2 state 1 --> code 57 --> 57
-         {kev type: 2 state 1 --> code 57 --> 57}+
+       { kev type: 2 state 1 --> code 57 --> 57 }+
          kev type: 3 state 1 --> code 57 --> 57
          kev type: 3 state 1 --> code ffe1 --> 0
  * 2) ctrl + shift
@@ -88,33 +105,35 @@ bool X11IMPreedit::isModifier(unsigned int keysym)
         kev type 3 state: 5 code: ffe3  key: 0
         kev type 3 state: 1 code: ffe1  key: 0
  * 3) ASCII key (eg, 'w').
-      kev  type: 2 state 0 code:77
-     {kev type: 2 state 0 code:77 }+
-     kev type: 3 state 0  code 77
+      kev type: 2 state 0 code:77
+    { kev type: 2 state 0 code:77 }+
+      kev type: 3 state 0 code 77
  * 4) Forward key.
       Forward 'Release key event' not working.
+ * ----------------------------------------------
+ *  #define KeyPress        2
+ *  #define KeyRelease      3
+ *------------------------------------------------------
+ * Tested by xterm, urxvt
+ *
  */
-int X11IMPreedit::handleKey(unsigned int keysym, unsigned int modifier, char *key, int evtype, IMPreeditCallback *callback)
+int X11IMPreedit::handleKey(u32 ic, u32 keysym, u32 modifier, char *key, int evtype, IMPreeditCallback *callback)
 {
-    //MutexLock lock(m_cs);
-    //  #define KeyPress        2
-    //  #define KeyRelease        3
+    PRINTF("X11IMPreedit handleKey\n");
     if (isMatchKeys(keysym, modifier, ForwardKeys)
-        || ((keysym & 0xff) == (XK_BackSpace & 0xff) && m_input == "")){
+        || ((keysym & 0xff) == (XK_BackSpace & 0xff) && m_input == "")) {
         return FORWARD_KEY;
     }
 
-    if (evtype == KeyPress) {
-        m_preRetKey = doHandleKey(keysym,  modifier, *key,  callback);
-    }
+    if (evtype == KeyPress)
+        m_preRetKey = doHandleKey(ic, keysym, modifier, *key, callback);
 
+    // After key released, return the previous result, don't forward directly. 
     return m_preRetKey;
 }
 
-int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsigned int key, IMPreeditCallback *callback)
+int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreeditCallback *callback)
 {
-    PRINTF("doHandleKey keysym(%u), modifier(%u), key(%u-->0x%x)\n", keysym, modifier, key, key);
-
     // Check OnOff
     if (isMatchKeys(keysym, modifier, OnOffKeys)) {
         if (!m_bTrigger) {
@@ -133,14 +152,14 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         guiAction(MSG_IM_OFF);
         return TRIGGER_OFF_KEY;
     }
-    if (!m_bTrigger) {
+
+    if (!m_bTrigger)
         return FORWARD_KEY;
-    }
-    PRINTF("doHandleKey has checked trigger\n");
 
     // Check  language
     if (isMatchKeys(keysym, modifier, CESwitchKeys)) {
-        doSwitchCE(callback);
+        if (!doSwitchCE())
+            callback->onCommit(callback->opaque, m_input);
         return SWITCH_CE_KEY;
     }
     if (!m_bCN) {
@@ -157,7 +176,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
     if (!m_bStart) {
         if (modifier == 0  && isascii(key) && islower(key)) {
             doInput(key);
-            guiShowCandidate(callback);
+            guiShowCandidate(ic);
             return CONVERT_KEY;
         }
         PRINTF("doHandleKey, not start, check Pun char, m_bCNPun:%d, key:%d\n", m_bCNPun, key);
@@ -179,7 +198,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
     if (isMatchKeys(keysym, modifier, CommitKeys)) {
         if (m_bStart) {
             doCommit(1, callback);
-            guiShowCandidate(callback);
+            guiShowCandidate(ic);
             return COMMIT_KEY;
         } else {
             return FORWARD_KEY;
@@ -188,13 +207,13 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
 
     if (isMatchKeys(keysym, modifier, PageUpKeys))   {
         doPageup();
-        guiShowCandidate(callback);
+        guiShowCandidate(ic);
         return PAGEUP_KEY;
     }
 
     if (isMatchKeys(keysym, modifier, PageDownKeys)) {
         doPagedown();
-        guiShowCandidate(callback);
+        guiShowCandidate(ic);
         return PAGEDOWN_KEY;
     }
 
@@ -208,7 +227,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         if (isascii(key) && isdigit(key)) {
             int i = key - 0x30;
             doCommit(i, callback);
-            guiShowCandidate(callback);
+            guiShowCandidate(ic);
             return COMMIT_KEY;
         }
         PRINTF("doHandleKey has checked digit key\n");
@@ -216,7 +235,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         //if (*key == (XK_BackSpace & 0xff))
         if ((keysym & 0xff) == (XK_BackSpace & 0xff)) {
             doInput(key);
-            guiShowCandidate(callback);
+            guiShowCandidate(ic);
             return COMMIT_KEY;
         }
 
@@ -224,7 +243,7 @@ int X11IMPreedit::doHandleKey(unsigned int keysym, unsigned int modifier, unsign
         // Must at the end.
         if (isascii(key) && islower(key)/* 'Shift' returns true */) {
             doInput(key);
-            guiShowCandidate(callback);
+            guiShowCandidate(ic);
             return CONVERT_KEY;
         }
     }

@@ -11,11 +11,14 @@
 #define _IC_H_
 
 #include <map>
+#include <string>
 
 #include "IMPreedit.h"
 
 #define ICWIN_W  768
 #define ICWIN_H  64
+
+using namespace  std;
 
 class IC {
 public:
@@ -27,13 +30,18 @@ public:
     virtual bool isEnabled();
     virtual void setCursorLocation(int x, int y, int w,  int h);
     virtual void reset();
-    virtual void setCapabilities(unsigned int cpas);
+    virtual void setCapabilities(u32 cpas);
     virtual void propertyActivate(const char *name, int state);
     virtual void setSurroundingText();
     virtual void close();
+    // New and set 'IMPreedit *preedit'
+    virtual IMPreedit *createPreedit(ICManager* icm);
+
+    ICRect  getRect();
+
     static ICRect adjRect(int x, int y, int w, int h);
 
-    unsigned int id;
+    u32 id;
     int   cursorX;
     int   cursorY;
     IMPreedit *preedit;
@@ -47,17 +55,26 @@ public:
     ICManager();
     ~ICManager();
 
-    unsigned int add(IC *ic);
+    u32 add(IC *ic);
+    u32 add(IC *ic, const char *app);
     void add(IC *ic, int id);
-    void destroy(unsigned int id = 0);
-    void focusIn(unsigned int id = 0);
-    IC* get(unsigned int id = 0);
-    void focusOut();
+    void destroy(u32 id = 0);
+    void focusIn(u32 id = 0);
+    void setMode(int mode);
+    int mode() const;
+    IC* get(u32 id = 0);
+    int focusOut(u32 id = 0);
+
+    IC* operator[](u32 id) {
+        return get(id);
+    }
 
 private:
-    std::map<int,  IC*> m_ics;
-    int  m_icid;
-    int  m_icFocus;
+    map<int,  IC*> m_ics;
+    map<string, IMPreedit*> m_preedits;
+    u32  m_icid;
+    u32  m_icFocus;
+    int  m_icMode;
     //MutexCriticalSection m_cs;
 };
 
