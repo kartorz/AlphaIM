@@ -49,6 +49,7 @@ void aim_win_show_hide(AimWin *win)
     if (gtk_widget_get_mapped(GTK_WIDGET (win))) {
         gtk_widget_hide(GTK_WIDGET (win));
     } else {
+        gtk_window_set_keep_above(GTK_WINDOW(win), TRUE);
         gtk_widget_show_all(GTK_WIDGET (win));
 
         GdkWindow *gdk_win = gtk_widget_get_window(GTK_WIDGET (win));
@@ -64,6 +65,7 @@ void aim_win_enable_im(AimWin *win, bool en)
     AimWinClass *klass = AIM_WIN_GET_CLASS(win);
 
     if (en) {
+        gtk_window_set_keep_above(GTK_WINDOW(win), TRUE);
         gtk_widget_show_all(GTK_WIDGET (win));
 
         GdkWindow *gdk_win = gtk_widget_get_window(GTK_WIDGET (win));
@@ -125,12 +127,17 @@ AimWin *aim_win_new(int x, int y)
     GtkWidget *image;
 
     AimWin* imwin = (AimWin *)g_object_new (AIM_WIN_TYPE,
-                                            "type",         GTK_WINDOW_POPUP,
+                                            "type",         GTK_WINDOW_TOPLEVEL,
                                             "decorated",    FALSE,
                                             "resizable",    FALSE,
                                             "accept-focus", FALSE,
                                             "gravity",      GDK_GRAVITY_SOUTH_EAST,
                                             NULL);
+
+    gtk_window_set_type_hint(GTK_WINDOW(imwin), GDK_WINDOW_TYPE_HINT_UTILITY);
+    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(imwin), TRUE);
+    gtk_window_set_skip_pager_hint(GTK_WINDOW(imwin), TRUE);
+    gtk_window_set_keep_above(GTK_WINDOW(imwin), TRUE);
 
     AimWinClass *klass = AIM_WIN_GET_CLASS(imwin);
 

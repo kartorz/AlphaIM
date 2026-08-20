@@ -41,10 +41,11 @@ public:
     iIM* curIM();
     void slowJob();
     MessageQueue* getMessageQ();
+    void getDpySize();
 
     XIMSrv  xim;
     DBusICSrv dim;
-    Signal  sig;
+    //Signal  sig;
 
 private:
     SysMessager  *m_sysMsgr;

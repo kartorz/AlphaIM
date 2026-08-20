@@ -5,17 +5,18 @@
 
 class X11IMPreedit : public IMPreedit {
 public:
-    X11IMPreedit();
+    X11IMPreedit(ICManager* icm);
     virtual ~X11IMPreedit(){}
-    virtual int handleKey(unsigned int keycode, unsigned int modifier, char *key, int evtype, IMPreeditCallback *callback);
+    virtual int handleKey(u32 ic, u32 keycode, u32 modifier, char *key, int evtype, IMPreeditCallback *callback);
 
 protected:
-    int doHandleKey(unsigned int keysym, unsigned int modifier, unsigned int key, IMPreeditCallback *callback);
+    int doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreeditCallback *callback);
 
-    bool isModifier(unsigned int keysym);
+    bool isModifier(u32 keysym);
 
     int m_preModKey;
     int m_preRetKey;
 };
 
+extern TriggerKey ForwardKeys[];
 #endif

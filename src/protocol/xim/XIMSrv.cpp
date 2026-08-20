@@ -118,10 +118,6 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
 
 XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0), m_preModKey(0)
 {
-    IC* ic = new IC(); // Add a dumpy IC, So don't need check if IC exists every time.
-    ic->preedit = new IMPreedit();
-    ic->id = 0;
-    m_icManager.add(ic, 0);
 }
 
 XIMSrv::~XIMSrv()
@@ -252,7 +248,7 @@ int XIMSrv::handleIMOpen(XIMS ims, IMProtocol *calldata)
 int XIMSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
-    XIMIC *ic = new XIMIC();
+    XIMIC *ic = new XIMIC(&m_icManager);
     caller->icid = m_icManager.add(ic);
     //printf("caller id:%d, ic id:%d\n", caller->icid, ic->id);
     ic->set(caller);
@@ -325,7 +321,7 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    int ret = ic->preedit->handleKey(keysym, kev->state, strbuf, evtype, this);
+    int ret = ic->preedit->handleKey(ic->id, keysym, kev->state, strbuf, evtype, this);
     if (ret == FORWARD_KEY) {
         // Be careful, IMForwardEvent may be hanlded by this function again -- a infinite loop
         IMForwardEvent(ims, (XPointer)calldata);
@@ -356,11 +352,6 @@ void XIMSrv::onCommit(void *priv, string candidate)
     commit(pri->ims, (IMForwardEventStruct *)(pri->calldata), candidate);
 }
 
-ICRect XIMSrv::onGetRect()
-{
-    return getICWinRect();
-}
-
 int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
     m_icManager.focusIn(((IMChangeFocusStruct *)calldata)->icid);
@@ -369,7 +360,7 @@ int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    m_icManager.get()->preedit->guiReload(this);
+    m_icManager.get()->preedit->guiReload();
 
     return true;
 }
@@ -458,9 +449,9 @@ void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
     XFree(tp.value);
 }
 
-ICRect XIMSrv::getICWinRect()
+ICRect XIMSrv::getICWinRect(u32 icid)
 {
-    XIMIC *ic = (XIMIC *) m_icManager.get();
+    XIMIC *ic = (XIMIC *) m_icManager.get(icid);
     if (ic->id > 0) {
         int x = 0;
         int y = IC::dpyH;

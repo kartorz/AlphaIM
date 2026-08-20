@@ -1,4 +1,4 @@
-SRCS_PROTOCOL := protocol/IC.cpp \
+SRCS_PROTOCOL := IC.cpp \
             protocol/xim/XIMSrv.cpp \
             protocol/xim/XIC.cpp  \
             protocol/DBusICSrv.cpp

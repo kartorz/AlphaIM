@@ -5,6 +5,7 @@ space := $(empty) $(empty)
 -include ../../config.mak
 
 GTK_IM_MODULE=im-alpha.so
+GTK4_IM_MODULE=libim-alpha.so
 SRCS=gaimimcontext.c
 
 GTK_MAJORS := 4 3
@@ -46,7 +47,7 @@ GTK_INSTALL_VERSIONS :=
 
 $(foreach major,$(GTK_MAJORS),\
   $(if $(filter yes,$(call gtk_has_version,$(major))),\
-    $(eval GTK_BUILDS += build/gtk$(major)/$(GTK_IM_MODULE))\
+    $(eval GTK_BUILDS += build/gtk$(major)/$(if $(filter 4,$(major)),$(GTK4_IM_MODULE),$(GTK_IM_MODULE)))\
     $(eval GTK_INSTALL_VERSIONS += $(major))\
   )\
 )
@@ -64,6 +65,9 @@ build/gtk%/%.o: %.c | build/gtk%
 build/gtk%/$(GTK_IM_MODULE): build/gtk%/gaimimcontext.o
     $(CC) $^ $(call gtk_libs,$*) -shared -o $@
 
+build/gtk4/$(GTK4_IM_MODULE): build/gtk4/gaimimcontext.o
+    $(CC) $^ $(call gtk_libs,4) -shared -o $@
+
 build/gtk%/gaimimcontext.o: gaimimcontext.c | build/gtk%
     $(CC) $(call gtk_cflags,$*) -I../../.. -fPIC -MMD -c $< -o $@
 
@@ -78,7 +82,10 @@ install: a11
         esac; \
         module_dir="$$(pkg-config --variable=libdir $$pkg)/$$dir/$$(pkg-config --variable=gtk_binary_version $$pkg)/immodules"; \
         $(INSTALL) -d "$(DESTDIR)$$module_dir"; \
-        $(INSTALL) -m 0644 "build/gtk$$major/$(GTK_IM_MODULE)" "$(DESTDIR)$$module_dir/$(GTK_IM_MODULE)"; \
+        module="$(GTK_IM_MODULE)"; \
+        test "$$major" = 4 && module="$(GTK4_IM_MODULE)"; \
+        $(INSTALL) -m 0644 "build/gtk$$major/$$module" "$(DESTDIR)$$module_dir/$$module"; \
+        test "$$major" = 4 && gio-querymodules "$(DESTDIR)$$module_dir" || true; \
     done
 
 uninstall:

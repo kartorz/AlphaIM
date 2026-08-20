@@ -97,13 +97,14 @@ public:
     bool filterEvent(const QEvent *event) Q_DECL_OVERRIDE;
     QLocale locale() const Q_DECL_OVERRIDE;
     bool hasCapability(Capability capability) const Q_DECL_OVERRIDE;
+    static bool isTriggerKey(const QKeyEvent *event);
 
 public Q_SLOTS:
     void commitText(const QString &text);
     void cursorRectChanged();
     void filterEventFinished(QDBusPendingCallWatcher *call);
-    void serviceRegistered();
-    void serviceUnregistered();
+    void serviceRegistered(const QString &service);
+    void serviceUnregistered(const QString &service);
     void connectToBus();
 
 private:

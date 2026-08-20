@@ -3,6 +3,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cstdlib>
+#include <cerrno>
+#include <cstdio>
+#include <getopt.h>
+#include <unistd.h>
 
 #include "aim.h"
 #include "Application.h"
@@ -12,15 +16,14 @@
 
 extern void init_singals();
 
-void cleanup(void)
+static void usage(char* prog)
 {
-    if (gApp) {
-        logger.d("app exit, cleanup in main\n");
-        DBusDaemon::getRefrence().stop();
-        gApp->xim.close();
-        gApp->sig.cleanup();
-        delete gApp;
-    }
+    printf("Usage: %s [options]\n", prog);
+    printf("Options:\n");
+    printf("  -f        run at foreground\n");
+    printf("  -l <int>  set log level (0=d,1=w,2=e,3=i,4=none)\n");
+    printf("  -v        show version\n");
+    printf("  -h        show this help\n");
 }
 
 static void run_as_daemon()
@@ -57,10 +60,56 @@ static void run_as_daemon()
     close(STDERR_FILENO);
 }
 
+static void parse_arg(int argc, char* argv[], bool *d, bool *x, LogLevel *l)
+{
+    int option;
+    while ((option = getopt(argc, argv, "fxhl:v")) != -1) {
+        switch (option) {
+        case 'f':
+            *d = false;
+            break;
+        case 'x':
+            *x = true;
+            break;
+        case 'l': {
+            char *end = NULL;
+            long value = strtol(optarg, &end, 10);
+            if (end == optarg || *end != '\0' ||
+                value < LOG_DEBUG || value > LOG_NONE) {
+                fprintf(stderr, "Invalid log level: %s\n", optarg);
+                usage(argv[0]);
+                exit(EXIT_FAILURE);
+            }
+            *l = static_cast<LogLevel>(value);
+            break;
+        }
+        case 'v':
+            printf("version: %s\n", VERSION);
+            exit(EXIT_SUCCESS);
+        case 'h':
+        case '?':
+        default:
+            usage(argv[0]);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (optind != argc) {
+        fprintf(stderr, "Unexpected argument: %s\n", argv[optind]);
+        usage(argv[0]);
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main(int argc, char* argv[])
 {
-    run_as_daemon();
-    atexit(cleanup);
+    bool daemon = true;
+    bool xim = false;
+    LogLevel log_level = LOG_INFO;
+
+    parse_arg(argc, argv, &daemon, &xim, &log_level);
+    logger.setLevel(log_level);
+    if (daemon) run_as_daemon();
 
     if (DBusDaemon::getRefrence().setup() != 0) {
         logger.e("Can't register dbus daemon\n");
@@ -70,8 +119,13 @@ int main(int argc, char* argv[])
     Configure::getRefrence().initialization();
 
     gApp = new Application();
-    gApp->sig.init();
-    gApp->xim.open();
+
     DBusDaemon::getRefrence().start();
-    gApp->xim.eventLoop();
+
+    if (xim) {
+        gApp->xim.open();
+        gApp->xim.eventLoop();
+    }
+
+    DBusDaemon::getRefrence().waitThreadExit();
 }

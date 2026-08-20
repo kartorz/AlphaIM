@@ -47,11 +47,10 @@ public:
 
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candiate);
-    virtual ICRect onGetRect();
 
 private:
     void commit(XIMS ims, IMForwardEventStruct* calldata, string candidate);
-    ICRect getICWinRect();
+    ICRect getICWinRect(u32 ic);
 
     XIMS m_ims;
     Window   m_imwin;

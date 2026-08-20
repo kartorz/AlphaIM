@@ -31,7 +31,8 @@ Configure::Configure():
 m_homeDir(""),
 m_configFile(""),
 m_dirty(false),
-m_selcnt(0)
+m_selcnt(0),
+m_icMode(0)
 {
 }
 
@@ -43,7 +44,7 @@ Configure::~Configure()
 int Configure::initialization()
 {
     int ret = 0;
-    m_homeDir = Util::usrProfileDir("aim");
+    m_homeDir = Util::usrProfileDir(IM_ID);
     m_configFile = m_homeDir + "/configure.xml";
     logger(LOG_INFO, "home direcotry:(%s)\n", m_homeDir.c_str());
 
@@ -93,7 +94,7 @@ int Configure::load(const string& xmlpath)
     XMLElement* rootElement = m_doc.RootElement();
     if (rootElement == NULL) {
         logger.e("{Configure} can't get root element %s\n", xmlpath.c_str());
-        return -2;    
+        return -2;
     }
 
 #if 0
@@ -106,6 +107,12 @@ int Configure::load(const string& xmlpath)
     if (!tempElement)
         return -3;   
     m_selcnt = tempElement->IntAttribute("selcnt");
+
+    tempElement = rootElement->FirstChildElement("inputContext");
+    if (tempElement) {
+        int mode = tempElement->IntAttribute("mode");
+        m_icMode = (mode == 0 || mode == 1) ? mode : 0;
+    }
 
     //m_doc.SaveFile(xmlpath.c_str());
     return 0;
@@ -124,6 +131,28 @@ void Configure::writeSelcnt(int cnt)
         XMLElement* phraseElement = XMLHandle(m_doc.RootElement()).FirstChildElement("phrase").ToElement();
         if (phraseElement) {
             phraseElement->SetAttribute("selcnt", cnt);
+            m_dirty = true;
+        }
+    }
+}
+
+int Configure::readICMode()
+{
+    return m_icMode;
+}
+
+void Configure::writeICMode(int mode)
+{
+    if (mode != 0 && mode != 1)
+        return;
+
+    if (m_icMode != mode) {
+        SpinLock lock(m_cs);
+        m_icMode = mode;
+        XMLElement* inputContextElement =
+            XMLHandle(m_doc.RootElement()).FirstChildElement("inputContext").ToElement();
+        if (inputContextElement) {
+            inputContextElement->SetAttribute("mode", mode);
             m_dirty = true;
         }
     }

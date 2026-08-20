@@ -25,6 +25,19 @@ void SlowJob::doWork()
     m_owner->slowJob();
 }
 
+void Application::getDpySize()
+{
+    Display* dpy;
+    if ((dpy = XOpenDisplay(NULL)) == NULL) {
+        logger.e("getDpySize: Can't Open Display:\n");
+        return;
+    }
+    int screen_num = DefaultScreen(dpy);
+    IC::dpyW  = DisplayWidth(dpy, screen_num);
+    IC::dpyH  = DisplayHeight(dpy, screen_num);
+    logger.i("DpySize: (%d, %d)\n", IC::dpyW, IC::dpyH);
+}
+
 Application::Application()
 {
 //    char *locale = "C,POSIX,POSIX,en_US.utf8"
@@ -36,6 +49,10 @@ Application::Application()
 
     TaskManager::getInstance()->addTask(new SlowJob(this), 0);
     py.initialization();
+
+    getDpySize();
+
+    dim.icm.setMode(Configure::getRefrence().readICMode());
 
     logger.d("start Application ...\n");
 }

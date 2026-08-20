@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-export DEB_BUILD_OPTIONS = noautodbgsym
+export DEB_BUILD_OPTIONS = noautodbgsym nostrip
 
 %:
 	dh $@
 
 override_dh_auto_configure:
-	cd src && ./configure --prefix=/usr --bindir=/usr/bin
+	cd src && ./configure --prefix=/usr --bindir=/usr/bin --enable-debug
 
 override_dh_auto_build:
 	$(MAKE) -C src a11

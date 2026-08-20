@@ -20,7 +20,7 @@ static void signal_handler(int sig)
         Signal::panic(f, "FATAL: %s Fault. Logged StackTrace\n", (sig == SIGSEGV) ? "Segmentation" : ((sig == SIGBUS) ? "Bus" : "Unknown"));
         fclose(f);
 
-#ifdef DEBUG
+#if AIM_DEBUG
        char cmd[256];
        snprintf(cmd, 256,  "gdb -q -p %d", getpid());
        system(cmd);

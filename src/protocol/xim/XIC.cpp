@@ -15,10 +15,6 @@
 #include "XIC.h"
 #include "Application.h"
 
-//#undef PRINTF
-//#define PRINTF(fmt, args...)  printf(fmt, ##args)
-//#define PRINTF(fmt, args...)
-
 #define setxattr(A, T, V) do {    \
     A.value = (void *)malloc(sizeof(T));    \
     *(T *)A.value = V;                      \
@@ -132,12 +128,12 @@ bool PreeditAttributes::check(XICAttribute *xattr, bool r)
     return false;
 }
 
-XIMIC::XIMIC()
+XIMIC::XIMIC(ICManager* icm)
 {
     pre_attr.spot_location.x = -1;/*a check condition*/
     client_win = 0;
     focus_win = 0;
-    preedit = new X11IMPreedit();
+    preedit = new X11IMPreedit(icm);
 }
 
 XIMIC::~XIMIC()

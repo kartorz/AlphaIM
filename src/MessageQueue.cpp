@@ -15,7 +15,7 @@ void PushMessageJob::doWork()
     std::list<Message>& Q = owner->m_queueTimeout;
     //printf("front timeout1: %x\n", Q.front().timeout);
     if (Q.front().timeout <=  Util::getTimeMS()) {
-        printf("front timeout %d\n", Q.front().timeout);
+        //printf("front timeout %d\n", Q.front().timeout);
         owner->push(Q.front());
         Q.pop_front();
     }

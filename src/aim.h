@@ -4,7 +4,7 @@
 #include <string.h>
 #include "config.h"
 
-#define VERSION  "1.2"
+#define VERSION  "1.3"
 
 #define IM_ID   "alphaim"
 #define IM_NAME "AlphaIM"
@@ -27,10 +27,12 @@
 #define MAX_WORK_THREAD  2
 #define MAX_PREEDIT_PAGE 5
 
-#if defined(DEBUG)
+#define AIM_RELEASE_MASK (1 << 30)
+
+#if AIM_DEBUG
 #define PRINTF(fmt, args...) printf(fmt, ##args)
 #else
-#define PRINTF(fmt, args...)
+#define PRINTF(fmt, args...) ((void)0)
 #endif
 
 /* i in [0 .. c-1] */

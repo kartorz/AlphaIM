@@ -3,7 +3,7 @@
  * Debug:
  * export QT_DEBUG_PLUGINS=1
  * export QT_IM_MODULE=alphaim
- * featherpad
+ * featherpad, kontact
  */
 
 #include "qaimplatforminputcontext.h"
@@ -26,6 +26,7 @@
 
 #include "qaimproxy.h"
 #include "qaiminputcontextproxy.h"
+#include "../../aim.h"
 
 #include <sys/types.h>
 #include <signal.h>
@@ -33,13 +34,22 @@
 
 #include <QtDBus>
 
-#ifndef AIM_RELEASE_MASK
-#define AIM_RELEASE_MASK (1 << 30)
-#endif
-
 QT_BEGIN_NAMESPACE
 
-enum { debug = 0 };
+#if AIM_DEBUG
+#define QDBG(expr)  qDebug() << expr
+#else
+#define QDBG(expr) ((void)0)
+#endif
+
+/*
+ * One IC per win, commit str to focus obj.
+ * ---------------------------------------
+ * g_im_active:
+ *   0: don't forward input events.
+ *   1: forward all events.
+ */
+static int g_im_active = 0;
 
 class QAimPlatformInputContextPrivate
 {
@@ -47,12 +57,16 @@ public:
     QAimPlatformInputContextPrivate();
     ~QAimPlatformInputContextPrivate()
     {
-        delete context;
-        delete bus;
-        delete connection;
+        destroyBusProxy();
+        if (connection) {
+            delete connection;
+            connection = nullptr;
+        }
+        QDBG("~QAimPlatformInputContextPrivate\n");
     }
 
-    void createBusProxy();
+    bool createBusProxy();
+    void destroyBusProxy();
 
     QDBusConnection *connection;
     QAimProxy *bus;
@@ -60,34 +74,48 @@ public:
 
     bool valid;
     bool busConnected;
-    QString predit;
     bool needsSurroundingText;
     QLocale locale;
     uint icid;
 };
 
-
+/** A IC per window, commit to focus input.
+  * The IC should belong to the main GUI thread.
+  */
 QAimPlatformInputContext::QAimPlatformInputContext ()
     : d(new QAimPlatformInputContextPrivate())
 {
     if (d->connection == NULL) {
-        syslog(LOG_ERR, "%s: Error can't connect to session bus", IM_NAME);
+        syslog(LOG_ERR, "%s: Error can't connect to session bus\n", IM_NAME);
         return;
     }
 
     QDBusServiceWatcher* watherReg = new QDBusServiceWatcher(QLatin1String(AIM_SRV_NAME), *(d->connection), QDBusServiceWatcher::WatchForRegistration, this);
-    connect(watherReg, SIGNAL(serviceRegistered(QString)), this, SLOT(serviceRegistered()));
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    connect(watherReg, &QDBusServiceWatcher::serviceRegistered,
+            this, &QAimPlatformInputContext::serviceRegistered);
+#else
+    connect(watherReg, SIGNAL(serviceRegistered(QString)), this, SLOT(serviceRegistered(QString)))
+#endif
     QDBusServiceWatcher* watherUnreg = new QDBusServiceWatcher(QLatin1String(AIM_SRV_NAME), *(d->connection), QDBusServiceWatcher::WatchForUnregistration, this);
-    connect(watherUnreg, SIGNAL(serviceUnregistered(QString)), this, SLOT(serviceUnregistered()));
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    connect(watherUnreg, &QDBusServiceWatcher::serviceUnregistered,
+            this, &QAimPlatformInputContext::serviceUnregistered);
+#else
+    connect(watherUnreg, SIGNAL(serviceUnregistered(QString)), this, SLOT(serviceUnregistered(QString)));
+#endif
     m_timer.setSingleShot(true);
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(connectToBus()));
     m_timer.start(100);
-    //connectToContextSignals();
 
     QInputMethod *p = qApp->inputMethod();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    connect(p, &QInputMethod::cursorRectangleChanged,
+            this,&QAimPlatformInputContext::cursorRectChanged);
+#else
     connect(p, SIGNAL(cursorRectangleChanged()), this, SLOT(cursorRectChanged()));
+#endif
+
     m_eventFilterUseSynchronousMode = false;
     if (qEnvironmentVariableIsSet("AIM_ENABLE_SYNC_MODE")) {
         bool ok;
@@ -100,21 +128,31 @@ QAimPlatformInputContext::QAimPlatformInputContext ()
 QAimPlatformInputContext::~QAimPlatformInputContext (void)
 {
     if (d->busConnected && d->context)
-        d->context->Destroy();
+        d->context->Destroy(d->icid);
+    QDBG("~QAimPlatformInputContext()\n");
     delete d;
+}
+
+bool QAimPlatformInputContext::isTriggerKey(const QKeyEvent *event)
+{
+    if (event->key() != Qt::Key_Space)
+        return false;
+
+    Qt::KeyboardModifiers mods = event->modifiers();
+
+    return (mods == Qt::ShiftModifier) ||
+           (mods == Qt::ControlModifier) ||
+           (mods == Qt::MetaModifier);
 }
 
 // false: ~QAimPlatformInputContext()
 bool QAimPlatformInputContext::isValid() const
 {
-    if (debug) qDebug() << "isValid";
-
     return d->valid && d->connection != NULL;
 }
 
 bool QAimPlatformInputContext::hasCapability(Capability capability) const
 {
-    if (debug) qDebug() << "hasCapability:" << capability;
     switch (capability) {
     case QPlatformInputContext::HiddenTextCapability:
         return false; // QTBUG-40691, do not show IME on desktop for password entry fields.
@@ -128,43 +166,25 @@ void QAimPlatformInputContext::invokeAction(QInputMethod::Action a, int)
 {
     if (!d->busConnected)
         return;
+    QDBG("invokeAction()\n");
+}
 
-    if (a == QInputMethod::Click)
-        commit();
+void QAimPlatformInputContext::commit()
+{
+    if (!d->busConnected)
+        return;
+    QDBG("commit()\n");
 }
 
 void QAimPlatformInputContext::reset()
 {
     QPlatformInputContext::reset();
 
-    if (!d->busConnected)
+    if (!d->busConnected | !g_im_active)
         return;
 
-    d->context->Reset();
-    d->predit = QString();
-}
-
-void QAimPlatformInputContext::commit()
-{
-    QPlatformInputContext::commit();
-
-    if (!d->busConnected)
-        return;
-
-    QObject *input = qApp->focusObject();
-    if (!input) {
-        d->predit = QString();
-        return;
-    }
-
-    if (!d->predit.isEmpty()) {
-        QInputMethodEvent event;
-        event.setCommitString(d->predit);
-        QCoreApplication::sendEvent(input, &event);
-    }
-
-    d->context->Reset();
-    d->predit = QString();
+    d->context->Reset(d->icid);
+    QDBG("reset\n");
 }
 
 
@@ -187,22 +207,16 @@ void QAimPlatformInputContext::update(Qt::InputMethodQueries q)
         QString surroundingText = srrndTextQuery.value(Qt::ImSurroundingText).toString();
         uint cursorPosition = cursorPosQuery.value(Qt::ImCursorPosition).toUInt();
         uint anchorPosition = anchorPosQuery.value(Qt::ImAnchorPosition).toUInt();
-
-        /*QAimText text;
-        text.text = surroundingText;
-
-        QVariant variant;
-        variant.setValue(text);
-        QDBusVariant dbusText(variant);
-
-        d->context->SetSurroundingText(dbusText, cursorPosition, anchorPosition);*/
     }
     QPlatformInputContext::update(q);
 }
 
+/* The first message when click or open a win.
+ *
+ */
 void QAimPlatformInputContext::cursorRectChanged()
 {
-    if (!d->busConnected)
+    if (!d->busConnected || !g_im_active)
         return;
 
     QRect r = qApp->inputMethod()->cursorRectangle().toRect();
@@ -212,8 +226,8 @@ void QAimPlatformInputContext::cursorRectChanged()
     if (!inputWindow)
         return;
     r.moveTopLeft(inputWindow->mapToGlobal(r.topLeft()));
-    if (debug) qDebug() << "microFocus" << r;
-    d->context->SetCursorLocation(r.x(), r.y(), r.width(), r.height());
+    d->context->SetCursorLocation(d->icid, r.x(), r.y(), r.width(), r.height());
+    //QDBG("cursorRectChanged" << r << "ic:" << d->icid);
 }
 
 void QAimPlatformInputContext::setFocusObject(QObject *object)
@@ -221,53 +235,64 @@ void QAimPlatformInputContext::setFocusObject(QObject *object)
     if (!d->busConnected)
         return;
 
-    if (object)
-        d->context->FocusIn(d->icid);
-    else
-        d->context->FocusOut();
+    QDBG("setFocusObject, ic:" << d->icid << "," << object);
+    if (object) {
+        QDBusReply<int> reply = d->context->FocusIn(d->icid);
+        if (reply.isValid())
+            g_im_active = reply.value();
+        return;
+    }
+
+    if (g_im_active) {
+        d->context->FocusOut(d->icid);
+        return;
+    }
 }
 
 void QAimPlatformInputContext::commitText(const QString &text)
 {
-    //if (debug) qDebug() << "commitText" << text;
+    Q_ASSERT(QThread::currentThread() == qApp->thread());
+
     QObject *input = qApp->focusObject();
-    if (!input)
+    if (!input || text.isEmpty())
         return;
 
+    /*[send/post]Event at a cross thread will crash.
+      commitText() is guaranteed to run in the GUI thread.
+    */
     QInputMethodEvent event;
     event.setCommitString(text);
     QCoreApplication::sendEvent(input, &event);
-
-    d->predit = QString();
+    QDBG("commitText" << text);
 }
 
 bool QAimPlatformInputContext::filterEvent(const QEvent *event)
 {
-    if (!d->busConnected)
-        return false;
-
-    if (!inputMethodAccepted())
-        return false;
-
     const QKeyEvent *keyEvent = static_cast<const QKeyEvent *>(event);
     quint32 sym = keyEvent->nativeVirtualKey();
     quint32 code = keyEvent->nativeScanCode();
     quint32 state = keyEvent->nativeModifiers();
     quint32 aimState = state;
-    if (debug) qDebug() << "filterEvent, sym:" << sym << " code:" << code << " state:" << state ;
-    if (keyEvent->type() != QEvent::KeyPress)
-        aimState |= AIM_RELEASE_MASK;
-    QDBusPendingReply<bool> reply = d->context->ProcessKeyEvent(sym, code - 8, aimState);
+    bool    triggerKey = false;
 
+    if (keyEvent->type() == QEvent::KeyRelease) {
+        aimState |= AIM_RELEASE_MASK;
+        triggerKey = isTriggerKey(keyEvent);
+    }
+    //QDBG("filterEvent, sym:" << sym <<"code:" << code <<"state:" <<aimState);
+    if (!d->busConnected || !inputMethodAccepted() || (!triggerKey && !g_im_active))
+        return false;
+
+    QDBusPendingReply<int> reply = d->context->ProcessKeyEvent(d->icid, sym, code - 8, aimState);
     if (m_eventFilterUseSynchronousMode || reply.isFinished()) {
-        bool retval = reply.value();
-        //qCDebug(qtQpaInputMethods) << "filterEvent return" << code << sym << state << retval;
-        return retval;
+        int retval = reply.value();
+        if (!retval) return false;
+        g_im_active = retval - 1;
+        return true;
     }
 
     Qt::KeyboardModifiers modifiers = keyEvent->modifiers();
     const int qtcode = keyEvent->key();
-
     // From QKeyEvent::modifiers()
     switch (qtcode) {
     case Qt::Key_Shift:
@@ -303,12 +328,10 @@ bool QAimPlatformInputContext::filterEvent(const QEvent *event)
 
 void QAimPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *call)
 {
-    //if (debug) qDebug() << "filterEventFinished:";
-    QAimFilterEventWatcher *watcher = (QAimFilterEventWatcher *) call;
-    QDBusPendingReply<bool> reply = *call;
-
+    QAimFilterEventWatcher *watcher = dynamic_cast<QAimFilterEventWatcher *>(call);
+    QDBusPendingReply<int> reply = *call;
     if (reply.isError()) {
-        syslog(LOG_ERR, "%s: filterEventFinished, reply error", IM_NAME);
+        syslog(LOG_ERR, "%s: filterEventFinished, reply error\n", IM_NAME);
         call->deleteLater();
         d->busConnected = false;
         return;
@@ -317,7 +340,6 @@ void QAimPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *call
     // Use watcher's window instead of the current focused window
     // since there is a time lag until filterEventFinished() returns.
     QWindow *window = watcher->window();
-
     if (!window) {
         call->deleteLater();
         return;
@@ -333,11 +355,9 @@ void QAimPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *call
     const quint32 state = args.at(5).toUInt();
     const QString string = args.at(6).toString();
     const bool isAutoRepeat = args.at(7).toBool();
+    int retval = reply.value();
 
-    // copied from QXcbKeyboard::handleKeyEvent()
-    bool retval = reply.value();
-
-    if (debug) qDebug() << "filterEventFinished return" << code << sym << state << retval;
+    //QDBG("filterEventFinished return" << code << sym << state << retval);
     if (!retval) {
 #ifndef QT_NO_CONTEXTMENU
         if (type == QEvent::KeyPress && qtcode == Qt::Key_Menu
@@ -352,7 +372,8 @@ void QAimPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *call
 #endif // QT_NO_CONTEXTMENU
         QWindowSystemInterface::handleExtendedKeyEvent(window, time, type, qtcode, modifiers,
                                                        code, sym, state, string, isAutoRepeat);
-
+    } else {
+        g_im_active = retval - 1;
     }
     call->deleteLater();
 }
@@ -362,51 +383,53 @@ QLocale QAimPlatformInputContext::locale() const
     return d->locale;
 }
 
-void QAimPlatformInputContext::serviceRegistered()
+/* alphaimd appears */
+void QAimPlatformInputContext::serviceRegistered(const QString &service)
+{
+    if (d->busConnected) return;
+    m_timer.stop();
+    m_timer.start(100);
+
+    QDBG("serviceRegistered:" << service);
+    syslog(LOG_INFO, "%s: serviceRegistered(%s)\n",IM_NAME, service.toUtf8().constData());
+}
+
+/* alphaimd disappears */
+void QAimPlatformInputContext::serviceUnregistered(const QString &service)
 {
     m_timer.stop();
-
-    if (d->context) {
-        disconnect(d->context, 0, 0, 0);
-        disconnect(d->context);
-        delete d->context;
-        d->context = 0;
-    }
-    if (d->bus && d->bus->isValid()) {
-        disconnect(d->bus);
-        delete d->bus;
-        d->bus = 0;
-    }
-
-    m_timer.start(100);
-}
-
-void QAimPlatformInputContext::serviceUnregistered()
-{
-    syslog(LOG_INFO, "%s: serviceUnregistered", IM_NAME);
     d->busConnected = false;
+    QDBG("serviceUnRegistered:" << service);
+    syslog(LOG_INFO, "%s: serviceUnregistered(%s)\n",IM_NAME, service.toUtf8().constData());
 }
-// When getSocketPath() is modified, the bus is not established yet
-// so use m_timer.
+
 void QAimPlatformInputContext::connectToBus()
 {
-    if (debug) qDebug() << "connectToBus";
-    d->createBusProxy();
-    connectToContextSignals();
+    if (d->busConnected)
+        return;
+
+    if (d->createBusProxy()) {
+        connectToContextSignals();
+        d->context->Enable(d->icid);
+        d->busConnected = true;
+    }
 }
 
 void QAimPlatformInputContext::connectToContextSignals()
 {
-    if (d->context) {
-        if (debug) qDebug() << "connectToContextSignals";
-        connect(d->context, SIGNAL(CommitText(QString)), SLOT(commitText(QString)));
-    }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    connect(d->context, &QAimInputContextProxy::CommitText, this,
+            &QAimPlatformInputContext::commitText, Qt::QueuedConnection);
+#else
+    connect(d->context, SIGNAL(CommitText(QString)), this,
+            SLOT(commitText(QString)), Qt::QueuedConnection);
+#endif
 }
 
 QAimPlatformInputContextPrivate::QAimPlatformInputContextPrivate()
-    : connection(0),
-      bus(0),
-      context(0),
+    : connection(nullptr),
+      bus(nullptr),
+      context(nullptr),
       valid(false),
       busConnected(false),
       needsSurroundingText(false),
@@ -415,38 +438,35 @@ QAimPlatformInputContextPrivate::QAimPlatformInputContextPrivate()
     connection = new QDBusConnection(QDBusConnection::sessionBus());
     valid = !QStandardPaths::findExecutable(QString::fromLocal8Bit("alphaimd"), QStringList()).isEmpty();
     if (!valid) {
-        syslog(LOG_ERR, "%s: no executable bin.", IM_NAME);
+        syslog(LOG_ERR, "%s: no executable bin.\n", IM_NAME);
         return;
     }
-    syslog(LOG_INFO, "%s: QAimPlatformInputContextPrivate", IM_NAME);
-    //createBusProxy();  // May block main thread.
+
+    QDBG("QAimPlatformInputContextPrivate()\n");
+    //createBusProxy();  /* May block main thread.*/
 }
 
-void QAimPlatformInputContextPrivate::createBusProxy()
+bool QAimPlatformInputContextPrivate::createBusProxy()
 {
-    busConnected = false;
+    QDBusReply<uint> ic;
 
-    if (debug) qDebug() << "createBusProxy";
+    destroyBusProxy();
+
     if (!connection || !connection->isConnected())
-        return;
-
-    delete context;
-    context = 0;
-    delete bus;
-    bus = 0;
+        return false;
 
     bus = new QAimProxy(QLatin1String(AIM_SRV_NAME),
                          QLatin1String(AIM_SRV_PATH),
                          *connection);
     if (!bus->isValid()) {
-        qWarning("QAimPlatformInputContext: invalid bus.");
-        return;
+        syslog(LOG_ERR,"[%s]:QAimIC: invalid bus.\n", IM_NAME);
+        goto err_bus;
     }
 
-    QDBusReply<uint> ic = bus->CreateInputContext(QLatin1String(AIM_QT_IC_NAME));
+    ic = bus->CreateInputContext(QLatin1String(AIM_QT_IC_NAME));
     if (!ic.isValid()) {
-        qWarning() << "QAimPlatformInputContext: CreateInputContext failed." << ic.error();
-        return;
+        syslog(LOG_ERR,"[%s]:QAimIC: create IC failed,%s\n", IM_NAME, ic.error());
+        goto err_bus;
     }
     icid = ic.value();
 
@@ -454,14 +474,40 @@ void QAimPlatformInputContextPrivate::createBusProxy()
                                         QLatin1String(AIM_INPUT_CONTEXT_PATH),
                                         *connection);
     if (!context->isValid()) {
-        qWarning("QAimPlatformInputContext: invalid input context.");
-        return;
+        syslog(LOG_ERR,"[%s]:QAimIC: invalid input context.\n", IM_NAME);
+        goto err_cntx;
     }
 
-    context->Enable();
+    QDBG("createBusProxy bus connected! ic:" << icid);
+    return true;
 
-    if (debug) qDebug(">>>> bus connected!");
-    busConnected = true;
+err_cntx:
+    delete context;
+    context = nullptr;
+
+err_bus:
+    delete bus;
+    bus = nullptr;
+
+    return false;
+}
+
+void QAimPlatformInputContextPrivate::destroyBusProxy()
+{
+    busConnected = false;
+    icid = 0;
+
+    if (context) {
+        Q_ASSERT(QThread::currentThread() == context->thread());
+        delete  context;
+        context = nullptr;
+    }
+
+    if (bus) {
+        Q_ASSERT(QThread::currentThread() == bus->thread());
+        delete bus;
+        bus = nullptr;
+    }
 }
 
 QT_END_NAMESPACE

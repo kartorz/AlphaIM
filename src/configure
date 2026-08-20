@@ -335,8 +335,10 @@ fi
 if test $_debug = 'yes' ; then
   cflags="-g -O0 $cflags"
   _install_strip=
+  def_debug="#define AIM_DEBUG 1"
 else
-  cflags="-O2 $cflags"
+  cflags="-O2 $cflags -DQT_NO_DEBUG"
+  def_debug="#define AIM_DEBUG 0"
 fi
 
 if test $system_name = Linux ; then
@@ -415,7 +417,7 @@ cc_check $ld_tmp  &&
 echores "$_systemd"
 test "$_systemd" = no && die "Please check and install libsystemd-dev"
 
-for gtk_major in 4 3 ; do
+for gtk_major in 3 ; do
   gtk_pkg=
   gtk_module_dir=
   case "$gtk_major" in
@@ -458,6 +460,7 @@ else
   echores "no"
 fi
 
+if test "$_gui" = qt ; then
 for qt_major in 6 5 ; do
   qt_prefix="Qt${qt_major}"
   qt_pkg="${qt_prefix}Core ${qt_prefix}Gui ${qt_prefix}Widgets ${qt_prefix}DBus"
@@ -498,10 +501,11 @@ for qt_major in 6 5 ; do
   fi
   echores "no"
 done
-
-if test "$_gui" = qt && test "$qt" != yes ; then
+if test "$qt" != yes ; then
   die "Qt GUI requested but Qt development files were not found"
 fi
+fi
+
 
 
 #############################################################################
@@ -536,7 +540,6 @@ CXXFLAGS = $cxxflags
 CC_DEPFLAGS = $DEPFLAGS
 LIBS  = $ldflags $ld_static  $extra_libs
 
-DEBUG=$_debug
 GUI=$_gui
 
 MOC=$MOC
