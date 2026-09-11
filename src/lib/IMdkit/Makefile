@@ -3,9 +3,7 @@ space := $(empty) $(empty)
 .RECIPEPREFIX := $(space)
 
 # Xi18n_sample
-samples := Xi18n_test
-
-all: IMdkit samples
+all: IMdkit
 
 IMdkit:
     $(MAKE) -C IMdkit
@@ -24,4 +22,4 @@ clean:
 #$(SAMPLES):
 #    $(MAKE) -C $@
 
-.PHONY: all IMdkit samples clean
+.PHONY: all IMdkit clean
