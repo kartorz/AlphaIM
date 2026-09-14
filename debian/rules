@@ -7,7 +7,7 @@ export DEB_BUILD_OPTIONS = noautodbgsym nostrip
 	dh $@
 
 override_dh_auto_configure:
-	cd src && ./configure --prefix=/usr --bindir=/usr/bin --enable-debug
+	cd src && ./configure --prefix=/usr --bindir=/usr/bin
 
 override_dh_auto_build:
 	$(MAKE) -C src a11

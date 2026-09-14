@@ -17,14 +17,16 @@
 
 class DBusICSrv : public IMPreeditCallback {
 public:
-    DBusICSrv();
-    ~DBusICSrv();
-    int  processKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state);
+    DBusICSrv(): icm(new DIC()) {}
+    ~DBusICSrv() {}
+    int  procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state);
     u32 createIC(const char *name, const char *sender);
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candidate);
     ICManager icm;
     static DbusClient getClient(const char *name);
+private:
+    int handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback);
 };
 
 extern int ic_process_keyevent(sd_bus_message *m, void *userdata, sd_bus_error *ret_error);

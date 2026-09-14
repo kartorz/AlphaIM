@@ -49,7 +49,15 @@ typedef struct {
     int    modifier_mask;
 } TriggerKey;
 
-class ICManager;
+class IC;
+
+static inline u32 normalizeKeyCharacter(u32 keyval)
+{
+    keyval &= 0xff;
+    if (keyval >= 'A' && keyval <= 'Z')
+        keyval += 'a' - 'A';
+    return keyval;
+}
 
 enum PREEDIT_KEY {
     NONE_KEY,
@@ -76,13 +84,11 @@ public:
 };
 
 class IMPreedit {
-    friend class ICManager;
 public:
-    IMPreedit(ICManager* icm=NULL);
+    IMPreedit();
     virtual ~IMPreedit();
-    virtual int handleKey(u32 ic, u32 keycode, u32 modifier, char *key, int evtype, IMPreeditCallback *callback) {return NONE_KEY;}
-    virtual int handleKey(u32 ic, u32 keyval, u32 keycode, u32 state, IMPreeditCallback *callback) {return NONE_KEY;}
     virtual void handleMessage(int msg);
+    virtual int doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback) = 0;
 
     void guiReload();
     bool isActive() const { return m_bTrigger && m_bCN; }
@@ -105,9 +111,8 @@ protected:
     void doCommit(int i, IMPreeditCallback *callback);
 
     void guiAction(int id);
-    void guiShowCandidate(u32 ic);
+    void guiShowCandidate(IC* ic);
 
-    bool isMatchKeys(int keycode, int modifier, TriggerKey *trigger);
     u32  mapCNPun(char key);
     string  mapCNPunToU8Str(char key);
     string  lookup(string input);
@@ -127,7 +132,6 @@ protected:
     bool   m_bPreQuo;
     bool   m_bUsrSelectCandidate;
 
-    ICManager*  m_icm;
     MutexCriticalSection m_cs;
 
     deque<IMItem> m_items;

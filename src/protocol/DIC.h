@@ -2,7 +2,7 @@
 #define _DIC_H_
 
 #include "IC.h"
-#include "GtkIMPreedit.h"
+#include "X11IMPreedit.h"
 
 enum DbusClient {
     DBUS_CLIENT_UNKNOWN = 0,
@@ -12,16 +12,13 @@ enum DbusClient {
 
 class DIC : public IC {
 public:
-    DIC(DbusClient client = DBUS_CLIENT_QT) {
+    DIC(DbusClient client = DBUS_CLIENT_UNKNOWN) {
         m_client = client;
     }
-    virtual ~DIC(){}
+    virtual ~DIC() {}
 
-    virtual IMPreedit *createPreedit(ICManager* icm) {
-        if (m_client == DBUS_CLIENT_GTK)
-            preedit = new GtkIMPreedit(icm);
-        else
-            preedit = new QtIMPreedit(icm);
+    virtual IMPreedit *createPreedit() {
+        preedit = new X11IMPreedit();
         return preedit;
     }
 private:

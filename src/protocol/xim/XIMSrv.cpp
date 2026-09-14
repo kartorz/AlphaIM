@@ -116,7 +116,8 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
     return 1;
 }
 
-XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0), m_preModKey(0)
+XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0),
+m_preModKey(0), m_icManager(new XIMIC())
 {
 }
 
@@ -248,8 +249,8 @@ int XIMSrv::handleIMOpen(XIMS ims, IMProtocol *calldata)
 int XIMSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
-    XIMIC *ic = new XIMIC(&m_icManager);
-    caller->icid = m_icManager.add(ic);
+    XIMIC *ic = new XIMIC();
+    caller->icid = m_icManager.add(ic, getpid());
     //printf("caller id:%d, ic id:%d\n", caller->icid, ic->id);
     ic->set(caller);
     return true;
@@ -321,7 +322,7 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    int ret = ic->preedit->handleKey(ic->id, keysym, kev->state, strbuf, evtype, this);
+    int ret = handleKey(ic, keysym, kev->state, evtype, this);
     if (ret == FORWARD_KEY) {
         // Be careful, IMForwardEvent may be hanlded by this function again -- a infinite loop
         IMForwardEvent(ims, (XPointer)calldata);
@@ -508,4 +509,40 @@ The error was 'BadWindow (invalid Window parameter)'.
     }
     ICRect ret = {0,0, ICWIN_W, ICWIN_H};
     return ret;
+}
+
+/*
+ * There are some pains when comes to precess x11 keys.
+ * 1) modifier + key (eg, Shit_L + w)
+         kev type: 2 state 0 --> code ffe1 --> 0
+         kev type: 2 state 1 --> code 57 --> 57
+       { kev type: 2 state 1 --> code 57 --> 57 }+
+         kev type: 3 state 1 --> code 57 --> 57
+         kev type: 3 state 1 --> code ffe1 --> 0
+ * 2) ctrl + shift
+        kev type 2 state: 0 code: ffe3  key: 0
+        kev type 2 state: 4 code: ffe1  key: 0
+        kev type 3 state: 5 code: ffe3  key: 0
+        kev type 3 state: 1 code: ffe1  key: 0
+ * 3) ASCII key (eg, 'w').
+      kev type: 2 state 0 code:77
+    { kev type: 2 state 0 code:77 }+
+      kev type: 3 state 0 code 77
+ * 4) Forward key.
+      Forward 'Release key event' not working.
+ * ----------------------------------------------
+ *  #define KeyPress        2
+ *  #define KeyRelease      3
+ *------------------------------------------------------
+ * Tested by xterm, urxvt
+ *
+ */
+int XIMSrv::handleKey(IC* ic, u32 key, u32 modifier, int evtype, IMPreeditCallback *callback)
+{
+    //X11IMPreedit *preedit = static_cast<X11IMPreedit *>(ic->preedit);
+    if (evtype == KeyPress)
+        m_preRetKey = ic->preedit->doHandleKey(ic, key, modifier, callback);
+
+    // After key released, return the previous result, don't forward directly.
+    return m_preRetKey;
 }

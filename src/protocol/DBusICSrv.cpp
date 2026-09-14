@@ -25,7 +25,7 @@ int ic_process_keyevent(sd_bus_message *m, void *userdata, sd_bus_error *ret_err
     u32 u1, u2, u3, u4 ;
     /* Read the parameters */
     sd_bus_message_read(m, "uuuu", &ic, &u1, &u2, &u3);
-    i = gApp->dim.processKeyEvent(ic, u1, u2, u3);
+    i = gApp->dim.procKeyEvent(ic, u1, u2, u3);
     return sd_bus_reply_method_return(m, "i", i);
 }
 
@@ -129,14 +129,6 @@ int ic_destroy(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
     return sd_bus_reply_method_return(m, "i", 0);
 }
 
-DBusICSrv::DBusICSrv()
-{
-}
-
-DBusICSrv::~DBusICSrv()
-{
-}
-
 DbusClient DBusICSrv::getClient(const char *name)
 {
     if (name == NULL ||
@@ -169,15 +161,60 @@ void DBusICSrv::onCommit(void* priv, string candidate)
     DBusDaemon::getRefrence().dbusIMCommit(candidate);
 }
 
-/* return:
+/* Return:
   0: Non-used key fallback to widget.
  >0: Eat this key, give the im activate.
  */
-int DBusICSrv::processKeyEvent(u32 ic, u32 keyval, u32 keycode, u32 state)
+int DBusICSrv::procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state)
 {
-    int key = icm.get(ic)->preedit->handleKey(ic, keyval, keycode, state, this);
-    PRINTF("DBusICSrv, KeyEvent ic:%d, key:0x%x, state:0x%x, return:%d\n", ic, keyval,state,key);
-    if (key == FORWARD_KEY)
+    IC *ic = icm.get(id);
+    int ret = handleKey(ic, keyval, state, this);
+    PRINTF("DBusICSrv, %d-- key(0x%x,%u),state:0x%x, return:%d\n",
+           ic, keyval, keycode, state, ret);
+    if (ret == FORWARD_KEY)
         return 0;
-    return icm.get(ic)->preedit->isActive() + 1; // must>0
+    return ic->preedit->isActive() + 1; // must>0
+}
+
+/*  ---------------  Qt  -----------------
+ * 'w' longger press, lots of state pair 0x00 with 0x40000000
+   { ProcessKeyEvent val: 0x77,  keycode:0x11,  state:0x0
+     ProcessKeyEvent val: 0x77,  keycode:0x11,  state:0x40000000 }+
+
+ * Shift_L
+   ProcessKeyEvent val: 0xffe1,  keycode:0x2a,  state:0x0
+   ProcessKeyEvent val: 0xffe1,  keycode:0x2a,  state:0x40000001
+
+ * Shift_L + w --  long press
+   ProcessKeyEvent val: 0xffe1, keycode:0x2a, state:0x0
+ { ProcessKeyEvent val: 0x57,   keycode:0x11, state:0x1
+   ProcessKeyEvent val: 0x57,   keycode:0x11, state:0x40000001 } +
+   ProcessKeyEvent val: 0xffe1, keycode:0x2a, state:0x40000001
+
+ * Ctrl + Shift
+   ProcessKeyEvent val: 0xffe3,  keycode:0x1d,  state:0x0
+   ProcessKeyEvent val: 0xffe1,  keycode:0x2a,  state:0x4
+   ProcessKeyEvent val: 0xffe3,  keycode:0x1d,  state:0x40000005
+   ProcessKeyEvent val: 0xffe1,  keycode:0x2a,  state:0x40000001 // later, release 'Ctrl'
+
+ * Ctrl + SPACE
+   ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x4
+   ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x40000004  // short press, no this event.
+--------------------     Gtk  --------------------
+ 'w'  longger press, lots of state:0x00 and a 0x40000000
+  { ProcessKeyEvent val: 0x77,  keycode:0x11,  state:0x0 } +   //key press.
+  ProcessKeyEvent val: 0x77,  keycode:0x11,  state:0x40000000  //key release
+*/
+int DBusICSrv::handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback)
+{
+    u32 mask = state & 0xff;
+    int ret = FORWARD_KEY;
+
+    if ((state & AIM_RELEASE_MASK) == AIM_RELEASE_MASK)
+        ret = ic->preedit->doHandleKey(ic, key, mask, callback);
+
+    if (!ic->preedit->isActive())
+        return FORWARD_KEY;
+
+    return ret;
 }

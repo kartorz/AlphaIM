@@ -41,8 +41,6 @@ SRCS_ALPHAIMD += main.cpp \
     PY.cpp \
     IMPreedit.cpp \
     X11IMPreedit.cpp \
-    QtIMPreedit.cpp \
-    GtkIMPreedit.cpp \
     UsrPhrase.cpp \
     Configure.cpp \
     DBusDaemon.cpp

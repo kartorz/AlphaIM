@@ -54,10 +54,10 @@ public:
 
 class XIMIC : public IC {
 public:
-    XIMIC(ICManager* icm);
+    XIMIC();
     virtual ~XIMIC();
-    virtual IMPreedit *createPreedit(ICManager* icm) {
-        return new X11IMPreedit(icm);
+    virtual IMPreedit *createPreedit() {
+        return new X11IMPreedit();
     }
     void set(IMChangeICStruct *calldata);
     void get(IMChangeICStruct *calldata);

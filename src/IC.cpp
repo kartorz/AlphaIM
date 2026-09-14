@@ -88,23 +88,23 @@ void IC::setSurroundingText()
 {
 }
 
-IMPreedit *IC::createPreedit(ICManager* icm)
-{
-    PRINTF("error no preedit\n");
-    return NULL;
-}
-
 ICRect IC::getRect()
 {
     return adjRect(cursorX, cursorY + 40, ICWIN_W, ICWIN_H);
 }
 
-ICManager::ICManager(): m_icid(0), m_icFocus(0), m_icMode(0)
+ICManager::ICManager(IC* ic): m_icid(0), m_icFocus(0), m_icMode(0)
 {
-    /* Dumy IC for error proc, no need to check
-     * IC* and IMPreedit* everywhere */
-    m_ics[0] = new IC();
-    m_ics[0]->preedit = m_ics[0]->createPreedit(this);
+    /* m_icMode :
+     * ----------
+     *  0: Default IC for error case, no need to check
+     *     IC* and IMPreedit* everywhere.
+     *     If alphad crash, using the default IC for
+     *     existing ics
+     *  1: The global IC.
+     */
+    m_ics[0] = ic;
+    m_ics[0]->preedit = ic->createPreedit();
 }
 
 ICManager::~ICManager()
@@ -116,29 +116,30 @@ ICManager::~ICManager()
     std::map<string, IMPreedit*>::iterator preedit;
     for (preedit = m_preedits.begin(); preedit != m_preedits.end(); preedit++)
         delete preedit->second;
+
+    if (m_icMode)
+        delete m_ics[0]->preedit;
 }
 
 void ICManager::focusIn(u32 id)
 {
     //PRINTF("focusIn %d\n", id);
-    //m_icFocus = id;
+    m_icFocus = id;
     if (!m_icMode)
         get(id)->preedit->guiReload();
 }
 
 /*
- * Click at a input(45),
+ * Qt/Gtk: Click at a input(45),
  * 45 focus in, 45 rest, 1 focus out
  -----------------------------------
- * m_icFocus: obsolete  
+ * m_icFocus: for X11
  */
 int ICManager::focusOut(u32 id)
 {
     //PRINTF("focusOut %d\n", id);
-#if 0
     if (m_icFocus == id)
         m_icFocus = 0;
-#endif
     return 0;
 }
 
@@ -157,6 +158,7 @@ u32 ICManager::add(IC *ic)
 {
     m_ics[++m_icid] = ic;
     ic->id = m_icid;
+    m_icFocus = ic->id;
     return ic->id;
 }
 
@@ -166,12 +168,11 @@ u32 ICManager::add(IC *ic, const char *app)
     if (!m_icMode) {
         std::map<std::string, IMPreedit*>::iterator iter = m_preedits.find(app);
         if (iter == m_preedits.end())
-            m_preedits[app] = ic->createPreedit(this);
+            m_preedits[app] = ic->createPreedit();
         ic->preedit = m_preedits[app];
     } else {
         ic->preedit = m_ics[0]->preedit;
     }
-
     return add(ic);
 }
 
@@ -190,10 +191,12 @@ void ICManager::destroy(u32 id)
 IC* ICManager::get(u32 id)
 {
     //PRINTF("ICManager::get id: %d\n", icid);
+    id = id == 0 ? m_icFocus : id;
     std::map<int, IC*>::iterator iter = m_ics.find(id);
     if(iter != m_ics.end()) {
         return iter->second;
     }
-    logger.e("ICManager:: return the dummy IC\n");
+    /* Error, eg: alphad crash, using the defaut IC. */
+    logger.e("ICManager:: return the default IC\n");
     return m_ics[0];
 }

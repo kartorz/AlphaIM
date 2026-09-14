@@ -9,10 +9,9 @@
 #include "IMPreedit.h"
 #include "Log.h"
 
-IMPreedit::IMPreedit(ICManager* icm):m_bTrigger(false), m_bCN(false),
+IMPreedit::IMPreedit():m_bTrigger(false), m_bCN(false),
 m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 {
-    m_icm = icm;
 }
 
 IMPreedit::~IMPreedit()
@@ -232,7 +231,7 @@ void IMPreedit::clear()
     m_uiItems.clear();
 }
 
-/* 
+/*
  * Click at a input
  * gtk:
  *   focus_in(41)
@@ -435,10 +434,10 @@ void IMPreedit::guiAction(int id)
     gApp->getMessageQ()->push(id);
 }
 
-void IMPreedit::guiShowCandidate(u32 ic)
+void IMPreedit::guiShowCandidate(IC* ic)
 {
     if (m_bStart && m_uiItems.size() > 0) {
-        ICRect rect = (*m_icm)[ic]->getRect();
+        ICRect rect = ic->getRect();
 
         string input = m_ci + m_input;
         string candidate = m_ci + m_candidate;
@@ -484,22 +483,6 @@ void IMPreedit::guiReload()
     else
         guiAction(MSG_IM_EN);
 
-}
-
-bool IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
-{
-    int i;
-    int modifier2;
-    int modifier2_mask;
-
-    for (i = 0; trigger[i].keysym != 0; i++) {
-        modifier2      = trigger[i].modifier;
-        modifier2_mask = trigger[i].modifier_mask;
-        if (((KeySym)trigger[i].keysym == keysym)
-            && ((modifier & modifier2_mask) == modifier2))
-        return True;
-    }
-    return False;
 }
 
 /*bool IMPreedit::ispinyin( u32 key)

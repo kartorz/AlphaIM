@@ -79,7 +79,7 @@ static TriggerKey CEPSwitchKeys[] = {
     {0L, 0L, 0L}
 };
 
-X11IMPreedit::X11IMPreedit(ICManager* icm):IMPreedit(icm),m_preModKey(0),m_preRetKey(0)
+X11IMPreedit::X11IMPreedit():IMPreedit(),m_preModKey(0),m_preRetKey(0)
 {
 }
 
@@ -90,52 +90,29 @@ bool X11IMPreedit::isModifier(u32 keysym)
     return false;
 }
 
-
-/* 
- * There are some pains when comes to precess x11 keys.
- * 1) modifier + key (eg, Shit_L + w)
-         kev type: 2 state 0 --> code ffe1 --> 0
-         kev type: 2 state 1 --> code 57 --> 57
-       { kev type: 2 state 1 --> code 57 --> 57 }+
-         kev type: 3 state 1 --> code 57 --> 57
-         kev type: 3 state 1 --> code ffe1 --> 0
- * 2) ctrl + shift
-        kev type 2 state: 0 code: ffe3  key: 0
-        kev type 2 state: 4 code: ffe1  key: 0
-        kev type 3 state: 5 code: ffe3  key: 0
-        kev type 3 state: 1 code: ffe1  key: 0
- * 3) ASCII key (eg, 'w').
-      kev type: 2 state 0 code:77
-    { kev type: 2 state 0 code:77 }+
-      kev type: 3 state 0 code 77
- * 4) Forward key.
-      Forward 'Release key event' not working.
- * ----------------------------------------------
- *  #define KeyPress        2
- *  #define KeyRelease      3
- *------------------------------------------------------
- * Tested by xterm, urxvt
- *
- */
-int X11IMPreedit::handleKey(u32 ic, u32 keysym, u32 modifier, char *key, int evtype, IMPreeditCallback *callback)
+bool X11IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
 {
-    PRINTF("X11IMPreedit handleKey\n");
-    if (isMatchKeys(keysym, modifier, ForwardKeys)
-        || ((keysym & 0xff) == (XK_BackSpace & 0xff) && m_input == "")) {
-        return FORWARD_KEY;
+    int i;
+    int modifier2;
+    int modifier2_mask;
+
+    for (i = 0; trigger[i].keysym != 0; i++) {
+        modifier2      = trigger[i].modifier;
+        modifier2_mask = trigger[i].modifier_mask;
+        if (((KeySym)trigger[i].keysym == keysym)
+            && ((modifier & modifier2_mask) == modifier2))
+        return True;
     }
+    return False;
 
-    if (evtype == KeyPress)
-        m_preRetKey = doHandleKey(ic, keysym, modifier, *key, callback);
-
-    // After key released, return the previous result, don't forward directly. 
-    return m_preRetKey;
 }
-
-int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreeditCallback *callback)
+int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback)
 {
+    if (isMatchKeys(key, modifier, ForwardKeys))
+        return FORWARD_KEY;
+
     // Check OnOff
-    if (isMatchKeys(keysym, modifier, OnOffKeys)) {
+    if (isMatchKeys(key, modifier, OnOffKeys)) {
         if (!m_bTrigger) {
             m_bTrigger = true;
             m_bCN = true;
@@ -157,7 +134,7 @@ int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreed
         return FORWARD_KEY;
 
     // Check  language
-    if (isMatchKeys(keysym, modifier, CESwitchKeys)) {
+    if (isMatchKeys(key, modifier, CESwitchKeys)) {
         if (!doSwitchCE())
             callback->onCommit(callback->opaque, m_input);
         return SWITCH_CE_KEY;
@@ -166,7 +143,7 @@ int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreed
         return FORWARD_KEY;
     }
 
-    if (isMatchKeys(keysym, modifier, CEPSwitchKeys)) {
+    if (isMatchKeys(key, modifier, CEPSwitchKeys)) {
         doSwitchCEPun();
         return SWITCH_CEP_KEY;
     }
@@ -195,7 +172,7 @@ int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreed
     }
     PRINTF("doHandleKey has checked starting\n");
 
-    if (isMatchKeys(keysym, modifier, CommitKeys)) {
+    if (isMatchKeys(key, modifier, CommitKeys)) {
         if (m_bStart) {
             doCommit(1, callback);
             guiShowCandidate(ic);
@@ -205,19 +182,19 @@ int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreed
         }
     }
 
-    if (isMatchKeys(keysym, modifier, PageUpKeys))   {
+    if (isMatchKeys(key, modifier, PageUpKeys))   {
         doPageup();
         guiShowCandidate(ic);
         return PAGEUP_KEY;
     }
 
-    if (isMatchKeys(keysym, modifier, PageDownKeys)) {
+    if (isMatchKeys(key, modifier, PageDownKeys)) {
         doPagedown();
         guiShowCandidate(ic);
         return PAGEDOWN_KEY;
     }
 
-    if (isMatchKeys(keysym, modifier, CancelKeys)) {
+    if (isMatchKeys(key, modifier, CancelKeys)) {
         doClose();
         return CANCEL_KEY;
     }
@@ -233,7 +210,8 @@ int X11IMPreedit::doHandleKey(u32 ic, u32 keysym, u32 modifier, u32 key, IMPreed
         PRINTF("doHandleKey has checked digit key\n");
 
         //if (*key == (XK_BackSpace & 0xff))
-        if ((keysym & 0xff) == (XK_BackSpace & 0xff)) {
+        if ((key & 0xff) == (XK_BackSpace & 0xff)) {
+            if (m_input == "") return  FORWARD_KEY;
             doInput(key);
             guiShowCandidate(ic);
             return COMMIT_KEY;

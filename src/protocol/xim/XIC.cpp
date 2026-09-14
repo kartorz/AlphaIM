@@ -128,12 +128,11 @@ bool PreeditAttributes::check(XICAttribute *xattr, bool r)
     return false;
 }
 
-XIMIC::XIMIC(ICManager* icm)
+XIMIC::XIMIC()
 {
     pre_attr.spot_location.x = -1;/*a check condition*/
     client_win = 0;
     focus_win = 0;
-    preedit = new X11IMPreedit(icm);
 }
 
 XIMIC::~XIMIC()

@@ -34,8 +34,7 @@ public:
     virtual void propertyActivate(const char *name, int state);
     virtual void setSurroundingText();
     virtual void close();
-    // New and set 'IMPreedit *preedit'
-    virtual IMPreedit *createPreedit(ICManager* icm);
+    virtual IMPreedit *createPreedit() = 0;
 
     ICRect  getRect();
 
@@ -52,12 +51,10 @@ public:
 
 class ICManager {
 public:
-    ICManager();
+    ICManager(IC *ic);
     ~ICManager();
 
-    u32 add(IC *ic);
     u32 add(IC *ic, const char *app);
-    void add(IC *ic, int id);
     void destroy(u32 id = 0);
     void focusIn(u32 id = 0);
     void setMode(int mode);
@@ -70,6 +67,8 @@ public:
     }
 
 private:
+    u32 add(IC *ic);
+
     map<int,  IC*> m_ics;
     map<string, IMPreedit*> m_preedits;
     u32  m_icid;
