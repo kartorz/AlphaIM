@@ -250,7 +250,7 @@ int XIMSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
     XIMIC *ic = new XIMIC();
-    caller->icid = m_icManager.add(ic, getpid());
+    caller->icid = m_icManager.add(ic, Util::intToString(ic->client_win).c_str());
     //printf("caller id:%d, ic id:%d\n", caller->icid, ic->id);
     ic->set(caller);
     return true;

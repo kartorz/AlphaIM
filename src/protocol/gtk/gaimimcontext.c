@@ -438,6 +438,9 @@ static void gaim_ic_set_cursor_location(GtkIMContext *im_context,
     //PRINTF("gaim_ic_set_cursor, [%d]\n", context->icid);
 }
 
+/* It is a borrowed pointer, no need to g_object_ref/unref().
+ * NULL it'a valid for *widget.
+ */
 static void gaim_ic_set_client_widget(GtkIMContext *im_context,
 #if GTK_CHECK_VERSION(4, 0, 0)
                                               GtkWidget *widget)
@@ -446,23 +449,13 @@ static void gaim_ic_set_client_widget(GtkIMContext *im_context,
 #endif
 {
     GAimIMContext *context = (GAimIMContext *)im_context;
-    if (!widget) return;
 
 #if GTK_CHECK_VERSION(4, 0, 0)
     gtk_im_context_set_client_widget(context->fallback, widget);
-
-    if (context->client_widget != NULL)
-        g_object_unref(context->client_widget);
-
     context->client_widget = widget;
-    g_object_ref(context->client_widget);
 #else
     gtk_im_context_set_client_window(context->fallback, widget);
-
-    if (context->client_window != NULL)
-        g_object_unref(context->client_window);
     context->client_window = widget;
-    g_object_ref(context->client_window);
 #endif
     PRINTF("gaim_ic_set_client_widget, [%d]\n",context->icid);
 }
@@ -481,7 +474,11 @@ static void gaim_ic_get_preedit_string(GtkIMContext *im_context,
     //PRINTF("gaim_ic_get_preedit_string\n");
 }
 
-// Close widget
+/* Close widget
+ * GTK keeps the context cached, finalization is postponed;
+ * that is expected GObject behavior, not a leak.
+ * After close gedit, there is a long time to show log in ic_disconnect().
+ */
 static void gaim_ic_finalize(GObject *object)
 {
     GAimIMContext *context = (GAimIMContext *)object;
@@ -498,15 +495,9 @@ static void gaim_ic_finalize(GObject *object)
     }
 
 #if GTK_CHECK_VERSION(4, 0, 0)
-    if (context->client_widget != NULL) {
-        g_object_unref(context->client_widget);
-        context->client_widget = NULL;
-    }
+    context->client_widget = NULL;
 #else
-    if (context->client_window != NULL) {
-        g_object_unref(context->client_window);
-        context->client_window = NULL;
-    }
+    context->client_window = NULL;
 #endif
 
     if (context->fallback != NULL) {

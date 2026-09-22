@@ -68,6 +68,7 @@ public:
 
 private:
     u32 add(IC *ic);
+    void releasePreedit(IMPreedit *preedit);
 
     map<int,  IC*> m_ics;
     map<string, IMPreedit*> m_preedits;

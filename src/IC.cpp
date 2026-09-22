@@ -105,20 +105,33 @@ ICManager::ICManager(IC* ic): m_icid(0), m_icFocus(0), m_icMode(0)
      */
     m_ics[0] = ic;
     m_ics[0]->preedit = ic->createPreedit();
+    m_ics[0]->preedit->addRef();
 }
 
 ICManager::~ICManager()
 {
     std::map<int, IC*>::iterator iter;
-    for (iter = m_ics.begin(); iter != m_ics.end(); iter++)
+    for (iter = m_ics.begin(); iter != m_ics.end(); iter++) {
+        releasePreedit(iter->second->preedit);
         delete(iter->second);
+    }
+}
 
-    std::map<string, IMPreedit*>::iterator preedit;
-    for (preedit = m_preedits.begin(); preedit != m_preedits.end(); preedit++)
-        delete preedit->second;
+void ICManager::releasePreedit(IMPreedit *preedit)
+{
 
-    if (m_icMode)
-        delete m_ics[0]->preedit;
+    if (!preedit || !preedit->releaseRef()) return;
+
+    for (std::map<string, IMPreedit*>::iterator app = m_preedits.begin();
+         app != m_preedits.end(); ) {
+        if (app->second == preedit) {
+            m_preedits.erase(app++);
+            break;
+        }
+        ++app;
+    }
+    delete preedit;
+	PRINTF("releasePreedit: %px\n", preedit);
 }
 
 void ICManager::focusIn(u32 id)
@@ -167,12 +180,18 @@ u32 ICManager::add(IC *ic, const char *app)
 {
     if (!m_icMode) {
         std::map<std::string, IMPreedit*>::iterator iter = m_preedits.find(app);
-        if (iter == m_preedits.end())
-            m_preedits[app] = ic->createPreedit();
-        ic->preedit = m_preedits[app];
+        if (iter == m_preedits.end()) {
+            ic->preedit = ic->createPreedit();
+            m_preedits[app] = ic->preedit;
+        } else {
+            ic->preedit = iter->second;
+        }
+        ic->preedit->addRef();
     } else {
         ic->preedit = m_ics[0]->preedit;
     }
+
+    PRINTF("add ic:%d, Preedit refs:%d\n", ic->id, ic->preedit->refs);
     return add(ic);
 }
 
@@ -181,9 +200,10 @@ void ICManager::destroy(u32 id)
     if (id > 0) {
         std::map<int, IC*>::iterator iter = m_ics.find(id);
         if(iter != m_ics.end()) {
+            printf("destroy id:%d, ref: %d\n", id, iter->second->preedit->refs);
+            releasePreedit(iter->second->preedit);
             delete(iter->second);
             m_ics.erase(iter);
-            //printf("destroy id:%d\n", icid);
         }
     }
 }

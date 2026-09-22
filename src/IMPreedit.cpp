@@ -9,7 +9,7 @@
 #include "IMPreedit.h"
 #include "Log.h"
 
-IMPreedit::IMPreedit():m_bTrigger(false), m_bCN(false),
+IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(false),
 m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
 {
 }

@@ -87,6 +87,8 @@ class IMPreedit {
 public:
     IMPreedit();
     virtual ~IMPreedit();
+    inline void addRef() {++refs;};
+    inline bool releaseRef() {return refs > 0 && --refs == 0;};
     virtual void handleMessage(int msg);
     virtual int doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback) = 0;
 
@@ -95,6 +97,8 @@ public:
     void clear();
     void close();
     void reset();
+
+    u32 refs;
 
 protected:
     void add(char key);

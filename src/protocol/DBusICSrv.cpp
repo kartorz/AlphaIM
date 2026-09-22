@@ -123,7 +123,8 @@ int ic_set_surroundingtext(sd_bus_message *m, void *userdata, sd_bus_error *ret_
 
 int ic_destroy(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    u32 ic; sd_bus_message_read(m, "u", &ic);
+    u32 ic;
+    sd_bus_message_read(m, "u", &ic);
     //PRINTF("ic_destroy\n");
     gApp->dim.icm.destroy(ic);
     return sd_bus_reply_method_return(m, "i", 0);
@@ -170,7 +171,7 @@ int DBusICSrv::procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state)
     IC *ic = icm.get(id);
     int ret = handleKey(ic, keyval, state, this);
     PRINTF("DBusICSrv, %d-- key(0x%x,%u),state:0x%x, return:%d\n",
-           ic, keyval, keycode, state, ret);
+           id, keyval, keycode, state, ret);
     if (ret == FORWARD_KEY)
         return 0;
     return ic->preedit->isActive() + 1; // must>0
@@ -208,13 +209,11 @@ int DBusICSrv::procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state)
 int DBusICSrv::handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback)
 {
     u32 mask = state & 0xff;
-    int ret = FORWARD_KEY;
-
     if ((state & AIM_RELEASE_MASK) == AIM_RELEASE_MASK)
-        ret = ic->preedit->doHandleKey(ic, key, mask, callback);
+        return ic->preedit->doHandleKey(ic, key, mask, callback);
 
     if (!ic->preedit->isActive())
         return FORWARD_KEY;
 
-    return ret;
+    return PREEDIT_KEY;
 }
