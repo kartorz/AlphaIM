@@ -4,7 +4,7 @@
 #include <string.h>
 #include "config.h"
 
-#define VERSION  "1.3"
+#define VERSION  "1.4"
 
 #define IM_ID   "alphaim"
 #define IM_NAME "AlphaIM"
