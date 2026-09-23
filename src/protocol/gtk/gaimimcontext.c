@@ -11,6 +11,7 @@
 
 #include <gtk/gtk.h>
 #include <gtk/gtkimmodule.h>
+#include <syslog.h>
 #if GTK_CHECK_VERSION(4, 0, 0)
 #include <gio/giomodule.h>
 #include <gdk/x11/gdkx.h>
@@ -160,9 +161,9 @@ static gboolean ic_connect(GAimIMContext *context)
                                                AIM_SRV_INTF,
                                                NULL,
                                                &error);
+        /* Keep module diagnostics outside GLib's process-wide log handler. */
     if (context->bus_proxy == NULL) {
-        g_log(IM_NAME, G_LOG_LEVEL_ERROR,
-              "Failed to create D-Bus proxy %s\n",error->message);
+        syslog(LOG_ERR, "Failed to create D-Bus proxy %s", error->message);
         g_clear_error(&error);
         ic_disconnect(context);
         return FALSE;
@@ -176,8 +177,7 @@ static gboolean ic_connect(GAimIMContext *context)
                                    NULL,
                                    &error);
     if (reply == NULL) {
-        g_log(IM_NAME, G_LOG_LEVEL_ERROR,
-              "gtk can't create IC %s\n",error->message);
+        syslog(LOG_ERR, "gtk can't create IC %s", error->message);
         g_clear_error(&error);
         ic_disconnect(context);
         return FALSE;
@@ -195,8 +195,7 @@ static gboolean ic_connect(GAimIMContext *context)
                                                    NULL,
                                                    &error);
     if (context->context_proxy == NULL) {
-        g_log(IM_NAME, G_LOG_LEVEL_ERROR,
-              "gtk can't connect IC %s\n",error->message);
+        syslog(LOG_ERR, "gtk can't connect IC %s", error->message);
         g_clear_error(&error);
         ic_disconnect(context);
         return FALSE;
@@ -287,9 +286,8 @@ static gboolean gaim_ic_filter_keypress(GtkIMContext *im_context,
                                    NULL,
                                    &error);
     if (reply == NULL) {
-        g_log(IM_NAME, G_LOG_LEVEL_ERROR,
-              "keypress reconnect, err:%s\n",
-              error != NULL ? error->message : "unknown error");
+        syslog(LOG_ERR, "keypress reconnect, err:%s",
+               error != NULL ? error->message : "unknown error");
         g_clear_error(&error);
         return gaim_ic_filter_fallback(context, event);
     }
@@ -328,8 +326,7 @@ static void gaim_ic_focus_in(GtkIMContext *im_context)
         &error);
 
     if (!reply) { 
-        g_log(IM_NAME, G_LOG_LEVEL_ERROR,
-              "Failed to call FocusIn %s\n",error->message);
+        syslog(LOG_ERR, "Failed to call FocusIn %s", error->message);
         g_clear_error(&error);
         return;
     }
@@ -588,7 +585,6 @@ G_MODULE_EXPORT gchar **g_io_im_alpha_query(void)
 void im_module_init(GTypeModule *module)
 {
     gaim_im_context_register_type(module);
-    g_log_set_writer_func(g_log_writer_syslog, NULL, NULL);
 }
 
 void im_module_exit(void)
