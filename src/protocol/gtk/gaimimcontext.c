@@ -88,7 +88,9 @@ static gboolean is_key_release(
 // Sync with OnOffKeys within X11Preedit
 static gboolean is_trigger_key(guint keyval, guint state)
 {
-    return keyval == GDK_KEY_space &&
+    if (keyval == GDK_KEY_Shift_L) return TRUE;
+
+    return (keyval == GDK_KEY_space || keyval == GDK_KEY_Control_L)  &&
            (((state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) ||
             ((state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) ||
             ((state & GDK_SUPER_MASK) == GDK_SUPER_MASK));
@@ -295,7 +297,7 @@ static gboolean gaim_ic_filter_keypress(GtkIMContext *im_context,
     g_variant_get(reply, "(i)", &handled);
     g_variant_unref(reply);
 
-    //PRINTF("gaim_ic_filter_keypress: ic:[%d], ac:[%d],return:%d\n", context->icid, g_im_active, handled);
+    PRINTF("gaim_ic_filter_keypress: ic:[%d], ac:[%d],return:%d\n", context->icid, g_im_active, handled);
 
     if (!handled)
         return gaim_ic_filter_fallback(context, event);

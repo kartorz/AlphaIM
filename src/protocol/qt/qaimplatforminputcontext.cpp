@@ -135,14 +135,14 @@ QAimPlatformInputContext::~QAimPlatformInputContext (void)
 
 bool QAimPlatformInputContext::isTriggerKey(const QKeyEvent *event)
 {
-    if (event->key() != Qt::Key_Space)
-        return false;
-
-    Qt::KeyboardModifiers mods = event->modifiers();
-
-    return (mods == Qt::ShiftModifier) ||
-           (mods == Qt::ControlModifier) ||
-           (mods == Qt::MetaModifier);
+    if (event->key() == Qt::Key_Shift) return true;
+    if (event->key() == Qt::Key_Space || event->key() == Qt::Key_Control)  {
+        Qt::KeyboardModifiers mods = event->modifiers();
+        return (mods == Qt::ShiftModifier) ||
+            (mods == Qt::ControlModifier) ||
+            (mods == Qt::MetaModifier/*super*/);
+    }
+    return false;
 }
 
 // false: ~QAimPlatformInputContext()
@@ -357,7 +357,7 @@ void QAimPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *call
     const bool isAutoRepeat = args.at(7).toBool();
     int retval = reply.value();
 
-    //QDBG("filterEventFinished return" << code << sym << state << retval);
+    QDBG("filterEventFinished return" << code << sym << state << retval);
     if (!retval) {
 #ifndef QT_NO_CONTEXTMENU
         if (type == QEvent::KeyPress && qtcode == Qt::Key_Menu

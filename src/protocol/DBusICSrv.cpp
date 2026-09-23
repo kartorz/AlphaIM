@@ -212,8 +212,8 @@ int DBusICSrv::handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback
     if ((state & AIM_RELEASE_MASK) == AIM_RELEASE_MASK)
         return ic->preedit->doHandleKey(ic, key, mask, callback);
 
-    if (!ic->preedit->isActive())
-        return FORWARD_KEY;
+    if (ic->preedit->imWants(key))
+        return PREEDIT_KEY;
 
-    return PREEDIT_KEY;
+    return FORWARD_KEY;
 }

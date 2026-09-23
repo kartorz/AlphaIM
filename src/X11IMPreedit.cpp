@@ -68,8 +68,8 @@ static TriggerKey CancelKeys[] = {
 };
 
 static TriggerKey CESwitchKeys[] = {
-    {XK_Shift_L, ControlMask, ControlMask},
     {XK_Control_L, ShiftMask, ShiftMask},
+    {XK_Shift_L, 0, 0},
     {0L, 0L, 0L}
 };
 
@@ -211,7 +211,7 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
 
         //if (*key == (XK_BackSpace & 0xff))
         if ((key & 0xff) == (XK_BackSpace & 0xff)) {
-            if (m_input == "") return  FORWARD_KEY;
+            if (m_input.empty()) return  FORWARD_KEY;
             doInput(key);
             guiShowCandidate(ic);
             return COMMIT_KEY;
@@ -219,7 +219,7 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
 
         PRINTF("doHandleKey has checked backspace, now do input\n");
         // Must at the end.
-        if (isascii(key) && islower(key)/* 'Shift' returns true */) {
+        if (isascii(key) && islower(key)) {
             doInput(key);
             guiShowCandidate(ic);
             return CONVERT_KEY;

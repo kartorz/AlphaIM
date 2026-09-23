@@ -51,14 +51,6 @@ typedef struct {
 
 class IC;
 
-static inline u32 normalizeKeyCharacter(u32 keyval)
-{
-    keyval &= 0xff;
-    if (keyval >= 'A' && keyval <= 'Z')
-        keyval += 'a' - 'A';
-    return keyval;
-}
-
 enum PREEDIT_KEY {
     NONE_KEY,
     FORWARD_KEY,
@@ -94,6 +86,7 @@ public:
 
     void guiReload();
     bool isActive() const { return m_bTrigger && m_bCN; }
+    bool imWants(u32 key);
     void clear();
     void close();
     void reset();

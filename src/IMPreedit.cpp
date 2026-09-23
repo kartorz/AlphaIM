@@ -387,9 +387,7 @@ bool IMPreedit::doInput(char key)
 {
     if (key == (XK_BackSpace & 0xff)) {
         del();
-        if (m_input != "") {
-            return true;
-        }
+        if (m_input != "") return true;
         doClose();
         return false;
     } else {
@@ -500,4 +498,12 @@ void IMPreedit::handleMessage(int msg)
         doSwitchCEPun();
         return;
     }
+}
+
+bool IMPreedit::imWants(u32 key)
+{
+    if (m_bStart) return true;
+    if (!isActive()) return false;
+    if (m_bCNPun && mapCNPun(key)) return true;
+    return (key >= 'a' && key <= 'z');
 }
