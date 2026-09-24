@@ -1,5 +1,5 @@
 /**
- *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+ *    @Copyright (c) 2016 joni <joni_lee@outlook.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -128,11 +128,12 @@ bool PreeditAttributes::check(XICAttribute *xattr, bool r)
     return false;
 }
 
-XIMIC::XIMIC()
+XIMIC::XIMIC(Display* d)
 {
     pre_attr.spot_location.x = -1;/*a check condition*/
     client_win = 0;
     focus_win = 0;
+    dpy = d;
 }
 
 XIMIC::~XIMIC()
@@ -174,4 +175,61 @@ void XIMIC::get(IMChangeICStruct *calldata)
 
     pre_attr.get(calldata->preedit_attr, calldata->preedit_attr_num);
     sts_attr.get(calldata->status_attr, calldata->status_attr_num);
+}
+
+/*
+  // TODO: 'BadWindow' error proc
+  The error was 'BadWindow (invalid Window parameter)'.
+  (Details: serial 863 error_code 3 request_code 18 (core protocol) minor_code 0)
+  (Note to programmers: normally, X errors are reported asynchronously;
+  that is, you will receive the error a while after causing it.
+  To debug your program, run it with the GDK_SYNCHRONIZE environment
+  variable to change this behavior. You can then get a meaningful
+  backtrace from your debugger if you break on the gdk_x_error() function.)
+*/
+ICRect XIMIC::getRect()
+{
+    int x = 0;
+    int y = IC::dpyH;
+    int w = ICWIN_W;
+    int h = ICWIN_H;
+    XWindowAttributes clientwin_attr;
+    Window wid;
+    Window win = focus_win ? focus_win : client_win;
+
+    if (pre_attr.spot_location.x != -1) {
+        int x2 = pre_attr.spot_location.x;
+        int y2 = pre_attr.spot_location.y;
+        if (win) {
+            try {
+                XTranslateCoordinates(dpy, win, XDefaultRootWindow(dpy), x2, y2, &x, &y, &wid);
+            } catch (exception& e) {
+                printf("x1: %s\n", e.what());
+            }
+        }
+
+        //w = pre_attr.area.width  == 0 ? ICWIN_W : pre_attr.area.width;
+        //h = pre_attr.area.height == 0 ? ICWIN_H : pre_attr.area.height;
+        x = x > 0 ? x : 0;
+        y = y > 0 ? y : 0;
+
+        /*PRINTF("getICWin spot location [%d] (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
+        client_win, x, y, w, h, m_dpyW, m_dpyH);*/
+    } else if (win) {
+        try {
+            XGetWindowAttributes(dpy, win, &clientwin_attr);
+            XTranslateCoordinates(dpy, win, XDefaultRootWindow(dpy), 0, clientwin_attr.height, &x, &y, &wid);
+        }  catch (exception& e) {
+            printf("x2: %s\n", e.what());
+        }
+
+        /*PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
+          client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);*/
+
+        x += (clientwin_attr.width - ICWIN_W) / 2;
+        //y += clientwin_attr.height;
+        w = ICWIN_W;/*clientwin_attr.width < ICWIN_W ? ICWIN_W : clientwin_attr.width;*/
+        h = ICWIN_H;
+    }
+    return IC::adjRect(x, y, w, h);
 }

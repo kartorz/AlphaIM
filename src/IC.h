@@ -35,10 +35,7 @@ public:
     virtual void setSurroundingText();
     virtual void close();
     virtual IMPreedit *createPreedit() = 0;
-
-    ICRect  getRect();
-
-    static ICRect adjRect(int x, int y, int w, int h);
+    virtual ICRect getRect();
 
     u32 id;
     int   cursorX;
@@ -47,6 +44,7 @@ public:
 
     static int dpyW;
     static int dpyH;
+    static ICRect adjRect(int x, int y, int w, int h);
 };
 
 class ICManager {
@@ -55,12 +53,14 @@ public:
     ~ICManager();
 
     u32 add(IC *ic, const char *app);
-    void destroy(u32 id = 0);
-    void focusIn(u32 id = 0);
+    void destroy(u32 id);
+    void focusIn(u32 id);
+    int focusOut(u32 id);
+    int focusId() {return m_icFocus; }
     void setMode(int mode);
     int mode() const;
-    IC* get(u32 id = 0);
-    int focusOut(u32 id = 0);
+    IC* get(u32 id);
+    IC* getFocus() { return get(m_icFocus); }
 
     IC* operator[](u32 id) {
         return get(id);

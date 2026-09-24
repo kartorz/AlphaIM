@@ -54,11 +54,13 @@ public:
 
 class XIMIC : public IC {
 public:
-    XIMIC();
+    XIMIC(Display* d);
     virtual ~XIMIC();
     virtual IMPreedit *createPreedit() {
         return new X11IMPreedit();
     }
+    virtual ICRect getRect();
+
     void set(IMChangeICStruct *calldata);
     void get(IMChangeICStruct *calldata);
 
@@ -69,6 +71,7 @@ public:
     char    *resource_class; /* resource class */
     PreeditAttributes pre_attr; /* preedit attributes */
     StatusAttributes sts_attr; /* status attributes */
+    Display* dpy;
 };
 
 #endif

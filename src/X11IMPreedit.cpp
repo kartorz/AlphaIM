@@ -133,7 +133,7 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
     if (!m_bTrigger)
         return FORWARD_KEY;
 
-    // Check  language
+    // Check language
     if (isMatchKeys(key, modifier, CESwitchKeys)) {
         if (!doSwitchCE())
             callback->onCommit(callback->opaque, m_input);

@@ -21,6 +21,7 @@ static void usage(char* prog)
     printf("Usage: %s [options]\n", prog);
     printf("Options:\n");
     printf("  -f        run at foreground\n");
+    printf("  -x        support xim\n");
     printf("  -l <int>  set log level (0=d,1=w,2=e,3=i,4=none)\n");
     printf("  -v        show version\n");
     printf("  -h        show this help\n");
@@ -28,32 +29,15 @@ static void usage(char* prog)
 
 static void run_as_daemon()
 {
-    pid_t pid, sid;
-    /* Fork off the parent process */
-    pid = fork();
-    if (pid < 0) {
-        exit(EXIT_FAILURE);
-    }
-    /* If we got a good PID, then
-       we can exit the parent process. */
-    if (pid > 0) {
-        exit(EXIT_SUCCESS);
-    }
-    /* Change the file mode mask */
+    pid_t pid = fork();
+    if (pid < 0) exit(EXIT_FAILURE);
+    if (pid > 0) exit(EXIT_SUCCESS);
     umask(0);
-    /* Create a new SID for the child process */
-    sid = setsid();
-    if (sid < 0) {
-        /* Log the failure */
-        exit(EXIT_FAILURE);
-    }
-#if 0
-    /* Change the current working directory */
-    if ((chdir("/")) < 0) {
-        /* Log the failure */
-        exit(EXIT_FAILURE);
-    }
-#endif
+    if (setsid() < 0) exit(EXIT_FAILURE);
+    pid = fork();
+    if (pid < 0) exit(EXIT_FAILURE);
+    if (pid > 0) exit(EXIT_SUCCESS);
+
     /* Close out the standard file descriptors */
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
@@ -123,8 +107,8 @@ int main(int argc, char* argv[])
     DBusDaemon::getRefrence().start();
 
     if (xim) {
-        gApp->xim.open();
-        gApp->xim.eventLoop();
+        if (gApp->xim.open())
+            gApp->xim.eventLoop();
     }
 
     DBusDaemon::getRefrence().waitThreadExit();

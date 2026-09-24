@@ -1,10 +1,14 @@
 /**
- *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+ *    @Copyright (c) 2016 joni <joni_lee@outlook.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
  * http://www.gnu.org/licenses/gpl.txt)
- *
+ *--------------------------------------------------
+ * Debug: optional: two exports
+ *   export LC_CTYPE=zh_CN.UTF-8
+ *   export XIM_DEBUG=1
+ *   XMODIFIERS=@im=alphaim xterm
  */
 
 #include <locale.h>
@@ -117,7 +121,7 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
 }
 
 XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0),
-m_preModKey(0), m_icManager(new XIMIC())
+m_preModKey(0), m_icManager(new XIMIC(NULL))
 {
 }
 
@@ -161,10 +165,6 @@ bool XIMSrv::open()
 
     logger.d("imlocale  %s\n", imlocale);
 
-    int screen_num = DefaultScreen(m_dpy);
-    IC::dpyW  = DisplayWidth(m_dpy, screen_num);
-    IC::dpyH  = DisplayHeight(m_dpy, screen_num);
-
     check(input_styles = (XIMStyles *)malloc(sizeof(XIMStyles)));
     input_styles->count_styles = sizeof(supported_styles)/sizeof(XIMStyle) - 1;
     input_styles->supported_styles = supported_styles;
@@ -207,6 +207,7 @@ bool XIMSrv::open()
     }
 
     m_ims = ims;
+    ((XIMIC *)m_icManager.get(0))->dpy = m_dpy;
     //XSelectInput(dpy, imwin, StructureNotifyMask);
     //XSetErrorHandler(aim_err_handler);
    logger.d("xim open\n");
@@ -249,9 +250,9 @@ int XIMSrv::handleIMOpen(XIMS ims, IMProtocol *calldata)
 int XIMSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
-    XIMIC *ic = new XIMIC();
+    XIMIC *ic = new XIMIC(m_dpy);
     caller->icid = m_icManager.add(ic, Util::intToString(ic->client_win).c_str());
-    //printf("caller id:%d, ic id:%d\n", caller->icid, ic->id);
+    PRINTF("caller id:%d, ic id:%d, clinet_win:%d\n", caller->icid, ic->id, ic->client_win);
     ic->set(caller);
     return true;
 }
@@ -280,7 +281,6 @@ int XIMSrv::handleGetICValues(XIMS ims, IMProtocol *calldata)
 
 int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 {
-    PRINTF("handleForwardEvent\n");
     MutexLock lock(m_cs);  //Exclud handleUIMessage
     static  CARD32 last_kevtime = 0;
 
@@ -291,29 +291,25 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
         return true;
     }
 
-    IC* ic = m_icManager.get();
-    if (ic->id == 0) {
-        IMForwardEvent(ims, (XPointer)calldata);
-        return true;
-    }
-
+    IC* ic = m_icManager.getFocus();
     // Check if a infinite loop.
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
     XKeyEvent *kev = (XKeyEvent*)&((IMForwardEventStruct *)calldata)->event;
     if (kev->time == last_kevtime || kev->time == 0) {
-        PRINTF("A infinite loop, type:%d-->%d\n", kev->time, last_kevtime);
+        logger.e("handleForwardEvent, a infinite loop, type:%d-->%d\n", kev->time, last_kevtime);
         return true;
     }
     last_kevtime = kev->time;
 
-    logger.d("handleForwardEvent, type:%d\n",  calldata->forwardevent.event.type);
+    PRINTF("handleForwardEvent, type:%d\n",  calldata->forwardevent.event.type);
 
     char strbuf[KEVBUF_LEN];
     KeySym keysym;
     XLookupString(kev, strbuf, KEVBUF_LEN, &keysym, NULL);
-    //printf("kev time: 0x%d type: %d state %d --> code %x --> %x \n", kev->time, evtype, kev->state, keysym, strbuf[0]);
+    /*PRINTF("kev time: 0x%d type: %d state %d --> code %x --> %x \n",
+           kev->time, evtype, kev->state, keysym, strbuf[0]);*/
     if (keysym == 0) {
         return true;
     }
@@ -324,7 +320,8 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     this->opaque = &priv;
     int ret = handleKey(ic, keysym, kev->state, evtype, this);
     if (ret == FORWARD_KEY) {
-        // Be careful, IMForwardEvent may be hanlded by this function again -- a infinite loop
+        /* Be careful, IMForwardEvent may be hanlded by this function again
+           -- a infinite loop */
         IMForwardEvent(ims, (XPointer)calldata);
     }
     return true;
@@ -333,7 +330,7 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 void XIMSrv::handleUIMessage(int msg)
 {
     MutexLock lock(m_cs);
-    m_icManager.get()->preedit->handleMessage(msg);
+    m_icManager.getFocus()->preedit->handleMessage(msg);
 }
 
 int XIMSrv::doModifierKeyEvent(XIMS ims, IMProtocol *calldata)
@@ -361,7 +358,7 @@ int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    m_icManager.get()->preedit->guiReload();
+    m_icManager.getFocus()->preedit->guiReload();
 
     return true;
 }
@@ -369,14 +366,14 @@ int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
 int XIMSrv::handleUnsetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
     //focusOut((IMChangeFocusStruct *)calldata->icid);
-    m_icManager.focusOut();
+    m_icManager.focusOut(m_icManager.focusId());
     return true;
 }
 
 int XIMSrv::handleResetICEvent(XIMS ims, IMProtocol *calldata)
 {
     //((IMChangeFocusStruct *)calldata)->icid
-    m_icManager.get()->reset();
+    m_icManager.getFocus()->reset();
     return true;
 }
 
@@ -397,7 +394,7 @@ int XIMSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
        has been registered by IMOpenIM or IMSetIMValues, otherwise,
        the end of preediting must be notified from the IMserver to the
        IMlibrary. */
-        m_icManager.get()->close();
+        m_icManager.getFocus()->close();
         return 1;
     }
 
@@ -450,66 +447,7 @@ void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
     XFree(tp.value);
 }
 
-ICRect XIMSrv::getICWinRect(u32 icid)
-{
-    XIMIC *ic = (XIMIC *) m_icManager.get(icid);
-    if (ic->id > 0) {
-        int x = 0;
-        int y = IC::dpyH;
-        int w,h;
-        XWindowAttributes clientwin_attr;
-        Window win, wid;
 
-        if (!(win = ic->focus_win))
-            win = ic->client_win;
-
-        if (ic->pre_attr.spot_location.x != -1) {
-            int x2 = ic->pre_attr.spot_location.x;
-            int y2 = ic->pre_attr.spot_location.y;
-            if (win) {
-                try {
-                    XTranslateCoordinates(m_dpy, win, XDefaultRootWindow(m_dpy), x2, y2, &x, &y, &wid);  // TODO: The error was 'BadWindow (invalid Window parameter)'
-                } catch (exception& e) {
-                    printf("x1: %s\n", e.what());
-                }
-            }
-/*
-The error was 'BadWindow (invalid Window parameter)'.
-  (Details: serial 863 error_code 3 request_code 18 (core protocol) minor_code 0)
-  (Note to programmers: normally, X errors are reported asynchronously;
-   that is, you will receive the error a while after causing it.
-   To debug your program, run it with the GDK_SYNCHRONIZE environment
-   variable to change this behavior. You can then get a meaningful
-   backtrace from your debugger if you break on the gdk_x_error() function.)
-
- */
-            //w = ic->pre_attr.area.width  == 0 ? ICWIN_W : ic->pre_attr.area.width;
-            //h = ic->pre_attr.area.height == 0 ? ICWIN_H : ic->pre_attr.area.height;
-            w = ICWIN_W;
-            h = ICWIN_H;
-            x = x > 0 ? x : 0;
-            y = y > 0 ? y : 0;
-
-            //PRINTF("getICWin spot location [%d] (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n", ic->client_win, x, y, w, h, m_dpyW, m_dpyH);
-        } else if (win) {
-            try {
-                XGetWindowAttributes(m_dpy, win, &clientwin_attr);
-                XTranslateCoordinates(m_dpy, win, XDefaultRootWindow(m_dpy), 0, clientwin_attr.height, &x, &y, &wid);
-            }  catch (exception& e) {
-                printf("x2: %s\n", e.what());
-            }
-
-            //PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n", ic->client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);
-            x += (clientwin_attr.width - ICWIN_W) / 2;
-            //y += clientwin_attr.height;
-            w = ICWIN_W;/*clientwin_attr.width < ICWIN_W ? ICWIN_W : clientwin_attr.width;*/
-            h = ICWIN_H;
-        }
-        return IC::adjRect(x, y, w, h);
-    }
-    ICRect ret = {0,0, ICWIN_W, ICWIN_H};
-    return ret;
-}
 
 /*
  * There are some pains when comes to precess x11 keys.
@@ -539,7 +477,6 @@ The error was 'BadWindow (invalid Window parameter)'.
  */
 int XIMSrv::handleKey(IC* ic, u32 key, u32 modifier, int evtype, IMPreeditCallback *callback)
 {
-    //X11IMPreedit *preedit = static_cast<X11IMPreedit *>(ic->preedit);
     if (evtype == KeyPress)
         m_preRetKey = ic->preedit->doHandleKey(ic, key, modifier, callback);
 

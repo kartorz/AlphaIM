@@ -74,8 +74,5 @@ void Application::slowJob()
 
 Application::~Application()
 {
-    logger.d("~ Application start\n");
-    //delete m_sysMsgr;
-    logger.d("~Application done\n");
-
+    //logger.d("~Application\n");
 }

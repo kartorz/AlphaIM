@@ -55,8 +55,6 @@ private:
     XIMS m_ims;
     Window   m_imwin;
     Display* m_dpy;
-    //int      m_dpyW;
-    //int      m_dpyH;
 
     bool m_bDynamicEvent;
     int m_preModKey;

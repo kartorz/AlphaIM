@@ -211,7 +211,6 @@ void ICManager::destroy(u32 id)
 IC* ICManager::get(u32 id)
 {
     //PRINTF("ICManager::get id: %d\n", icid);
-    id = id == 0 ? m_icFocus : id;
     std::map<int, IC*>::iterator iter = m_ics.find(id);
     if(iter != m_ics.end()) {
         return iter->second;
