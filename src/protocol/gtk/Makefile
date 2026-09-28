@@ -8,7 +8,7 @@ GTK_IM_MODULE=im-alpha.so
 GTK4_IM_MODULE=libim-alpha.so
 SRCS=gaimimcontext.c
 
-GTK_MAJORS := 4 3
+GTK_MAJORS := 4 3 2
 
 define gtk_pkg_for
 $(strip $(if $(filter 4,$1),gtk4,$(if $(filter 3,$1),gtk+-3.0,$(if $(filter 2,$1),gtk+-2.0,))))
@@ -56,7 +56,7 @@ $(foreach major,$(GTK_MAJORS),\
 
 a11: $(GTK_BUILDS)
 
-build/gtk3 build/gtk4:
+build/gtk2 build/gtk3 build/gtk4:
     @mkdir -p $@
 
 build/gtk%/%.o: %.c | build/gtk%
@@ -85,7 +85,7 @@ install: a11
         module="$(GTK_IM_MODULE)"; \
         test "$$major" = 4 && module="$(GTK4_IM_MODULE)"; \
         $(INSTALL) -m 0644 "build/gtk$$major/$$module" "$(DESTDIR)$$module_dir/$$module"; \
-        test "$$major" = 4 && gio-querymodules "$(DESTDIR)$$module_dir" || true; \
+        if test "$$major" = 4; then gio-querymodules "$(DESTDIR)$$module_dir"; fi; \
     done
 
 uninstall:
@@ -93,9 +93,12 @@ uninstall:
         case $$major in \
             4) pkg=gtk4; dir=gtk-4.0 ;; \
             3) pkg=gtk+-3.0; dir=gtk-3.0 ;; \
+            2) pkg=gtk+-2.0; dir=gtk-2.0 ;; \
         esac; \
         module_dir="$$(pkg-config --variable=libdir $$pkg)/$$dir/$$(pkg-config --variable=gtk_binary_version $$pkg)/immodules"; \
-        rm -f "$(DESTDIR)$$module_dir/$(GTK_IM_MODULE)"; \
+        module="$(GTK_IM_MODULE)"; \
+        test "$$major" = 4 && module="$(GTK4_IM_MODULE)"; \
+        rm -f "$(DESTDIR)$$module_dir/$$module"; \
     done
 
 clean:

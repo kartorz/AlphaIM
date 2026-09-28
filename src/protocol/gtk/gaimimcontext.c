@@ -11,6 +11,9 @@
 
 #include <gtk/gtk.h>
 #include <gtk/gtkimmodule.h>
+#if !GTK_CHECK_VERSION(3, 0, 0) /*gtk2*/
+#include <gdk/gdkkeysyms.h>
+#endif
 #include <syslog.h>
 #if GTK_CHECK_VERSION(4, 0, 0)
 #include <gio/giomodule.h>
