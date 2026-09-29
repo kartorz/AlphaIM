@@ -2,7 +2,6 @@
 #include <QtX11Extras/QX11Info>
 
 #include "aimwin.h"
-#include "GuiMessager.h"
 
 #include "aim.h"
 

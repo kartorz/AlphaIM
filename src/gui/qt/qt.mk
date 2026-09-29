@@ -6,9 +6,6 @@ space := $(empty) $(empty)
 gui/qt/moc_aimwin.cpp: gui/qt/aimwin.h
     $(MOC) $(DEFINES) $(INCLUDES) gui/qt/aimwin.h       -o gui/qt/moc_aimwin.cpp
 
-gui/qt/moc_GuiMessager.cpp: gui/qt/GuiMessager.h
-    $(MOC) $(DEFINES) $(INCLUDES) gui/qt/GuiMessager.h  -o gui/qt/moc_GuiMessager.cpp
-
 gui/qt/moc_icwin.cpp: gui/qt/icwin.h
     $(MOC) $(DEFINES) $(INCLUDES) gui/qt/icwin.h       -o gui/qt/moc_icwin.cpp
 

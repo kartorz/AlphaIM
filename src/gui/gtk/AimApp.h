@@ -7,7 +7,6 @@
 #include "HelpWin.h"
 
 #include "aim.h"
-#include "GuiMessager.h"
 
 typedef struct _AppIndicator AppIndicator;
 typedef struct _AimApp       AimApp;
@@ -27,7 +26,6 @@ struct _AimAppClass
 {
     GtkApplicationClass parent_class;
 
-    GuiMessager         *gui_messager;
     IcWin               *icwin;
     AimWin              *imwin;
     HelpWin             *hpwin;
