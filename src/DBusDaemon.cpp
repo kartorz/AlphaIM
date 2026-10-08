@@ -28,8 +28,10 @@ static int im_gui_message(sd_bus_message *m, void *userdata, sd_bus_error *ret_e
     }
 
     PRINTF("gui_message read id %d\n", id);
-    if (id >= MSG_UI_LAN  && id <= MSG_UI_PUN)
+    if (id >= MSG_UI_LAN  && id <= MSG_UI_PUN) {
         gApp->xim.handleUIMessage(id);
+        gApp->dim.handleUIMessage(id);
+    }
 
     /* Reply with the response */
     return sd_bus_reply_method_return(m, "i", 1);

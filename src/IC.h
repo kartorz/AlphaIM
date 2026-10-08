@@ -15,8 +15,8 @@
 
 #include "IMPreedit.h"
 
-#define ICWIN_W  768
-#define ICWIN_H  64
+#define ICWIN_W  660
+#define ICWIN_H  48
 
 using namespace  std;
 
@@ -28,7 +28,7 @@ public:
     virtual void enable();
     virtual void disable();
     virtual bool isEnabled();
-    virtual void setCursorLocation(int x, int y, int w,  int h);
+    virtual void setCursorLocation(int x, int y, int w=-1, int h=-1);
     virtual void reset();
     virtual void setCapabilities(u32 cpas);
     virtual void propertyActivate(const char *name, int state);
@@ -38,13 +38,11 @@ public:
     virtual ICRect getRect();
 
     u32 id;
-    int   cursorX;
-    int   cursorY;
+    ICRect cursor;
     IMPreedit *preedit;
 
     static int dpyW;
     static int dpyH;
-    static ICRect adjRect(int x, int y, int w, int h);
 };
 
 class ICManager {

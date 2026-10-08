@@ -50,7 +50,7 @@ public:
 private:
     void commit(XIMS ims, IMForwardEventStruct* calldata, string candidate);
     ICRect getICWinRect(u32 ic);
-    int handleKey(IC* ic, u32 key, u32 modifier, int evtype, IMPreeditCallback *callback);
+    int handleKey(u32 key, u32 modifier, int evtype);
 
     XIMS m_ims;
     Window   m_imwin;

@@ -281,17 +281,16 @@ int XIMSrv::handleGetICValues(XIMS ims, IMProtocol *calldata)
 
 int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 {
-    MutexLock lock(m_cs);  //Exclud handleUIMessage
+    MutexLock lock(m_cs);  //Exclude handleUIMessage
     static  CARD32 last_kevtime = 0;
 
     /* Lookup KeyPress Events only */
     int evtype = calldata->forwardevent.event.type;
     if (evtype != KeyPress && evtype != KeyRelease) {
         IMForwardEvent(ims, (XPointer)calldata);
-        return true;
+        return false;
     }
 
-    IC* ic = m_icManager.getFocus();
     // Check if a infinite loop.
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
     //   kev time: 0x5164080 type: 2 state 0 --> code ffe3 --> 0
@@ -299,7 +298,7 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     XKeyEvent *kev = (XKeyEvent*)&((IMForwardEventStruct *)calldata)->event;
     if (kev->time == last_kevtime || kev->time == 0) {
         logger.e("handleForwardEvent, a infinite loop, type:%d-->%d\n", kev->time, last_kevtime);
-        return true;
+        return false;
     }
     last_kevtime = kev->time;
 
@@ -311,26 +310,30 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     /*PRINTF("kev time: 0x%d type: %d state %d --> code %x --> %x \n",
            kev->time, evtype, kev->state, keysym, strbuf[0]);*/
     if (keysym == 0) {
-        return true;
+        IMForwardEvent(ims, (XPointer)calldata);
+        return false;
     }
 
     XIMPriv priv;
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    int ret = handleKey(ic, keysym, kev->state, evtype, this);
+    int ret = handleKey(keysym, kev->state, evtype);
     if (ret == FORWARD_KEY) {
         /* Be careful, IMForwardEvent may be hanlded by this function again
            -- a infinite loop */
         IMForwardEvent(ims, (XPointer)calldata);
+        return false;
     }
     return true;
 }
 
 void XIMSrv::handleUIMessage(int msg)
 {
-    MutexLock lock(m_cs);
-    m_icManager.getFocus()->preedit->handleMessage(msg);
+    if (m_imwin) {
+        MutexLock lock(m_cs);
+        m_icManager.getFocus()->preedit->handleMessage(msg);
+    }
 }
 
 int XIMSrv::doModifierKeyEvent(XIMS ims, IMProtocol *calldata)
@@ -414,22 +417,6 @@ int XIMSrv::handlePreeditCaretReply(XIMS ims, IMProtocol *calldata)
     return true;
 }
 
-/*bool XIMSrv::isMatchKeys(KeySym& keysym, XKeyEvent *kev, XIMTriggerKey *trigger)
-{
-    int i;
-    int modifier;
-    int modifier_mask;
-
-    for (i = 0; trigger[i].keysym != 0; i++) {
-        modifier      = trigger[i].modifier;
-        modifier_mask = trigger[i].modifier_mask;
-        if (((KeySym)trigger[i].keysym == keysym)
-            && ((kev->state & modifier_mask) == modifier))
-        return True;
-    }
-    return False;
-}*/
-
 void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 {
     XTextProperty tp;
@@ -446,8 +433,6 @@ void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 
     XFree(tp.value);
 }
-
-
 
 /*
  * There are some pains when comes to precess x11 keys.
@@ -475,11 +460,12 @@ void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
  * Tested by xterm, urxvt
  *
  */
-int XIMSrv::handleKey(IC* ic, u32 key, u32 modifier, int evtype, IMPreeditCallback *callback)
+int XIMSrv::handleKey(u32 key, u32 modifier, int evtype)
 {
-    if (evtype == KeyPress)
-        m_preRetKey = ic->preedit->doHandleKey(ic, key, modifier, callback);
-
+    if (evtype == KeyPress) {
+        IC* ic = m_icManager.getFocus();
+        m_preRetKey = ic->preedit->doHandleKey(ic, key, modifier, this);
+    }
     // After key released, return the previous result, don't forward directly.
     return m_preRetKey;
 }

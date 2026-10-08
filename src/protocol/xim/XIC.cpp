@@ -189,10 +189,7 @@ void XIMIC::get(IMChangeICStruct *calldata)
 */
 ICRect XIMIC::getRect()
 {
-    int x = 0;
-    int y = IC::dpyH;
-    int w = ICWIN_W;
-    int h = ICWIN_H;
+    int x,y;
     XWindowAttributes clientwin_attr;
     Window wid;
     Window win = focus_win ? focus_win : client_win;
@@ -208,10 +205,10 @@ ICRect XIMIC::getRect()
             }
         }
 
-        //w = pre_attr.area.width  == 0 ? ICWIN_W : pre_attr.area.width;
-        //h = pre_attr.area.height == 0 ? ICWIN_H : pre_attr.area.height;
-        x = x > 0 ? x : 0;
-        y = y > 0 ? y : 0;
+        //cursor.w = pre_attr.area.width  == 0 ? ICWIN_W : pre_attr.area.width;
+        //cursor.h = pre_attr.area.height == 0 ? ICWIN_H : pre_attr.area.height;
+        cursor.x = x > 0 ? x : 0;
+        cursor.y = y > 0 ? y : 0;
 
         /*PRINTF("getICWin spot location [%d] (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
         client_win, x, y, w, h, m_dpyW, m_dpyH);*/
@@ -226,10 +223,9 @@ ICRect XIMIC::getRect()
         /*PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
           client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);*/
 
-        x += (clientwin_attr.width - ICWIN_W) / 2;
+        cursor.x = x + (clientwin_attr.width - ICWIN_W) / 2;
+        cursor.y = y;
         //y += clientwin_attr.height;
-        w = ICWIN_W;/*clientwin_attr.width < ICWIN_W ? ICWIN_W : clientwin_attr.width;*/
-        h = ICWIN_H;
     }
-    return IC::adjRect(x, y, w, h);
+    return IC::getRect();
 }

@@ -32,16 +32,15 @@ void Application::getDpySize()
         logger.e("getDpySize: Can't Open Display:\n");
         return;
     }
-    int screen_num = DefaultScreen(dpy);
-    IC::dpyW  = DisplayWidth(dpy, screen_num);
-    IC::dpyH  = DisplayHeight(dpy, screen_num);
+    int defscrn = DefaultScreen(dpy);
+    IC::dpyW  = DisplayWidth(dpy, defscrn);
+    IC::dpyH  = DisplayHeight(dpy, defscrn);
     logger.i("DpySize: (%d, %d)\n", IC::dpyW, IC::dpyH);
 }
 
 Application::Application()
 {
 //    char *locale = "C,POSIX,POSIX,en_US.utf8"
-    //pGuiMsgQ = new MessageQueue("gui");
     m_sysMsgr = new SysMessager();
 
     TaskManager::getInstance()->start(MAX_WORK_THREAD);

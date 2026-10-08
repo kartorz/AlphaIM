@@ -7,37 +7,10 @@
 #include "IC.h"
 #include "Log.h"
 
-int IC::dpyW = 1024;
-int IC::dpyH = 768;
+int IC::dpyW = 1280;
+int IC::dpyH = 720;
 
-
-ICRect IC::adjRect(int x, int y, int w, int h)
-{
-    ICRect ret;
-
-    if ((x <= 0 || y <= 0) && dpyW) {
-        // Client don't set cursor.
-        x = (dpyW - ICWIN_W)/2;
-        y = dpyH - ICWIN_H - 60;
-    }
-
-    if (x + w > dpyW - 20) {
-        x = dpyW - ICWIN_W - 20;
-    }
-
-    if (y + h > dpyH - 10) {
-        y = y - 2*h;
-    }
-
-    //PRINTF("getICWin (%d, %d, %d, %d)\n",  x, y, w, h);
-    ret.x = x;
-    ret.y = y;
-    ret.w = w;
-    ret.h = h;
-    return ret;
-}
-
-IC::IC(): id(0),cursorX(0),cursorY(0)
+IC::IC(): id(0),cursor{0,0,0,32}
 {
 }
 
@@ -53,8 +26,10 @@ void IC::close()
 void IC::setCursorLocation(int x, int y, int w, int h)
 {
     //PRINTF("setCursor (%d, %d, %d, %d)\n", x, y, w, h);
-    cursorX = x;
-    cursorY = y;
+    cursor.x = x;
+    cursor.y = y;
+    if (w > 0) cursor.w = w;
+    if (h > 0) cursor.h = h;
 }
 
 void IC::reset()
@@ -90,7 +65,25 @@ void IC::setSurroundingText()
 
 ICRect IC::getRect()
 {
-    return adjRect(cursorX, cursorY + 40, ICWIN_W, ICWIN_H);
+    #define margin  32
+    ICRect ret = {cursor.x, cursor.y+margin, ICWIN_W,ICWIN_H};
+
+    if (ret.x + ret.w + margin > IC::dpyW )
+        ret.x = IC::dpyW - ret.w - margin;
+
+    if (ret.y + ret.h + margin > IC::dpyH)
+        ret.y = IC::dpyH - ret.h - margin;
+
+    /* Don't set cursor firstly, or something wrong.
+     * Specify 1280*720 for the dual screen issue.
+     */
+    if (cursor.x <= 0 || cursor.y <= 0) {
+        ret.x = (1280 - ret.w)/2;
+        ret.y = 720 - ret.h - margin;
+    }
+
+    //PRINTF("getICWin (%d, %d, %d, %d)\n",  ret.x, ret.y, ret.w, ret.h);
+    return ret;
 }
 
 ICManager::ICManager(IC* ic): m_icid(0), m_icFocus(0), m_icMode(0)
