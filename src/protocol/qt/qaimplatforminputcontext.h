@@ -91,7 +91,11 @@ public:
     void setFocusObject(QObject *object) Q_DECL_OVERRIDE;
 
     void invokeAction(QInputMethod::Action a, int x) Q_DECL_OVERRIDE;
+#ifdef AIM_WPS_QT
+    void reset(bool force) Q_DECL_OVERRIDE;
+#else
     void reset() Q_DECL_OVERRIDE;
+#endif
     void commit() Q_DECL_OVERRIDE;
     void update(Qt::InputMethodQueries) Q_DECL_OVERRIDE;
     bool filterEvent(const QEvent *event) Q_DECL_OVERRIDE;

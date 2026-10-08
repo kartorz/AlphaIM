@@ -1,0 +1,14 @@
+wps使用的是一个私有的Qt，内置在wps的安装目录/opt/kingsoft/wps-office/office6
+需要针对这个Qt来编译输入法插件，编译环境准备:
+1:下载Qt官方的5.12.12 SDK
+2:拷贝SDK的include 和 bin 到当前目录下。
+
+编译&安装
+------------
+make
+make install
+
+配置
+------------
+如果，wps路径不是"/opt/kingsoft"，需要修改Makefile里的WPS_ROOT。
+

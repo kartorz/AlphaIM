@@ -176,9 +176,15 @@ void QAimPlatformInputContext::commit()
     QDBG("commit()\n");
 }
 
+#ifdef AIM_WPS_QT
+void QAimPlatformInputContext::reset(bool force)
+{
+    QPlatformInputContext::reset(force);
+#else
 void QAimPlatformInputContext::reset()
 {
     QPlatformInputContext::reset();
+#endif
 
     if (!d->busConnected | !g_im_active)
         return;
@@ -219,7 +225,11 @@ void QAimPlatformInputContext::cursorRectChanged()
     if (!d->busConnected || !g_im_active)
         return;
 
+#ifdef AIM_WPS_QT
+    QRect r = QInputMethod::queryFocusObject(Qt::ImCursorRectangle, QVariant()).toRect();
+#else
     QRect r = qApp->inputMethod()->cursorRectangle().toRect();
+#endif
     if(!r.isValid())
         return;
     QWindow *inputWindow = qApp->focusWindow();

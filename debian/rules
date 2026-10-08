@@ -23,6 +23,8 @@ override_dh_auto_install:
 	find $(CURDIR)/debian/alphaim/usr/share/alphaim/theme -type f -exec chmod 0644 {} +
 	install -d $(CURDIR)/debian/alphaim/usr/share/im-config/data
 	install -m 0644 system/im-config/*  $(CURDIR)/debian/alphaim/usr/share/im-config/data
+	mkdir -p $(CURDIR)/debian/alphaim/usr/share/alphaim/im-private/wps/Qt5.12
+	install -m 0644 im-private/wps/Qt5.12/*.so $(CURDIR)/debian/alphaim/usr/share/alphaim/im-private/wps/Qt5.12
 #	install -d $(CURDIR)/debian/alphaim/usr/share/dbus-1/system.d
 #	install -m 0644 system/org.freedesktop.alphaim.conf  $(CURDIR)/debian/alphaim/usr/share/dbus-1/system.d/
 	install -d $(CURDIR)/debian/alphaim/etc/xdg/autostart
@@ -31,4 +33,4 @@ override_dh_auto_install:
 	$(MAKE) -C src/protocol/gtk install DESTDIR=$(CURDIR)/debian/alphaim
 
 override_dh_shlibdeps:
-	dh_shlibdeps -X/usr/lib/*/gtk-2.0 -X/usr/lib/*/gtk-3.0 -X/usr/lib/*/gtk-4.0
+	dh_shlibdeps -X/usr/lib/*/gtk-2.0 -X/usr/lib/*/gtk-3.0 -X/usr/lib/*/gtk-4.0 -X/usr/share/alphaim/

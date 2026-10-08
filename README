@@ -97,6 +97,10 @@ sudo im-config，选择AlphaIM后，需要注销或者重启。
    kate, gedit, thunderbird, firefox, chrome, libreoffice,  emacs, ....
 都可以支持，如果碰到不能支持的软件， 可以使用kate/gedit 来临时替代输入。
 
+WPS
+===
+wps使用私有的Qt，需要下载Qt官方的SDK后，再进行编译，详见
+im-private/wps/Qt5.12/README
 
 如何提交Bug, 贡献代码， 提出意见，或者取得联系
 =============================================
