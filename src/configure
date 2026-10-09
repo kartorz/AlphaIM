@@ -150,7 +150,6 @@ Installation directories:
 Optional features:
   --enable-little-endian force byte order to little-endian  [autodetect]
   --enable-debug         compile a debugging application    [disable]
-  --with-gui=MODE        choose GUI frontend: gtk or qt     [gtk]
 
 Miscellaneous options:
   --with-install=PATH    path to a custom install program [install]
@@ -200,9 +199,6 @@ for ac_option do
     ;;
   --with-install=*)
     _install=$(option_value $ac_option)
-    ;;
-  --with-gui=*)
-    _gui=$(option_value $ac_option)
     ;;
   --extra-cflags=*)
     extra_cflags=$(option_value $ac_option)
