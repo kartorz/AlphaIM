@@ -6,6 +6,9 @@ export DEB_BUILD_OPTIONS = noautodbgsym nostrip
 %:
 	dh $@
 
+override_dh_clean:
+	-dh_clean
+
 override_dh_auto_configure:
 	cd src && ./configure --prefix=/usr --bindir=/usr/bin
 

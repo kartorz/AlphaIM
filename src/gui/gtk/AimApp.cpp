@@ -168,7 +168,7 @@ static gboolean aim_app_on_hide_imwin(gpointer user_data)
 
 static void aim_app_message_action(int action)
 {
-    PRINTF("aim_app_message_action: action:%d\n", action);
+    //PRINTF("aim_app_message_action: action:%d\n", action);
     switch (action) {
     case MSG_IM_ON: {
         //g_signal_emit(data, klass->active_im_id, 0);

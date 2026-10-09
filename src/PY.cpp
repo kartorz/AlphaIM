@@ -204,7 +204,7 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items, bool first
 
             if (offcur != item.off) {
                 // Advance to next offset.
-                PRINTF("{Next off}: cur:%d, next:%d, offset:%d \n", offcur, item.off, offset);
+                //PRINTF("{Next off}: cur:%d, next:%d, offset:%d \n", offcur, item.off, offset);
                 offcur = item.off;
                 offset = offcur - offmin ;
                 if (offset > OFF_RANGE)
@@ -212,7 +212,7 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items, bool first
 
                 // Don't put too many.
                 if (phyTotal > OFF_PAGE * IM_ITEM_PAGE_SIZE) {
-                    PRINTF("{Check} got enough exit\n");
+                    //PRINTF("{Check} got enough exit\n");
                     exit = true;
                     break;
                 }
@@ -284,7 +284,8 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempLis
                     matchlen = len2;
                     //found = matchlen == py.length() ? 2 : 1;
                     found = py.length() - matchlen;
-                    //PRINTF("{lookup phrase[%s]}: py:%s, key:%s, match len == %d, found == %d\n", phstr, py.c_str(), key.c_str(), matchlen, found);
+                    /*PRINTF("{lookup phrase[%s]}: py:%s, key:%s, match len == %d, found == %d\n",
+                    phstr, py.c_str(), key.c_str(), matchlen, found);*/
                 }
             }
 
@@ -310,9 +311,11 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempLis
     {
         if (npos <  phstrlen) {
             // Part of a phrase, Maybe this part is  another phrase.
-            PRINTF("check if exist %s, npos:%d, phstrlen:%d\n", (prefix+imval).c_str(), npos, phstrlen);
+            /*PRINTF("check if exist %s, npos:%d, phstrlen:%d\n",
+            (prefix+imval).c_str(), npos, phstrlen);*/
             for (int i = 0; i < m_phDBsLen; i++) {
-                if (m_phDBs[i]->isExist(prefix+imval)) /* Don't append the duplicate item.*/
+                /* Don't append the duplicate item.*/
+                if (m_phDBs[i]->isExist(prefix+imval))
                     return;
             }
         }
@@ -340,11 +343,13 @@ void PY::lookupPhrase(string key, iIndexItem* item,  deque<IMItem> imitemTempLis
             if (firstRound) {
                 imitem.off = key.length() + found;
                 imitemTempList[1].push_back(imitem);
-                //PRINTF("[non-perfect] firstRound: offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
+                /*PRINTF("[non-perfect] firstRound: offset :%d, number:[%d], key remained:%d,\
+                  pinyin remained:%d\n", imitem.off, number, key.length(), found);*/
             } else if (found == 0) {
                 imitem.off = key.length();
                 imitemTempList[1].push_back(imitem);
-                //PRINTF("[non-perfect] non-firsetRound offset :%d, number:[%d], key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);
+                /*PRINTF("[non-perfect] non-firsetRound offset :%d, number:[%d],\
+                key remained:%d, pinyin remained:%d\n", imitem.off, number, key.length(), found);*/
             }
        }
     }
@@ -354,7 +359,7 @@ bool PY::lookupCache(map<string, deque<IMItem> >& cache, const string& key, dequ
 {
     map<string, deque<IMItem> >::iterator iter = cache.find(key);
     if(iter != cache.end()) {
-        PRINTF("lookup from cache %s\n", key.c_str());
+        //PRINTF("lookup from cache %s\n", key.c_str());
         deque<IMItem> cacheItems = iter->second;
         for (int i = 0; i < cacheItems.size(); i++) {
             items.push_back(cacheItems[i]);

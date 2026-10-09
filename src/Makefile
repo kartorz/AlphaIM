@@ -97,7 +97,7 @@ DIRS = . \
 ADDSUFFIXES = $(foreach suf,$(1),$(addsuffix $(suf),$(2)))
 ADD_ALL_DIRS = $(call ADDSUFFIXES,$(1),$(DIRS))
 
-a11: IMdkit alphaimd aimctl alphaim-ui aim-gtk aim-qt
+a11: IMdkit alphaimd aimctl alphaim-ui im-modules
 
 lib/tinyxml2/libtinyxml2.a: $(OBJS_TINYXML)
  $(AR) -r $@ $^
@@ -117,10 +117,8 @@ aimctl: $(OBJS_AIMCTL)
 alphaim-ui: $(OBJS_GUI)
  $(CXX) $^ $(LIBS) -lstdc++ -o $@
 
-aim-qt:
+im-modules:
  $(MAKE) -C protocol/qt
-
-aim-gtk:
  $(MAKE) -C protocol/gtk
 
 gui/gtk/resource.c: gui/gtk/aimapp.gresource.xml gui/gtk/menu.ui
@@ -158,11 +156,10 @@ install-system: install-dirs
  $(INSTALL) -m 0644 "$(SYSTEMDIR)/im-config/28_alphaim.conf" "$(IM_CONFIG_DATA_DIR)/28_alphaim.conf"
  $(INSTALL) -m 0644 "$(SYSTEMDIR)/im-config/28_alphaim.rc" "$(IM_CONFIG_DATA_DIR)/28_alphaim.rc"
  cp -a "$(SYSTEMDIR)/theme/." "$(DATADIR)/theme/"
+ cp -a "../im-modules/."   "$(DATADIR)/im-modules"
 
-install-aim-qt: aim-qt
+install-im-modules: im-modules
  $(MAKE) -C protocol/qt install DESTDIR=$(DESTDIR)
-
-install-aim-gtk: aim-gtk
  $(MAKE) -C protocol/gtk install DESTDIR=$(DESTDIR)
 
 uninstall:
@@ -183,4 +180,4 @@ clean:
 distclean: clean
  -@rm -rf config.*
 
-.PHONY: IMdkit aim-qt aim-gtk install install-dirs install-system install-aim-qt install-aim-gtk uninstall clean distclean
+.PHONY: IMdkit im-modules install install-dirs install-system install-im-modules uninstall clean distclean
