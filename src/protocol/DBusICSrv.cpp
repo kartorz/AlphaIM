@@ -200,7 +200,7 @@ int DBusICSrv::procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state)
 
  * Ctrl + SPACE
    ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x4
-   ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x40000004  // short press, no this event.
+   ProcessKeyEvent val: 0x20,  keycode:0x39,  state:0x40000004
 --------------------     Gtk  --------------------
  'w'  longger press, lots of state:0x00 and a 0x40000000
   { ProcessKeyEvent val: 0x77,  keycode:0x11,  state:0x0 } +   //key press.
@@ -212,8 +212,15 @@ int DBusICSrv::handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback
     if ((state & AIM_RELEASE_MASK) == AIM_RELEASE_MASK)
         return ic->preedit->doHandleKey(ic, key, mask, callback);
 
-    if (ic->preedit->imWants(key))
+    /* Press a key,
+     *   - agnist gtk/qt, lots of key press and a key release.
+     *   - agnist xim, a key press and lots of key release.
+     * If im wants a key, skip press event, wait release event,
+     * reentry with AIM_RELEASE_MASK later.
+     */
+    if (ic->preedit->imWants(key,mask))
         return PREEDIT_KEY;
 
+    PRINTF("DBusICSrv::handleKey, forward key event\n");
     return FORWARD_KEY;
 }

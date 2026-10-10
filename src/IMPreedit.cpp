@@ -499,11 +499,3 @@ void IMPreedit::handleMessage(int msg)
         return;
     }
 }
-
-bool IMPreedit::imWants(u32 key)
-{
-    if (m_bStart) return true;
-    if (!isActive()) return false;
-    if (m_bCNPun && mapCNPun(key)) return true;
-    return (key >= 'a' && key <= 'z');
-}

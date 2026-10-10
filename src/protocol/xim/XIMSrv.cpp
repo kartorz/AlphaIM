@@ -437,22 +437,17 @@ void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
 /*
  * There are some pains when comes to precess x11 keys.
  * 1) modifier + key (eg, Shit_L + w)
-         kev type: 2 state 0 --> code ffe1 --> 0
-         kev type: 2 state 1 --> code 57 --> 57
-       { kev type: 2 state 1 --> code 57 --> 57 }+
-         kev type: 3 state 1 --> code 57 --> 57
-         kev type: 3 state 1 --> code ffe1 --> 0
+         kev type: 2 mask 0 --> code ffe1
+         kev type: 2 mask 1 --> code 57
+       { kev type: 3 ... --> code 57} +
  * 2) ctrl + shift
-        kev type 2 state: 0 code: ffe3  key: 0
-        kev type 2 state: 4 code: ffe1  key: 0
-        kev type 3 state: 5 code: ffe3  key: 0
-        kev type 3 state: 1 code: ffe1  key: 0
+        kev type 2 mask: 0 code: ffe3
+        kev type 2 mask: 4 code: ffe1
+        kev type 3 mask: 5 code: ffe3
+        kev type 3 mask: 1 code: ffe1
  * 3) ASCII key (eg, 'w').
-      kev type: 2 state 0 code:77
-    { kev type: 2 state 0 code:77 }+
-      kev type: 3 state 0 code 77
- * 4) Forward key.
-      Forward 'Release key event' not working.
+      kev type: 2 mask 0 code:77
+    { kev type: 3 mask 0 code:77 }+
  * ----------------------------------------------
  *  #define KeyPress        2
  *  #define KeyRelease      3
@@ -466,6 +461,7 @@ int XIMSrv::handleKey(u32 key, u32 modifier, int evtype)
         IC* ic = m_icManager.getFocus();
         m_preRetKey = ic->preedit->doHandleKey(ic, key, modifier, this);
     }
+    PRINTF("XIMSrv::handleKey, evtype:%d return %d\n", evtype, m_preRetKey);
     // After key released, return the previous result, don't forward directly.
     return m_preRetKey;
 }

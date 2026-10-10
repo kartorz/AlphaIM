@@ -79,7 +79,7 @@ DEPS += $(SRCS_AIMCTL:%.cpp=%.d)
 DEPS += $(OBJS_GUI_CPP:%.cpp=%.d)
 
 INSTALL_TARGETS-yes = install-alphaimd install-aimctl install-alphaim-ui install-system
-INSTALL_TARGETS-yes += install-aim-qt install-aim-gtk
+INSTALL_TARGETS-yes += install-im-modules
 
 DIRS = . \
     tool \
@@ -156,7 +156,6 @@ install-system: install-dirs
  $(INSTALL) -m 0644 "$(SYSTEMDIR)/im-config/28_alphaim.conf" "$(IM_CONFIG_DATA_DIR)/28_alphaim.conf"
  $(INSTALL) -m 0644 "$(SYSTEMDIR)/im-config/28_alphaim.rc" "$(IM_CONFIG_DATA_DIR)/28_alphaim.rc"
  cp -a "$(SYSTEMDIR)/theme/." "$(DATADIR)/theme/"
- cp -a "../im-modules/."   "$(DATADIR)/im-modules"
 
 install-im-modules: im-modules
  $(MAKE) -C protocol/qt install DESTDIR=$(DESTDIR)

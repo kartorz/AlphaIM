@@ -83,10 +83,10 @@ public:
     inline bool releaseRef() {return refs > 0 && --refs == 0;};
     virtual void handleMessage(int msg);
     virtual int doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback) = 0;
+    virtual bool imWants(u32 key, u32 modifier) = 0;
 
     void guiReload();
     bool isActive() const { return m_bTrigger && m_bCN; }
-    bool imWants(u32 key);
     void clear();
     void close();
     void reset();

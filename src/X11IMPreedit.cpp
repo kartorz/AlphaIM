@@ -44,7 +44,6 @@ static TriggerKey CommitKeys[] = {
 };
 
 static TriggerKey PageUpKeys[] = {
-    {XK_f, ControlMask, ControlMask},
     {XK_Page_Up, 0, 0},
     {XK_Left, 0L, 0L},
     {XK_Up, 0L, 0L},
@@ -53,7 +52,6 @@ static TriggerKey PageUpKeys[] = {
 };
 
 static TriggerKey PageDownKeys[] = {
-    {XK_j, ControlMask, ControlMask},
     {XK_Page_Down, 0, 0},
     {XK_Right, 0L, 0L},
     {XK_equal, 0L, 0L},
@@ -63,19 +61,16 @@ static TriggerKey PageDownKeys[] = {
 
 static TriggerKey CancelKeys[] = {
     {XK_Escape, 0, 0},
-    {XK_c, ControlMask, ControlMask},
     {0L, 0L, 0L}
 };
 
 static TriggerKey CESwitchKeys[] = {
-    {XK_Control_L, ShiftMask, ShiftMask},
     {XK_Shift_L, 0, 0},
     {0L, 0L, 0L}
 };
 
 static TriggerKey CEPSwitchKeys[] = {
-    {XK_Shift_R, ControlMask, ControlMask},
-    {XK_Control_R, ShiftMask, ShiftMask},
+    {XK_Shift_R, 0, 0},
     {0L, 0L, 0L}
 };
 
@@ -90,7 +85,7 @@ bool X11IMPreedit::isModifier(u32 keysym)
     return false;
 }
 
-bool X11IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
+bool X11IMPreedit::isMatchKeys(int key, int modifier, TriggerKey *trigger)
 {
     int i;
     int modifier2;
@@ -99,21 +94,47 @@ bool X11IMPreedit::isMatchKeys(int keysym, int modifier, TriggerKey *trigger)
     for (i = 0; trigger[i].keysym != 0; i++) {
         modifier2      = trigger[i].modifier;
         modifier2_mask = trigger[i].modifier_mask;
-        if (((KeySym)trigger[i].keysym == keysym)
+        if (((KeySym)trigger[i].keysym == key)
             && ((modifier & modifier2_mask) == modifier2))
         return True;
     }
     return False;
-
 }
+
+bool X11IMPreedit::imWants(u32 key, u32 modifier)
+{
+    if (!isActive()) return false;
+    if (m_bCNPun && mapCNPun(key)) return true;
+    if (modifier) return false;
+    if (m_bStart) return true;
+    return (key >= 'a' && key <= 'z');
+}
+
+/* modifier
+ * ------------------------------------
+ *  0: normal key, without modifier key
+ *  1: ShiftMask        16: Num Lock
+ *  2: LockMask         18: Meta
+ *  4: ControlMask      64: Super/Windows
+ *  8: Alt             128: Scroll Lock
+ *
+ * key
+ * --------------------------------------
+ * XK_0 .. XK_9: '0' .. '9'
+ * XK_a .. XK_z: 'a' .. 'z'
+ */
 int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback)
 {
+
+    PRINTF("%d,doHandleKey,key(%x,%x), start:%d, triger:%d, cn:%d, CNPun:%d\n",
+           ic->id, key, modifier, m_bStart, m_bTrigger, m_bCN, m_bCNPun);
+
     if (isMatchKeys(key, modifier, ForwardKeys))
         return FORWARD_KEY;
 
     // Check OnOff
     if (isMatchKeys(key, modifier, OnOffKeys)) {
-        if (!m_bTrigger) {
+        if (!m_bTrigger || !m_bCN) {
             m_bTrigger = true;
             m_bCN = true;
             m_bCNPun = true;
@@ -139,38 +160,33 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
             callback->onCommit(callback->opaque, m_input);
         return SWITCH_CE_KEY;
     }
-    if (!m_bCN) {
+    if (!m_bCN)
         return FORWARD_KEY;
-    }
 
     if (isMatchKeys(key, modifier, CEPSwitchKeys)) {
         doSwitchCEPun();
         return SWITCH_CEP_KEY;
     }
-    PRINTF("doHandleKey has checked language, m_bStart:%d\n", m_bStart);
 
     // Check if start
     if (!m_bStart) {
-        if (modifier == 0  && isascii(key) && islower(key)) {
+        if (!modifier && (key >= 'a' && key <= 'z')) {
             doInput(key);
             guiShowCandidate(ic);
             return CONVERT_KEY;
         }
-        PRINTF("doHandleKey, not start, check Pun char, m_bCNPun:%d, key:%d\n", m_bCNPun, key);
         if (m_bCNPun) {
             string cnPun = mapCNPunToU8Str(key);
-            if (cnPun == "" && isascii(key) && isgraph(key))  // forward key
-                cnPun = key;
             if (cnPun != "") {
                 callback->onCommit(callback->opaque, cnPun);
                 return COMMIT_KEY;
             }
         }
-        PRINTF("doHandleKey, not start, forward key\n");
-
         return FORWARD_KEY;
     }
-    PRINTF("doHandleKey has checked starting\n");
+
+    // After this section, without modifier key.
+    if (modifier > 0) return FORWARD_KEY;
 
     if (isMatchKeys(key, modifier, CommitKeys)) {
         if (m_bStart) {
@@ -198,32 +214,27 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
         doClose();
         return CANCEL_KEY;
     }
-    PRINTF("doHandleKey has checked some control keys.\n");
 
-    if (modifier == 0 || modifier == 1) {
-        if (isascii(key) && isdigit(key)) {
-            int i = key - 0x30;
-            doCommit(i, callback);
-            guiShowCandidate(ic);
-            return COMMIT_KEY;
-        }
-        PRINTF("doHandleKey has checked digit key\n");
-
-        //if (*key == (XK_BackSpace & 0xff))
-        if ((key & 0xff) == (XK_BackSpace & 0xff)) {
-            if (m_input.empty()) return  FORWARD_KEY;
-            doInput(key);
-            guiShowCandidate(ic);
-            return COMMIT_KEY;
-        }
-
-        PRINTF("doHandleKey has checked backspace, now do input\n");
-        // Must at the end.
-        if (isascii(key) && islower(key)) {
-            doInput(key);
-            guiShowCandidate(ic);
-            return CONVERT_KEY;
-        }
+    if (key >= '0' && key <= '9') {
+        int i = key - 0x30;
+        doCommit(i, callback);
+        guiShowCandidate(ic);
+        return COMMIT_KEY;
     }
+
+    if ((key & 0xff) == (XK_BackSpace & 0xff)) {
+        if (m_input.empty()) return  FORWARD_KEY;
+        doInput(key);
+        guiShowCandidate(ic);
+        return COMMIT_KEY;
+    }
+
+    /* Must at the end.*/
+    if (key >= 'a' && key <= 'z') {
+        doInput(key);
+        guiShowCandidate(ic);
+        return CONVERT_KEY;
+    }
+
     return FORWARD_KEY;
 }
