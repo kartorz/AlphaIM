@@ -12,16 +12,22 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include "IMPreedit.h"
 
-#define ICWIN_W  660
+#define ICWIN_W  720
 #define ICWIN_H  48
 
 using namespace  std;
 
+struct ScreenRect {
+    int x, y, w, h;
+};
+
 class IC {
 public:
+
     IC();
     virtual ~IC();
 
@@ -41,8 +47,7 @@ public:
     ICRect cursor;
     IMPreedit *preedit;
 
-    static int dpyW;
-    static int dpyH;
+    static vector<ScreenRect> screens;
 };
 
 class ICManager {

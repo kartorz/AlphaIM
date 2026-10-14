@@ -236,7 +236,15 @@ void QAimPlatformInputContext::cursorRectChanged()
     if (!inputWindow)
         return;
     r.moveTopLeft(inputWindow->mapToGlobal(r.topLeft()));
-    d->context->SetCursorLocation(d->icid, r.x(), r.y(), r.width(), r.height());
+
+    // Qt reports logical coordinates when desktop scaling is enabled, while
+    // XIM expects native X11 pixels.
+    const qreal scale = inputWindow->devicePixelRatio();
+    d->context->SetCursorLocation(d->icid,
+                                  qRound(r.x() * scale),
+                                  qRound(r.y() * scale),
+                                  qRound(r.width() * scale),
+                                  qRound(r.height() * scale));
     //QDBG("cursorRectChanged" << r << "ic:" << d->icid);
 }
 

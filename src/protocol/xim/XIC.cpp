@@ -207,8 +207,10 @@ ICRect XIMIC::getRect()
 
         //cursor.w = pre_attr.area.width  == 0 ? ICWIN_W : pre_attr.area.width;
         //cursor.h = pre_attr.area.height == 0 ? ICWIN_H : pre_attr.area.height;
-        cursor.x = x > 0 ? x : 0;
-        cursor.y = y > 0 ? y : 0;
+
+        //When the monitor is left of the primary screen, x|y < 0 is valid.
+        cursor.x = x;
+        cursor.y = y;
 
         /*PRINTF("getICWin spot location [%d] (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
         client_win, x, y, w, h, m_dpyW, m_dpyH);*/

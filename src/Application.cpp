@@ -14,6 +14,7 @@
 #include "Configure.h"
 #include "DBusDaemon.h"
 #include <boost/filesystem.hpp>
+#include <X11/extensions/Xinerama.h>
 using namespace boost::filesystem;
 
 Application*  gApp = NULL;
@@ -33,9 +34,25 @@ void Application::getDpySize()
         return;
     }
     int defscrn = DefaultScreen(dpy);
-    IC::dpyW  = DisplayWidth(dpy, defscrn);
-    IC::dpyH  = DisplayHeight(dpy, defscrn);
-    logger.i("DpySize: (%d, %d)\n", IC::dpyW, IC::dpyH);
+    IC::screens.clear();
+    if (XineramaIsActive(dpy)) {
+        int count = 0;
+        XineramaScreenInfo *info = XineramaQueryScreens(dpy, &count);
+        for (int i = 0; i < count; i++) {
+            IC::screens.push_back({info[i].x_org, info[i].y_org,
+                                   info[i].width, info[i].height});
+            logger.i("DpySize: multi-screen, (%d,%d,%d,%d)\n",
+                     info[i].x_org, info[i].y_org, info[i].width, info[i].height);
+        }
+        if (info != NULL)
+            XFree(info);
+    }
+    if (IC::screens.empty()) {
+        int w  = DisplayWidth(dpy, defscrn);
+        int h  = DisplayHeight(dpy, defscrn);
+        IC::screens.push_back({0, 0, w, h});
+        logger.i("DpySize: (%d, %d)\n", w, h);
+    }
 }
 
 Application::Application()

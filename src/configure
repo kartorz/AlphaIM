@@ -389,6 +389,22 @@ echores "$_xlib"
 test "$_xlib" = no && die "Please check and install xlib (libx11-dev)"
 cflags="$cflags -DX11"
 
+echocheck "Xinerama"
+_xinerama=no
+ld_tmp="-lXinerama"
+cat > $TMPC <<EOF
+#include <X11/extensions/Xinerama.h>
+int main(void) {
+XineramaIsActive(NULL);
+XineramaQueryScreens(NULL, 0);
+return 0;
+}
+EOF
+
+cc_check $ld_tmp &&
+  ldflags="$ldflags -lXinerama" _xinerama=yes
+echores "$_xinerama"
+
 echocheck "Xtrans"
 if header_check X11/Xtrans/transport.c ; then
     echores "yes"

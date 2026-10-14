@@ -7,8 +7,7 @@
 #include "IC.h"
 #include "Log.h"
 
-int IC::dpyW = 1280;
-int IC::dpyH = 720;
+vector<ScreenRect> IC::screens;
 
 IC::IC(): id(0),cursor{0,0,0,32}
 {
@@ -65,24 +64,45 @@ void IC::setSurroundingText()
 
 ICRect IC::getRect()
 {
-    #define margin  32
+    #define margin 48
+
     ICRect ret = {cursor.x, cursor.y+margin, ICWIN_W,ICWIN_H};
-
-    if (ret.x + ret.w + margin > IC::dpyW )
-        ret.x = IC::dpyW - ret.w - margin;
-
-    if (ret.y + ret.h + margin > IC::dpyH)
-        ret.y = IC::dpyH - ret.h - margin;
 
     /* Don't set cursor firstly, or something wrong.
      * Specify 1280*720 for the dual screen issue.
+     * When the monitor is left of the primary screen, x|y < 0 is valid.
      */
-    if (cursor.x <= 0 || cursor.y <= 0) {
+    if (cursor.x == 0 && cursor.y == 0) {
         ret.x = (1280 - ret.w)/2;
-        ret.y = 720 - ret.h - margin;
+        ret.y = 720 - ret.h - 2*margin;
+        return ret;
     }
 
-    //PRINTF("getICWin (%d, %d, %d, %d)\n",  ret.x, ret.y, ret.w, ret.h);
+    ScreenRect sc = IC::screens.front();
+    for (const ScreenRect &candidate : IC::screens) {
+        if (cursor.x >= candidate.x && cursor.x < candidate.x + candidate.w &&
+            cursor.y >= candidate.y && cursor.y < candidate.y + candidate.h) {
+            sc = candidate;
+            break;
+        }
+    }
+
+    PRINTF("getICWin before: (%d, %d) -- (%d,%d,%d,%d)\n",
+           ret.x, ret.y, sc.x, sc.y, sc.w, sc.h);
+
+    if (ret.x + ret.w + margin > sc.x + sc.w)
+        ret.x = sc.x + sc.w - ret.w - margin;
+    if (ret.x < sc.x + margin)
+        ret.x = sc.x + margin;
+
+    if (ret.y + ret.h + 4*margin > sc.y + sc.h)
+        ret.y = sc.y + sc.h - 4*ret.h - 4*margin;
+    if (ret.y < sc.y + margin)
+        ret.y = sc.y + margin;
+
+    PRINTF("getICWin after: (%d, %d) -- (%d,%d,%d,%d)\n",
+           ret.x, ret.y, sc.x, sc.y, sc.w, sc.h);
+
     return ret;
 }
 
