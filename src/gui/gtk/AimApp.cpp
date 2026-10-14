@@ -6,7 +6,6 @@
 #include <gdk/gdkx.h>
 #include <libayatana-appindicator/app-indicator.h>
 
-
 #include "AimApp.h"
 #include "AimWin.h"
 #include "IcWin.h"
@@ -14,7 +13,6 @@
 #include "SettingMenu.h"
 
 std::string  g_system_dir;
-
 
 //void (*gui_activate_callback)(Display *dsy);
 static gboolean aim_app_on_hide_imwin(gpointer user_data);
@@ -47,6 +45,28 @@ static const gchar *aim_app_tray_icon_name(AimTrayIcon icon)
 static void aim_app_set_tray_icon(AimAppClass *klass, AimTrayIcon icon)
 {
     app_indicator_set_icon_full(klass->systray, aim_app_tray_icon_name(icon), "AlphaIM");
+}
+
+static gboolean aim_app_on_show_hint(gpointer user_data)
+{
+    AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
+    const gchar *hint = (const gchar *)user_data;
+    GdkDisplay *display = gdk_display_get_default();
+    GdkMonitor *monitor = display != NULL ? gdk_display_get_primary_monitor(display) : NULL;
+
+    ic_win_show_hint(klass->icwin, hint);
+
+    if (monitor != NULL) {
+        GdkRectangle workarea;
+        GtkAllocation allocation;
+        gdk_monitor_get_workarea(monitor, &workarea);
+        gtk_widget_get_allocation(GTK_WIDGET(klass->icwin), &allocation);
+        gtk_window_move(GTK_WINDOW(klass->icwin),
+                        workarea.x + (workarea.width - allocation.width) / 2,
+                        workarea.y + workarea.height - allocation.height - 60);
+    }
+
+    return G_SOURCE_REMOVE;
 }
 
 static void aim_app_on_systray_popup(AppIndicator *systray,
@@ -166,13 +186,15 @@ static gboolean aim_app_on_hide_imwin(gpointer user_data)
 }
 
 
-static void aim_app_message_action(int action)
+static void aim_app_message_action(int action, int flags)
 {
     //PRINTF("aim_app_message_action: action:%d\n", action);
     switch (action) {
     case MSG_IM_ON: {
         //g_signal_emit(data, klass->active_im_id, 0);
         gdk_threads_add_idle(aim_app_on_active_im, NULL);
+        if (flags & GUIACT_HINT)
+            gdk_threads_add_idle(aim_app_on_show_hint, (gpointer) "拼音");
         break;
     }
 
@@ -181,12 +203,12 @@ static void aim_app_message_action(int action)
         break;
     }
 
-    case MSG_IM_CLOSE: {        
+    case MSG_PREEDIT_CLOSE: {
         gdk_threads_add_idle(aim_app_on_hide_icwin, NULL);
         break;
     }
 
-    case MSG_IM_COMMIT: {
+    case MSG_PREEDIT_COMMIT: {
         gdk_threads_add_idle(aim_app_on_hide_icwin, NULL);
         break;
     }
@@ -196,6 +218,9 @@ static void aim_app_message_action(int action)
         *is_cn = true;
         gdk_threads_add_idle(aim_app_on_switch_lan, is_cn);
 
+        if (flags & GUIACT_HINT)
+            gdk_threads_add_idle(aim_app_on_show_hint, (gpointer) "拼音");
+
         break;
     }
 
@@ -203,6 +228,9 @@ static void aim_app_message_action(int action)
         gboolean *is_cn = (gboolean *) g_malloc(sizeof(gboolean));
         *is_cn = false;
         gdk_threads_add_idle(aim_app_on_switch_lan, is_cn);
+
+        if (flags & GUIACT_HINT)
+            gdk_threads_add_idle(aim_app_on_show_hint, (gpointer) "en");
 
         break;
     }
@@ -242,10 +270,11 @@ static void aim_app_on_signal (GDBusProxy *proxy,
 
         g_free(s1);
         g_free(s2);
-    } else {
+    } else if (g_variant_check_format_string(parameters, "(ii)", FALSE)) {
         gint32 msgid;
-        g_variant_get (parameters, "(i)", &msgid);
-        aim_app_message_action(msgid);
+        gint32 flags;
+        g_variant_get (parameters, "(ii)", &msgid, &flags);
+        aim_app_message_action(msgid, flags);
     }
 }
 
@@ -367,7 +396,6 @@ static void aim_app_activate (GApplication *app)
     klass->icwin = icwin;
     gtk_application_add_window(gtkapp, GTK_WINDOW (icwin));
 
-
     AimWin *imwin = aim_win_new(klass->x, klass->y);
     klass->imwin = imwin;
     gtk_application_add_window(gtkapp, GTK_WINDOW (imwin));
@@ -383,7 +411,7 @@ static void aim_app_activate (GApplication *app)
     klass->setmenu = setting_menu_new(app);
 
     G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-    klass->systray = app_indicator_new("org.gtk.aimapp",
+    klass->systray = app_indicator_new("org.alphaim.tray",
                                        aim_app_tray_icon_name(AIM_TRAY_ICON_APP),
                                        APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
     G_GNUC_END_IGNORE_DEPRECATIONS
@@ -410,7 +438,7 @@ AimApp* aim_app_new(void)
 {
     //app = gtk_application_new ("org.gnome.example", G_APPLICATION_FLAGS_NONE);
     return  (AimApp*)g_object_new(AIM_APP_TYPE,
-                                 "application-id", "org.gtk.aimapp2",
+                                 "application-id", "org.alphaim.app",
                                  NULL);
 }
 

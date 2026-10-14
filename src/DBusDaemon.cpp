@@ -220,10 +220,10 @@ int DBusDaemon::notify(Message& msg)
         return -1;
     }
 
-    if (msg.id == MSG_IM_INPUT) {
+    if (msg.id == MSG_PREEDIT_UPDATE) {
         r = sd_bus_message_append(m, "iiiiiss",  msg.id, msg.iArg1, msg.iArg2, (int)msg.fArg1, (int)msg.fArg2, msg.strArg1.c_str(), msg.strArg2.c_str());
     } else {
-        r = sd_bus_message_append(m, "i", msg.id);
+        r = sd_bus_message_append(m, "ii", msg.id, msg.iArg1);
     }
     if (r < 0) {
         logger.e("DBusDaemon::notify append data error, err: %s\n", strerror(-r));

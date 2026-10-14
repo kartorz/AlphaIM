@@ -16,6 +16,36 @@ static void ic_win_class_init(IcWinClass *klass)
 
 }
 
+static gboolean ic_win_hide_hint(gpointer user_data)
+{
+    IcWin *win = IC_WIN(user_data);
+    IcWinClass *klass = IC_WIN_GET_CLASS(win);
+
+    gtk_widget_hide(klass->hint);
+    gtk_widget_hide(GTK_WIDGET(win));
+    klass->hint_timeout = 0;
+    return G_SOURCE_REMOVE;
+}
+
+void ic_win_show_hint(IcWin *win, const gchar *hint)
+{
+    IcWinClass *klass = IC_WIN_GET_CLASS(win);
+    if (klass->hint_timeout != 0)
+        g_source_remove(klass->hint_timeout);
+
+    std::string markup = "<span foreground=\"white\" background=\"#3465a4\" size=\"xx-large\" weight=\"bold\">  ";
+    markup += hint;
+    markup += "  </span>";
+    gtk_label_set_markup(GTK_LABEL(klass->hint), markup.c_str());
+    gtk_widget_hide(klass->input_label);
+    for (int i = 0; i < PREEDIT_ITEMS_MAX; i++)
+        gtk_widget_hide(klass->preedit_label[i]);
+    gtk_widget_show(klass->hint);
+    gtk_widget_show(gtk_widget_get_parent(klass->hint));
+    gtk_widget_show(GTK_WIDGET(win));
+    klass->hint_timeout = g_timeout_add(1200, ic_win_hide_hint, win);
+}
+
 void ic_win_refresh(IcWin *win,
                     gint32 x,
                     gint32 y,
@@ -26,6 +56,8 @@ void ic_win_refresh(IcWin *win,
 {
     GtkWindow *icwin = GTK_WINDOW (win);
     IcWinClass *klass = IC_WIN_GET_CLASS(win);
+
+    gtk_widget_hide(klass->hint);
 
     std::string markup = "<span foreground=\"blue\" size=\"x-large\">";
     markup += "  " + std::string(input) + "</span>";
@@ -76,6 +108,7 @@ IcWin *ic_win_new()
                                           "accept-focus", FALSE,
                                           NULL);
     IcWinClass *klass = IC_WIN_GET_CLASS(icwin);
+    klass->hint_timeout = 0;
 
     GtkWidget *window = ( GtkWidget *)(GTK_WINDOW(icwin));
     //gtk_widget_set_size_request(window, ICWIN_W, ICWIN_H);
@@ -90,6 +123,11 @@ IcWin *ic_win_new()
     //gtk_label_set_justify ((GtkLabel *)klass->input_label, GTK_JUSTIFY_LEFT);
     gtk_widget_set_halign (klass->input_label, GTK_ALIGN_START);
     gtk_grid_attach(GTK_GRID (gridc), klass->input_label, 0, 0, PREEDIT_ITEMS_MAX, 1);
+
+    klass->hint = gtk_label_new(NULL);
+    gtk_widget_set_no_show_all(klass->hint, TRUE);
+    gtk_grid_attach(GTK_GRID (gridc), klass->hint, 0, 2, PREEDIT_ITEMS_MAX, 1);
+    gtk_widget_hide(klass->hint);
 
     for (int i = 0; i < PREEDIT_ITEMS_MAX; i++) {
         klass->preedit_label[i] = gtk_label_new(NULL);

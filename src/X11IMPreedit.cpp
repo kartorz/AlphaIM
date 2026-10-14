@@ -139,7 +139,7 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
             m_bCN = true;
             m_bCNPun = true;
             m_bStart = false;
-            guiAction(MSG_IM_ON);
+            guiAction(MSG_IM_ON, GUIACT_SYSTRAY | GUIACT_HINT);
             return TRIGGER_ON_KEY;
         }
         m_bTrigger = false;
@@ -147,7 +147,7 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
         m_bCNPun = false;
         callback->onIMOff(callback->opaque);
         doClose();
-        guiAction(MSG_IM_OFF);
+        guiAction(MSG_IM_OFF, GUIACT_SYSTRAY);
         return TRIGGER_OFF_KEY;
     }
 
@@ -156,8 +156,14 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
 
     // Check language
     if (isMatchKeys(key, modifier, CESwitchKeys)) {
-        if (!doSwitchCE())
+        if (m_input != "")
             callback->onCommit(callback->opaque, m_input);
+            printf("*** MSG_IM_EN, commit m_input %s **\n", m_input.c_str());
+        if (!doSwitchCE())
+            guiAction(MSG_IM_EN, GUIACT_SYSTRAY | GUIACT_HINT);
+        else
+            guiAction(MSG_IM_CN, GUIACT_SYSTRAY | GUIACT_HINT);
+
         return SWITCH_CE_KEY;
     }
     if (!m_bCN)

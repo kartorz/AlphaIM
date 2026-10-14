@@ -38,22 +38,26 @@
 /* i in [0 .. c-1] */
 #define LOOP(size)  for (int i=0; i<size; i++)
 
+enum GuiActionFlags {
+    GUIACT_SYSTRAY = 1 << 0,
+    GUIACT_HINT    = 1 << 1,
+};
+
 enum {
     // [iArg1 .. fArg2]: rect.
     // strArg1:          input.
     // pArg1:            items: item being ""  - Don't set keeping the value.
     //                               being " " - clear the old value.
 
-    MSG_IM_INPUT = 0,
-
-    MSG_IM_ON,
+    MSG_IM_ON = 0,
     MSG_IM_OFF,
     MSG_IM_CN,
     MSG_IM_EN,
     MSG_IM_CPUN,
     MSG_IM_EPUN,
-    MSG_IM_CLOSE,
-    MSG_IM_COMMIT,
+    MSG_PREEDIT_UPDATE,
+    MSG_PREEDIT_CLOSE,
+    MSG_PREEDIT_COMMIT,
 
     MSG_UI_LAN,
     MSG_UI_PUN,

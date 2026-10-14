@@ -244,7 +244,7 @@ void IMPreedit::reset()
 void IMPreedit::close()
 {
     clear();
-    guiAction(MSG_IM_OFF);
+    guiAction(MSG_IM_OFF, GUIACT_SYSTRAY);
     gApp->curIM()->close();
 }
 
@@ -352,9 +352,9 @@ bool IMPreedit::doSwitchCEPun()
 {
     m_bCNPun = !m_bCNPun;
     if (m_bCNPun)
-        guiAction(MSG_IM_CPUN);
+        guiAction(MSG_IM_CPUN, GUIACT_SYSTRAY);
     else
-        guiAction(MSG_IM_EPUN);
+        guiAction(MSG_IM_EPUN, GUIACT_SYSTRAY);
     return m_bCNPun;
 }
 
@@ -362,12 +362,8 @@ bool IMPreedit::doSwitchCE()
 {
     m_bCN = !m_bCN;
 
-    if (!m_bCN) {
-        guiAction(MSG_IM_EN);
+    if (!m_bCN)
         doClose();
-    } else {
-        guiAction(MSG_IM_CN);
-    }
 
     m_bCNPun = m_bCN;
     return m_bCN;
@@ -399,7 +395,7 @@ bool IMPreedit::doInput(char key)
 void IMPreedit::doClose()
 {
     clear();
-    guiAction(MSG_IM_CLOSE);
+    guiAction(MSG_PREEDIT_CLOSE, GUIACT_SYSTRAY);
 }
 
 void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
@@ -426,10 +422,10 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
     }
 }
 
-void IMPreedit::guiAction(int id)
+void IMPreedit::guiAction(int id, int flags)
 {
-    PRINTF("IMPreedit::guiAction id: %d, %px\n", id, this);
-    gApp->getMessageQ()->push(id);
+    PRINTF("IMPreedit::guiAction id: %d flags: %d, %px\n", id, flags, this);
+    gApp->getMessageQ()->push(id, flags, 0);
 }
 
 void IMPreedit::guiShowCandidate(IC* ic)
@@ -449,7 +445,7 @@ void IMPreedit::guiShowCandidate(IC* ic)
                input.c_str(), items.c_str(), rect.x, rect.y, rect.w, rect.h);*/
 
         Message msg;
-        msg.id = MSG_IM_INPUT;
+        msg.id = MSG_PREEDIT_UPDATE;
         msg.iArg1   = rect.x;
         msg.iArg2   = rect.y;
         msg.fArg1   = rect.w;
@@ -469,25 +465,18 @@ void IMPreedit::guiShowCandidate(IC* ic)
 void IMPreedit::guiReload()
 {
     if (!m_bTrigger) {
-        guiAction(MSG_IM_OFF);
-        guiAction(MSG_IM_CLOSE);
+        guiAction(MSG_IM_OFF, GUIACT_SYSTRAY);
+        guiAction(MSG_PREEDIT_CLOSE, GUIACT_SYSTRAY);
         return;
     }
 
-    guiAction(MSG_IM_ON);
-
     if (m_bCN)
-        guiAction(MSG_IM_CN);
+        guiAction(MSG_IM_CN, GUIACT_SYSTRAY);
     else
-        guiAction(MSG_IM_EN);
-
+        guiAction(MSG_IM_EN, GUIACT_SYSTRAY);
 }
 
-/*bool IMPreedit::ispinyin( u32 key)
-{
-    if (key )
-    }*/
-
+/* Message from gui */
 void IMPreedit::handleMessage(int msg)
 {
     switch(msg) {

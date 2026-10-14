@@ -28,11 +28,14 @@ struct _IcWinClass
 
     GtkWidget *input_label;
     GtkWidget *preedit_label[PREEDIT_ITEMS_MAX];
+    GtkWidget *hint;
+    guint       hint_timeout;
 };
 
 //extern void    ic_win_showinfo (void);
 extern GType   ic_win_get_type (void);
 extern IcWin*  ic_win_new      (void);
+extern void    ic_win_show_hint(IcWin *win, const gchar *hint);
 
 extern void ic_win_refresh(IcWin *win,
                     gint32 x,

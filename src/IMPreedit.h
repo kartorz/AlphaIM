@@ -107,7 +107,7 @@ protected:
     void doClose();
     void doCommit(int i, IMPreeditCallback *callback);
 
-    void guiAction(int id);
+    void guiAction(int id, int flags);
     void guiShowCandidate(IC* ic);
 
     u32  mapCNPun(char key);
