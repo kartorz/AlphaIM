@@ -3,6 +3,7 @@
 #include <X11/keysym.h>
 
 #include "Application.h"
+#include "Configure.h"
 #include "X11IMPreedit.h"
 #include "Log.h"
 
@@ -28,11 +29,8 @@ TriggerKey ForwardKeys[] = {
     {0L, 0L, 0L}
 };
 
-/* Trigger Keys List */
 static TriggerKey OnOffKeys[] = {
-    {XK_space, ShiftMask, ShiftMask},
-    {XK_space, ControlMask, ControlMask},
-    {XK_space, ControlMask | Mod4Mask, ControlMask | Mod4Mask},
+    {XK_space, ControlMask, ShiftMask | ControlMask  | Mod4Mask},
     {0L, 0L, 0L}
 };
 
@@ -76,6 +74,14 @@ static TriggerKey CEPSwitchKeys[] = {
 
 X11IMPreedit::X11IMPreedit():IMPreedit(),m_preModKey(0),m_preRetKey(0)
 {
+}
+
+void X11IMPreedit::setTriggerKeys()
+{
+    int shortcut = Configure::getRefrence().readShortcut();
+
+    OnOffKeys[0].keysym = shortcut == 0 ? 0 : XK_space;
+    OnOffKeys[0].modifier = shortcut == 1 ? ShiftMask : shortcut == 2 ? ControlMask : Mod4Mask;
 }
 
 bool X11IMPreedit::isModifier(u32 keysym)
@@ -135,16 +141,11 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
     // Check OnOff
     if (isMatchKeys(key, modifier, OnOffKeys)) {
         if (!m_bTrigger || !m_bCN) {
-            m_bTrigger = true;
-            m_bCN = true;
-            m_bCNPun = true;
-            m_bStart = false;
+            doTriggerOn();
             guiAction(MSG_IM_ON, GUIACT_SYSTRAY | GUIACT_HINT);
             return TRIGGER_ON_KEY;
         }
-        m_bTrigger = false;
-        m_bCN = false;
-        m_bCNPun = false;
+        doTriggerOff();
         callback->onIMOff(callback->opaque);
         doClose();
         guiAction(MSG_IM_OFF, GUIACT_SYSTRAY);
@@ -158,7 +159,6 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
     if (isMatchKeys(key, modifier, CESwitchKeys)) {
         if (m_input != "")
             callback->onCommit(callback->opaque, m_input);
-            printf("*** MSG_IM_EN, commit m_input %s **\n", m_input.c_str());
         if (!doSwitchCE())
             guiAction(MSG_IM_EN, GUIACT_SYSTRAY | GUIACT_HINT);
         else

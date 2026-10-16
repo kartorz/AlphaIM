@@ -32,7 +32,8 @@ m_homeDir(""),
 m_configFile(""),
 m_dirty(false),
 m_selcnt(0),
-m_icMode(0)
+m_icMode(0),
+m_shortcut(2)
 {
 }
 
@@ -114,6 +115,13 @@ int Configure::load(const string& xmlpath)
         m_icMode = (mode == 0 || mode == 1) ? mode : 0;
     }
 
+    tempElement = rootElement->FirstChildElement("shortcut");
+    if (tempElement) {
+        int shortcut = 2;
+        tempElement->QueryIntAttribute("mode", &shortcut);
+        m_shortcut = shortcut >= 0 && shortcut <= 3 ? shortcut : 2;
+    }
+
     //m_doc.SaveFile(xmlpath.c_str());
     return 0;
 }
@@ -165,4 +173,28 @@ void Configure::writeXml()
        m_dirty = false;
        m_doc.SaveFile(m_configFile.c_str());
     }
+}
+
+int Configure::readShortcut()
+{
+    SpinLock lock(m_cs);
+    return m_shortcut;
+}
+
+void Configure::writeShortcut(int shortcut)
+{
+    if (shortcut < 0 || shortcut > 3)
+        return;
+    SpinLock lock(m_cs);
+    XMLElement *root = m_doc.RootElement();
+    if (root == NULL)
+        return;
+    XMLElement *element = root->FirstChildElement("shortcut");
+    if (element == NULL) {
+        element = m_doc.NewElement("shortcut");
+        root->InsertEndChild(element);
+    }
+    element->SetAttribute("mode", shortcut);
+    m_shortcut = shortcut;
+    m_dirty = true;
 }

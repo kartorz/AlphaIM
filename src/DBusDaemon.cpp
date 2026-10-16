@@ -8,6 +8,7 @@
 #include "MessageQueue.h"
 #include "DBusDaemon.h"  // Must after sd-bus.h
 #include "Application.h"
+#include "Configure.h"
 
 static sd_bus *session_bus = NULL;
 static sd_bus_slot *session_bus_slot = NULL;
@@ -19,18 +20,21 @@ static int dummy_handler(sd_bus_message *m, void *userdata, sd_bus_error *ret_er
 
 static int im_gui_message(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
-    int id, r;
+    int id, arg, r;
     /* Read the parameters */
-    r = sd_bus_message_read(m, "i", &id);
+    r = sd_bus_message_read(m, "ii", &id, &arg);
     if (r < 0) {
         printf("gui message read arg, error code: %s\n", strerror(-r));
         return r;
     }
 
     PRINTF("gui_message read id %d\n", id);
-    if (id >= MSG_UI_LAN  && id <= MSG_UI_PUN) {
-        gApp->xim.handleUIMessage(id);
-        gApp->dim.handleUIMessage(id);
+    if (id == MSG_UI_GET_SHORTCUT)
+        return sd_bus_reply_method_return(m, "i", Configure::getRefrence().readShortcut());
+
+    if (id >= MSG_UI_LAN || id <= MSG_UI_PUN) {
+        gApp->xim.handleUIMessage(id, arg);
+        gApp->dim.handleUIMessage(id, arg);
     }
 
     /* Reply with the response */
@@ -66,7 +70,7 @@ static int im_ping(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 static  sd_bus_vtable im_vtable[] = {
     SD_BUS_VTABLE_START(0),
 
-    SD_BUS_METHOD("GuiMessage", "i", "i", im_gui_message, 0),
+    SD_BUS_METHOD("GuiMessage", "ii", "i", im_gui_message, 0),
     SD_BUS_METHOD("CreateInputContext", "s", "u", im_create_inputcontext, 0),
     SD_BUS_METHOD("Exit", "b", "", im_exit, 0),
     SD_BUS_METHOD("Ping", "v", "v", im_ping, 0),
@@ -183,7 +187,7 @@ void DBusDaemon::listen()
 int DBusDaemon::callGuiMessage(int id)
 {
     int r = sd_bus_call_method_async(session_bus, NULL, AIM_SRV_NAME, AIM_SRV_PATH, AIM_SRV_INTF,
-                                     "GuiMessage", dummy_handler, NULL, "i", id);
+                                     "GuiMessage", dummy_handler, NULL, "ii", id, 0);
     if (r < 0)
         printf("callGuiMessage, error code: %s\n", strerror(-r));
 

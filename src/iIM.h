@@ -6,7 +6,7 @@
 // Chinese Simplified language eUniversity Press, 2010.
 
 // Page range [1..n]
-#define IM_ITEM_PAGE_SIZE  9
+#define IM_PAGE_MAX_ITEMS  9
 #define IM_INPUT_MAX  40
 
 

@@ -121,7 +121,8 @@ im-modules:
  $(MAKE) -C protocol/qt
  $(MAKE) -C protocol/gtk
 
-gui/gtk/resource.c: gui/gtk/aimapp.gresource.xml gui/gtk/menu.ui
+gui/gtk/resource.c: gui/gtk/aimapp.gresource.xml gui/gtk/menu.ui gui/gtk/setting.ui gui/gtk/labels.ini \
+    gui/gtk/shortcut-settings.ui gui/gtk/input-copy.ui
  glib-compile-resources gui/gtk/aimapp.gresource.xml --target=gui/gtk/resource.c --generate-source
 
 #$(QT_PLUGIN): protocol/qt/main.moc $(OBJS_QIM)

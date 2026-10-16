@@ -8,6 +8,7 @@
  */
 
 #include "Application.h"
+#include "X11IMPreedit.h"
 #include "TaskManager.h"
 #include "PY.h"
 #include "Util.h"
@@ -69,6 +70,8 @@ Application::Application()
     getDpySize();
 
     dim.icm.setMode(Configure::getRefrence().readICMode());
+
+    X11IMPreedit::setTriggerKeys();
 
     logger.d("start Application ...\n");
 }

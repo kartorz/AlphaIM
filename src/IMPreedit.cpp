@@ -6,11 +6,12 @@
 #endif
 
 #include "Application.h"
+#include "Configure.h"
 #include "IMPreedit.h"
 #include "Log.h"
 
 IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(false),
-m_bCNPun(false),m_curPage(0), m_uiStringMax(50),m_bUsrSelectCandidate(false)
+m_bCNPun(false),m_curPage(0), m_uiStringMax(80),m_bUsrSelectCandidate(false)
 {
 }
 
@@ -64,7 +65,7 @@ bool IMPreedit::commit(int i)
             }
         }
 
-        logger.e("[XimSrv::commit]: can't find key %s\n", item.key.c_str());
+        logger.e("commit: can't find key %s\n", item.key.c_str());
         return true; //Something wrong, just commit, don't lose user input.
     }
     return false;
@@ -156,27 +157,6 @@ void IMPreedit::add(char key)
 
 void IMPreedit::del()
 {
-#if 0
-    if (m_ciItems.size () > 0) {
-        IMItem it = m_ciItems.back();
-        m_ciItems.pop_back();
-        boost::algorithm::erase_last(m_ci, it.val);
-        //int pos = m_ci.find_last_of(it.val);
-        //if (pos != string::npos)
-        //    m_ci.erase(pos, it.val.length());
-        //printf("1111%s, %s\n", m_input.c_str(), it.key.c_str());
-        //string temp = it.key + m_input;
-        m_input = it.key + m_input;
-    } else {
-        if (m_input != "") {
-            char* r = CharUtil::u8charat(m_input.c_str(), -1, NULL);
-            if (r != NULL) {
-                boost::algorithm::erase_last(m_input, r);
-                free(r);
-            }
-        }
-    }
-#else
     if (m_input != "") {
         char* r = CharUtil::u8charat(m_input.c_str(), -1, NULL);
         if (r != NULL) {
@@ -189,11 +169,6 @@ void IMPreedit::del()
         IMItem it = m_ciItems.back();
         m_ciItems.pop_back();
         boost::algorithm::erase_last(m_ci, it.val);
-        //int pos = m_ci.find_last_of(it.val);
-        //if (pos != string::npos)
-        //    m_ci.erase(pos, it.val.length());
-        //printf("1111%s, %s\n", m_input.c_str(), it.key.c_str());
-        //string temp = it.key + m_input;
         m_input = it.key + m_input;
     }
 
@@ -201,7 +176,6 @@ void IMPreedit::del()
         m_candidate = lookup(m_input);
         page(1);
     }
-#endif
 }
 
 string IMPreedit::lookup(string input)
@@ -249,29 +223,27 @@ void IMPreedit::close()
 }
 
 /*
- * The items number of a page is variable depending on length of phrase.
+ * The number of items per page depends on phrase length.
  * eg:   1 xx  2 xx                 .. 9 xx
- *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx
+ *       1 xxxxxxxxx 2 xxxx         .. 5 xx
  *
- */
-
-/*
- * The items number of a page is variable depending on length of phrase.
- * eg:   1 xx  2 xx                 .. 9 xx
- *       1 xxxxxxx 2 xxxxxxxxxxxx   .. 5 xx
- *
- * Current page: ( m_pageWin[0] , m_pageWin[1] ]
+ * m_items  1  2  3  4  5 ..      9   ....  100
+ *                     win[0] .. win[1]
+ * -----------------------------------------------
+ * m_items: all the items
+ * current item range: [m_pageWin[0], m_pageWin[1])
+ * m_uiItems: items at ic win
  */
 void IMPreedit::page(int pg)
 {
-    int maxItems = IM_ITEM_PAGE_SIZE;
+    #define padding  6
+    int maxItems = IM_PAGE_MAX_ITEMS;
     int start, end;
     IMItem  candiItem;
 
     m_uiItems.clear();
     m_bCandiItem = false;
 
-    //if (m_candidate == "") // Maybe, there are ""s in db.
     if (m_items.size() == 0) {
         candiItem.key = "";
         candiItem.val = m_candidate;
@@ -279,31 +251,27 @@ void IMPreedit::page(int pg)
         return;
     }
 
-    if (pg < 1)
-        pg = 1;
+    PRINTF("pg:%d, [%d, %d]\n", m_curPage, m_pageWin[0], m_pageWin[1]);
+
+    if (pg < 1) pg = 1;
 
     bool bPgDown = m_curPage <= pg;
     if (bPgDown && m_pageWin[1] >=  m_items.size())
         return;
-
-    if (!bPgDown && m_pageWin[0] <= -1)
+    if (!bPgDown && m_pageWin[0] <= 0)
         return;
 
     m_curPage = pg;
-
     if (pg == 1) {
-
         if (m_candidate != m_items[0].val) {
             candiItem.key = "";
             candiItem.val = m_candidate;
             maxItems--;
         }
-
         start = 0;
         end = m_items.size() < maxItems ? m_items.size() : maxItems;
         bPgDown = true;
     } else {
-        //printf("pg:%d, [%d, %d]\n", m_curPage, m_pageWin[0], m_pageWin[1]);
         if (bPgDown) {
             //  win[0] ... win[1] |
             //             start ... end
@@ -320,13 +288,12 @@ void IMPreedit::page(int pg)
         //printf(" (%d, %d)\n", start, end);
     }
 
-    int length = candiItem.val.length();
+    int length = candiItem.val.length() + padding;
     int pos;
     for (pos = 0; pos < end - start; pos++) {
-        //IMItem it = bPgDown ? m_items[start + pos] : m_items[end - pos - 1] ;
-        IMItem it = m_items[start + pos];
+        IMItem& it = m_items[start + pos];
         m_uiItems.push_back(it);
-        length += it.val.length();
+        length += it.val.length() + padding;
         if (length > m_uiStringMax) {
             ++pos; // Fix m_pageWin
             break;
@@ -340,12 +307,25 @@ void IMPreedit::page(int pg)
         m_pageWin[0] = end - pos;
         m_pageWin[1] = end;
     }
-    //printf("done [%d, %d]\n", m_pageWin[0], m_pageWin[1]);
-
     if (candiItem.val != "") {
         m_bCandiItem = true;
         m_uiItems.push_front(candiItem);
     }
+}
+
+void IMPreedit::doTriggerOn()
+{
+    m_bTrigger = true;
+    m_bCN = true;
+    m_bCNPun = true;
+    m_bStart = false;
+}
+
+void IMPreedit::doTriggerOff()
+{
+    m_bTrigger = false;
+    m_bCN = false;
+    m_bCNPun = false;
 }
 
 bool IMPreedit::doSwitchCEPun()
@@ -400,7 +380,7 @@ void IMPreedit::doClose()
 
 void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 {
-    if (i >= 1 && i <= 9) {
+    if (i >= 1 && i <= m_uiItems.size()) {
         if (i > 1) {
             // Usr selected phrase manually, save it.
             m_bUsrSelectCandidate = true;
@@ -477,7 +457,7 @@ void IMPreedit::guiReload()
 }
 
 /* Message from gui */
-void IMPreedit::handleMessage(int msg)
+void IMPreedit::handleMessage(int msg, int arg)
 {
     switch(msg) {
     case MSG_UI_LAN:
@@ -485,6 +465,10 @@ void IMPreedit::handleMessage(int msg)
         return;
     case MSG_UI_PUN:
         doSwitchCEPun();
+        return;
+    case MSG_UI_SET_SHORTCUT:
+        Configure::getRefrence().writeShortcut(arg);
+        X11IMPreedit::setTriggerKeys();
         return;
     }
 }

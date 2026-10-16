@@ -43,7 +43,7 @@ public:
     int handlePreeditStartReply(XIMS ims, IMProtocol *calldata);
     int handlePreeditCaretReply(XIMS ims, IMProtocol *calldata);
     int doModifierKeyEvent(XIMS ims, IMProtocol *calldata);
-    void handleUIMessage(int msg);
+    void handleUIMessage(int msg, int arg = 0);
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candiate);
 

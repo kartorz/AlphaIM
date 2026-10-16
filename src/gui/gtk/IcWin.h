@@ -15,7 +15,7 @@ typedef struct _IcWinClass    IcWinClass;
 #define IC_WIN_CLASS(klass)     (G_TYPE_CHECK_INSTANCE_CAST ((klass), IC_WIN_TYPE, IcWinClass))
 #define IC_WIN_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS  ((obj), IC_WIN_TYPE,   IcWinClass))
 
-#define PREEDIT_ITEMS_MAX    IM_ITEM_PAGE_SIZE
+#define PREEDIT_ITEMS_MAX    IM_PAGE_MAX_ITEMS
 
 struct _IcWin
 {

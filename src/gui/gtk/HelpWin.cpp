@@ -57,8 +57,8 @@ HelpWin *help_win_new(int x, int y)
     markup += "快捷键\n";
     markup += "\n";
     markup += "  - 打开关闭输入法\n";
-    markup += "      . Ctr  + SPACE\n";
-    markup += "      . Shift + SPACE\n";
+    markup += "      . Ctrl + SPACE（默认）\n";
+    markup += "      . 在菜单中设置或关闭\n";
     markup += "\n";
     markup += "  - 中英文切换\n";
     markup += "      . 左(Ctr + Shift)";

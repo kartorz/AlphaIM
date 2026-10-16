@@ -60,6 +60,8 @@ enum {
     MSG_PREEDIT_COMMIT,
 
     MSG_UI_LAN,
+    MSG_UI_SET_SHORTCUT,
+    MSG_UI_GET_SHORTCUT,
     MSG_UI_PUN,
 
     MSG_QUIT,

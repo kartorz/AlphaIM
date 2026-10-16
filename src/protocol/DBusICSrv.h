@@ -21,8 +21,8 @@ public:
     ~DBusICSrv() {}
     int  procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state);
     u32 createIC(const char *name, const char *sender);
-    void handleUIMessage(int msg) {
-        return icm.getFocus()->preedit->handleMessage(msg);
+    void handleUIMessage(int msg, int arg = 0) {
+        return icm.getFocus()->preedit->handleMessage(msg, arg);
     }
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candidate);

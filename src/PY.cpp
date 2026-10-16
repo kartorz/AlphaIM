@@ -211,7 +211,7 @@ void PY::lookupPhrase(string key, string input, deque<IMItem>& items, bool first
                     offset = OFF_RANGE;
 
                 // Don't put too many.
-                if (phyTotal > OFF_PAGE * IM_ITEM_PAGE_SIZE) {
+                if (phyTotal > OFF_PAGE * IM_PAGE_MAX_ITEMS) {
                     //PRINTF("{Check} got enough exit\n");
                     exit = true;
                     break;

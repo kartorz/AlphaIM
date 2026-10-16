@@ -24,6 +24,8 @@ public:
     int  readICMode();
     void writeICMode(int mode);
 
+    int readShortcut();
+    void writeShortcut(int shortcut);
     void writeXml();
 
     string m_dataDir;
@@ -36,6 +38,7 @@ private:
     bool m_dirty;
     int m_selcnt;
     int m_icMode;
+    int m_shortcut;
     string m_configFile;
     SpinCriticalSection m_cs;
 };

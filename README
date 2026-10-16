@@ -1,56 +1,25 @@
 关于 “阿尔法输入法”
 ==================
-版本号: 1.0
+版本号: 1.5
 作者:   李力琼 (joni lee) <joni_lee@outlook.com>
 
-它是一款Linux平台的快速智能的输入法。不收集用户数据，也不依赖网络词典，不需要更新词库，
-更加不会弹广告，资源消耗低， 是众多输入法中的一个简洁版, 同win10自带的输入法比较类似。
+它是一款Linux平台的智能输入法。不收集用户数据，也不需要更新词库，弹广告。
+资源消耗低， 配置少，简洁离线运行。
 
 功能特性:
-  . 自动学习生成用户词组。
-      - 系统只提供一个基础词库，主要还是记录用户的词组。只会记录汉字，字母和数字不会被记录。
-      - 记录用户整句输入的词组。
-      - 逐个输入汉字的词组，需要重复出现2次以上，才会被认定为词组。
-    只要用户坚持整个词组输入，时间长了以后，会形成自己的词库，后续输入会越来越快。
-
-  . 使用频度排序。  
-
-  . 支持模糊拼音， 只需要输入词组部分拼音字母即可。
-
+  . 自动学习生成用户词组，只学习汉字，字母和数字不会被记录。
+  . 根据输入频度排序。
+  . 支持模糊拼音，只需要输入词组部分拼音字母即可。
 
 快捷健
-=====
-  - 打开关闭输入法
-      . Ctr  + SPACE
-      . Shift + SPACE
-
-  - 中英文切换
-      . 左(Ctr + Shift)
-
-  - 中英文符号切换
-      . 右(Ctr + Shift)
-
-  - 提交
-      . SPACE
-      . Enter
-
-  - 取消
-      . Esc
-      . Ctr + C
-
-  - 向前翻页
-      . Ctr + F
-      . PgUp
-      . 左方向键
-	  . 上方向键
-      . '-'键
-
-  - 向后翻页
-      . Ctr + J
-      . PgDn
-      . 右方向键
-	  . 下方向键
-      . '=' 键
+======
+  - 打开关闭输入法: Ctrl + SPACE（可在菜单设置或关闭）
+  - 中英文切换: 左Shift
+  - 中英文符号切换:右Shift
+  - 提交:SPACE | Enter
+  - 取消: Esc
+  - 向前翻页: PgUp | 左键| 上键 | -键
+  - 向后翻页: PgDn | 右键| 下键 | =键
 
 许可证
 =======
@@ -59,50 +28,53 @@ AlphaIM在"GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)" 许可证下发布.
 
 
 安装需要的开发包
-==============
+===============
 
 "AlphaIM"依赖如下开发包:
   1) boost: "http://www.boost.org/"
-  2) x11, gtk.
+  2) x11, gtk, qt。
 
-ubuntu14.04:
-    sudo apt-get install libboost1.55-dev libboost-filesystem1.55-dev 
-             libx11-dev  libgtk-3-dev  libsystemd-dev
-sudo apt-get install libqt5qml5 libqt5quick5  qtdeclarative5-dev qtbase5-private-dev 
-libayatana-appindicator3-dev
-
+以ubuntu14为例:
+apt-get install libboost1.55-dev libboost-filesystem1.55-dev libx11-dev libsystemd-dev
+apt-get install libgtk-3-dev qtbase5-private-dev libayatana-appindicator3-dev
 
 如何编译
 =======
 
-linux,unix
-----------
+手动编译
+--------
 $ ./configure  
 $ ./configure --help
 $ make 
 $ make install
 
+deb
+----
+dpkg-buildpackage -b -us -uc
+
 运行
 ====
-sudo im-config，选择AlphaIM后，需要注销或者重启。
-如果，输入法不能使用，可能是之前的输入法还在运行中，
-需要关闭它们自动启动——
-1）/etc/xdg/autostart/ 里面删除。
-2) systemctl disable xx
-3) 检查其它的autostart 项。 
+im-config，选择AlphaIM后，需要注销或者重启。
 
 软件兼容性
 =========
-目前这个输入法支持xim和QtIM协议， 我测试了GTK/QT下的一些常用软件：
-   kate, gedit, thunderbird, firefox, chrome, libreoffice,  emacs, ....
-都可以支持，如果碰到不能支持的软件， 可以使用kate/gedit 来临时替代输入。
+支持xim,gtk 和QtIM协议，使用似有Qt/Gtk库的应用需要单独处理。
+linux微信静态编译私有的Qt，无法支持，可以使用托盘菜单的小窗口先输入，
+再粘贴过去。
 
 WPS
 ===
 wps使用私有的Qt，需要下载Qt官方的SDK后，再进行编译，详见
 im-private/wps/Qt5.12/README
 
-如何提交Bug, 贡献代码， 提出意见，或者取得联系
-=============================================
+托盘菜单（从下到上）
+====================
+  - 输入模式：关闭 / 拼音 / 英文，快捷键冲突时使用。
+  - 快捷键设置：可关闭以避免桌面快捷键冲突。
+  - 输入并复制：小窗口输入复制到剪贴板并隐藏窗口，Esc 隐藏窗口。
+  - 输入法窗口：输入法工具窗口，在屏幕工作区右下角显示。
+
+Who am i
+========
 我的email是: joni_lee@outlook.com.
 任何同软件相关的问题，你都可以联系我。

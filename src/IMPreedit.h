@@ -81,7 +81,7 @@ public:
     virtual ~IMPreedit();
     inline void addRef() {++refs;};
     inline bool releaseRef() {return refs > 0 && --refs == 0;};
-    virtual void handleMessage(int msg);
+    virtual void handleMessage(int msg, int arg = 0);
     virtual int doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback) = 0;
     virtual bool imWants(u32 key, u32 modifier) = 0;
 
@@ -99,6 +99,8 @@ protected:
     void page(int pg);
     bool commit(int i);
 
+    void doTriggerOn();
+    void doTriggerOff();
     bool doSwitchCE();
     bool doSwitchCEPun();
     void doPageup();

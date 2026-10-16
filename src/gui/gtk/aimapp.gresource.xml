@@ -3,5 +3,8 @@
   <gresource prefix="/org/gtk/aimapp">
     <file preprocess="xml-stripblanks">gui/gtk/setting.ui</file>
     <file preprocess="xml-stripblanks">gui/gtk/menu.ui</file>
+    <file>gui/gtk/labels.ini</file>
+    <file preprocess="xml-stripblanks">gui/gtk/shortcut-settings.ui</file>
+    <file preprocess="xml-stripblanks">gui/gtk/input-copy.ui</file>
   </gresource>
 </gresources>

@@ -328,11 +328,11 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
     return true;
 }
 
-void XIMSrv::handleUIMessage(int msg)
+void XIMSrv::handleUIMessage(int msg, int arg)
 {
     if (m_imwin) {
         MutexLock lock(m_cs);
-        m_icManager.getFocus()->preedit->handleMessage(msg);
+        m_icManager.getFocus()->preedit->handleMessage(msg, arg);
     }
 }
 

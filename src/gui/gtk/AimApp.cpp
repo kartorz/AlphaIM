@@ -99,9 +99,7 @@ static gboolean aim_app_on_active_im(gpointer user_data)
     if (klass->bshow_imwin) {
         aim_win_enable_im(klass->imwin, true);
     }
-
     aim_app_set_tray_icon(klass, AIM_TRAY_ICON_CN);
-
     return false;
 }
 
@@ -116,7 +114,6 @@ static gboolean aim_app_on_disactive_im(gpointer user_data)
     if (klass->hpwin != NULL) {
         help_win_hide(klass->hpwin);
     }
-
     aim_app_set_tray_icon(klass, AIM_TRAY_ICON_APP);
 
     return false;
@@ -131,6 +128,7 @@ static gboolean aim_app_on_switch_lan(gpointer user_data)
         aim_app_set_tray_icon(klass, AIM_TRAY_ICON_CN);
     else
         aim_app_set_tray_icon(klass, AIM_TRAY_ICON_EN);
+
 
     aim_win_switch_lan(klass->imwin, is_cn);
 
@@ -191,7 +189,6 @@ static void aim_app_message_action(int action, int flags)
     //PRINTF("aim_app_message_action: action:%d\n", action);
     switch (action) {
     case MSG_IM_ON: {
-        //g_signal_emit(data, klass->active_im_id, 0);
         gdk_threads_add_idle(aim_app_on_active_im, NULL);
         if (flags & GUIACT_HINT)
             gdk_threads_add_idle(aim_app_on_show_hint, (gpointer) "拼音");
@@ -468,11 +465,20 @@ gboolean aim_app_on_hide_hpwin(gpointer user_data)
     return false;
 }
 
-void aim_app_message_send(int action)
+void aim_app_message_send(int action, int argument)
 {
     AimAppClass *klass = AIM_APP_GET_CLASS(aim_app_instance);
-    g_dbus_proxy_call_sync (klass->im_proxy, "GuiMessage",
-                            g_variant_new ("(i)", action), G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL);
+    if (klass->im_proxy == NULL)
+        return;
+    GError *error = NULL;
+    GVariant *reply = g_dbus_proxy_call_sync(klass->im_proxy, "GuiMessage",
+        g_variant_new("(ii)", action, argument), G_DBUS_CALL_FLAGS_NONE, 2000, NULL, &error);
+    if (reply != NULL)
+        g_variant_unref(reply);
+    if (error != NULL) {
+        g_warning("Unable to send input method action: %s", error->message);
+        g_error_free(error);
+    }
 }
 
 

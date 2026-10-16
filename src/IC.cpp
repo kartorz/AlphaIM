@@ -149,7 +149,10 @@ void ICManager::releasePreedit(IMPreedit *preedit)
 
 void ICManager::focusIn(u32 id)
 {
-    //PRINTF("focusIn %d\n", id);
+    //PRINTF("focusIn %d, %d\n", id, m_icFocus);
+    /* There are many foucus event */
+    if (m_icFocus == id)
+        return;
     m_icFocus = id;
     if (!m_icMode)
         get(id)->preedit->guiReload();

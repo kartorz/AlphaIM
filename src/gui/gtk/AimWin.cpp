@@ -8,7 +8,7 @@ G_DEFINE_TYPE(AimWin, aim_win, GTK_TYPE_WINDOW /*GTK_TYPE_APPLICATION_WINDOW*/);
 
 extern std::string  g_system_dir;
 extern gboolean aim_app_on_hide_hpwin(gpointer user_data);
-extern void aim_app_message_send(int action);
+extern void aim_app_message_send(int action, int argument = 0);
 
 static void aim_win_init(AimWin *win)
 {
