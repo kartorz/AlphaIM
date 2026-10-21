@@ -94,11 +94,6 @@ public:
     u32 refs;
 
 protected:
-    void add(char key);
-    void del();
-    void page(int pg);
-    bool commit(int i);
-
     void doTriggerOn();
     void doTriggerOff();
     bool doSwitchCE();
@@ -120,19 +115,28 @@ protected:
     string m_input;
     string m_ci;
     string m_candidate;
-    int m_curPage; // Start from 1.
-    int m_pageWin[2];
     int m_uiStringMax;
-    bool m_bCandiItem;
 
     bool   m_bTrigger;
     bool   m_bCN;
     bool   m_bCNPun;  //Chinese punctuation
     bool   m_bPreQuo;
-    bool   m_bUsrSelectCandidate;
+
+private:
+    void add(char key);
+    void del();
+    void page(int pg);
+    bool commit(int i);
+    bool showCandiStr(int page) const
+    {
+        return !m_candidate.empty() &&
+            (page != 1 || m_items.empty() || m_candidate != m_items.front().val);
+    }
 
     MutexCriticalSection m_cs;
 
+    int m_curPage; // Start from 1.
+    deque<int> m_pageWin;
     deque<IMItem> m_items;
     deque<IMItem> m_ciItems;
     deque<IMItem> m_uiItems;

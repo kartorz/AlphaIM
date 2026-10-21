@@ -11,7 +11,7 @@
 #include "Log.h"
 
 IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(false),
-m_bCNPun(false),m_curPage(0), m_uiStringMax(80),m_bUsrSelectCandidate(false)
+m_bCNPun(false),m_curPage(0), m_uiStringMax(80)
 {
 }
 
@@ -25,50 +25,53 @@ IMPreedit::~IMPreedit()
 //    false - otherwise.
 bool IMPreedit::commit(int i)
 {
-    i = m_pageWin[0] + i - 1; // 'i' starts from 1.
-    if (i == 0) // commit candidate string.
+    int start = m_curPage > 1 ? m_pageWin[m_curPage - 2] : 0;
+    bool candistr = showCandiStr(m_curPage);
+    if (candistr && i == 1) // commit candidate string.
     {
         //printf("commit candidate %s\n", m_items[i].val.c_str());
         if (m_items.size() > 0)
-            gApp->curIM()->onCommit(m_items[i]);
+            gApp->curIM()->onCommit(m_items.front());
         return true;
     }
 
-    i -= m_bCandiItem;  // offset to m_items
+    i = start + i - 1 - candistr;
     //printf("commit: i: %d, size: %d\n", i, m_items.size());
-    if(m_items.size() > i) {
-        IMItem item = m_items[i];
-        gApp->curIM()->onCommit(item);
-
-        int key_pos = m_input.find(item.key, 0);
-        if (key_pos != string::npos) {
-            int next_pos = key_pos + item.key.length();
-            //printf("next pos: %d\n", next_pos);
-            if (next_pos < m_input.length()) {
-                m_ci += m_input.substr(0, key_pos); // invalid PY before the 'key'.
-                m_ci += item.val; // key --> val;
-                m_ciItems.push_back(item);
-                m_input = m_input.substr(next_pos, m_input.length() - next_pos);
-                m_candidate = lookup(m_input);
-                page(1);
-                return false; // commit string, go on.
-            } else {
-                //boost::algorithm::replace_first(m_input, item.key,  item.val);
-                //boost::algorithm::replace_first(m_candidate, m_items[0].val,  m_items[i].val);
-                m_input = "";
-                m_candidate = "";
-                m_ci += m_input.substr(0, key_pos);
-                m_ci += item.val;
-                m_ciItems.push_back(item);
-                page(1);
-                return true;  // Done, commit the 'commit' string, close ic-window.
-            }
-        }
-
-        logger.e("commit: can't find key %s\n", item.key.c_str());
-        return true; //Something wrong, just commit, don't lose user input.
+    if (i < 0 || i > m_items.size()) {
+        logger.e("commit: error number i: %d,\n", i);
+        return false;
     }
-    return false;
+
+    IMItem item = m_items[i];
+    gApp->curIM()->onCommit(item);
+
+    int key_pos = m_input.find(item.key, 0);
+    if (key_pos != string::npos) {
+        int next_pos = key_pos + item.key.length();
+        //printf("next pos: %d\n", next_pos);
+        if (next_pos < m_input.length()) {
+            m_ci += m_input.substr(0, key_pos); // invalid PY before the 'key'.
+            m_ci += item.val; // key --> val;
+            m_ciItems.push_back(item);
+            m_input = m_input.substr(next_pos, m_input.length() - next_pos);
+            m_candidate = lookup(m_input);
+            page(1);
+            return false; // commit string, go on.
+        } else {
+            //boost::algorithm::replace_first(m_input, item.key,  item.val);
+            //boost::algorithm::replace_first(m_candidate, m_items[0].val,  m_items[i].val);
+            m_input = "";
+            m_candidate = "";
+            m_ci += m_input.substr(0, key_pos);
+            m_ci += item.val;
+            m_ciItems.push_back(item);
+            page(1);
+            return true;  // Done, commit the 'commit' string, close ic-window.
+        }
+    }
+
+    logger.e("commit: can't find key %s\n", item.key.c_str());
+    return true; //Something wrong, just commit, don't lose user input.
 }
 
 u32 IMPreedit::mapCNPun(char key)
@@ -182,8 +185,7 @@ string IMPreedit::lookup(string input)
 {
     string ret;
     m_curPage = 0;
-    m_pageWin[0] = 0;
-    m_pageWin[1] = 0;
+    m_pageWin.clear();
     m_candidate = "";
 
     m_items.clear();
@@ -198,8 +200,7 @@ void IMPreedit::clear()
     m_ci = "";
     m_candidate = "";
     m_curPage = 0;
-    m_pageWin[0] = 0;
-    m_pageWin[1] = 0;
+    m_pageWin.clear();
     m_items.clear();
     m_ciItems.clear();
     m_uiItems.clear();
@@ -226,91 +227,59 @@ void IMPreedit::close()
  * The number of items per page depends on phrase length.
  * eg:   1 xx  2 xx                 .. 9 xx
  *       1 xxxxxxxxx 2 xxxx         .. 5 xx
- *
- * m_items  1  2  3  4  5 ..      9   ....  100
- *                     win[0] .. win[1]
  * -----------------------------------------------
  * m_items: all the items
- * current item range: [m_pageWin[0], m_pageWin[1])
+ * m_pageWin: exclusive page ends, e.g. 8, 12, 17, 22
  * m_uiItems: items at ic win
  */
 void IMPreedit::page(int pg)
 {
-    #define padding  6
-    int maxItems = IM_PAGE_MAX_ITEMS;
-    int start, end;
-    IMItem  candiItem;
+    const int padding = 6;
+    IMItem candiItem;
 
-    m_uiItems.clear();
-    m_bCandiItem = false;
-
-    if (m_items.size() == 0) {
+    if (m_items.empty()) {
+        m_curPage = 0;
+        m_pageWin.clear();
+        m_uiItems.clear();
         candiItem.key = "";
         candiItem.val = m_candidate;
         m_uiItems.push_front(candiItem);
         return;
     }
 
-    PRINTF("pg:%d, [%d, %d]\n", m_curPage, m_pageWin[0], m_pageWin[1]);
-
-    if (pg < 1) pg = 1;
-
-    bool bPgDown = m_curPage <= pg;
-    if (bPgDown && m_pageWin[1] >=  m_items.size())
-        return;
-    if (!bPgDown && m_pageWin[0] <= 0)
+    if (pg < 1)
+        pg = 1;
+    if (pg > m_pageWin.size() + 1)
         return;
 
-    m_curPage = pg;
-    if (pg == 1) {
-        if (m_candidate != m_items[0].val) {
-            candiItem.key = "";
-            candiItem.val = m_candidate;
-            maxItems--;
+    // The range is [start, end).
+    bool hasCandiStr = showCandiStr(pg);
+    if (pg == m_pageWin.size() + 1) {
+        int end = m_pageWin.empty() ? 0 : m_pageWin.back();
+        bool firstPage = m_pageWin.empty();
+        int maxItems = IM_PAGE_MAX_ITEMS - (firstPage && hasCandiStr);
+        int length = padding;
+        if (firstPage && hasCandiStr)
+            length += m_candidate.length();
+
+        for (int count = 0; count < maxItems && end < m_items.size(); ++count) {
+            length += m_items[end++].val.length() + padding;
+            if (length > m_uiStringMax)
+                break;
         }
-        start = 0;
-        end = m_items.size() < maxItems ? m_items.size() : maxItems;
-        bPgDown = true;
-    } else {
-        if (bPgDown) {
-            //  win[0] ... win[1] |
-            //             start ... end
-            start = m_pageWin[1];
-            end = start + maxItems;
-            end = m_items.size() < end ? m_items.size() : end;
-        } else {
-            // start ... end |
-            //           win[0] ... win[1]
-            end = m_pageWin[0];
-            start = end - maxItems;
-            start = start < 0 ? 0 : start;
-        }
-        //printf(" (%d, %d)\n", start, end);
+        m_pageWin.push_back(end);
     }
 
-    int length = candiItem.val.length() + padding;
-    int pos;
-    for (pos = 0; pos < end - start; pos++) {
-        IMItem& it = m_items[start + pos];
-        m_uiItems.push_back(it);
-        length += it.val.length() + padding;
-        if (length > m_uiStringMax) {
-            ++pos; // Fix m_pageWin
-            break;
-        }
-    }
-
-    if (bPgDown) {
-        m_pageWin[0] = start;
-        m_pageWin[1] = start + pos;
-    } else {
-        m_pageWin[0] = end - pos;
-        m_pageWin[1] = end;
-    }
-    if (candiItem.val != "") {
-        m_bCandiItem = true;
+    int start = pg == 1 ? 0 : m_pageWin[pg - 2];
+    int end = m_pageWin[pg - 1];
+    m_uiItems.assign(m_items.begin() + start, m_items.begin() + end);
+    if (hasCandiStr) {
+        candiItem.key = "";
+        candiItem.val = m_candidate;
         m_uiItems.push_front(candiItem);
     }
+    m_curPage = pg;
+    PRINTF("pg:%d, [%d, %d)\n", pg, start, end);
 }
 
 void IMPreedit::doTriggerOn()
@@ -380,25 +349,16 @@ void IMPreedit::doClose()
 
 void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
 {
-    if (i >= 1 && i <= m_uiItems.size()) {
-        if (i > 1) {
-            // Usr selected phrase manually, save it.
-            m_bUsrSelectCandidate = true;
-        }
+    if (i>=1 && i<=9 && commit(i)) {
+        // commit candidte string.
+        string candidate = m_ci + m_candidate;
+        //PRINTF("commit %s, %d\n", candidate.c_str(), i);
+        callback->onCommit(callback->opaque, candidate);
 
-        if (commit(i)) {
-            // commit candidte string.
-            string candidate = m_ci + m_candidate;
-            //PRINTF("commit %s, %d\n", candidate.c_str(), i);
-            callback->onCommit(callback->opaque, candidate);
+        doClose();
 
-            doClose();
-
-            if (m_bUsrSelectCandidate) {
-                m_bUsrSelectCandidate = false;
-                gApp->curIM()->addUserPhraseAsync(candidate);
-            }
-        }
+        if (i > 1)
+            gApp->curIM()->addUserPhraseAsync(candidate);
     }
 }
 
