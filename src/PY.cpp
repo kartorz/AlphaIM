@@ -456,6 +456,8 @@ void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
 
 void PY::onCommit(const IMItem& imitem)
 {
+    if (!Configure::getRefrence().readLearnUserInput())
+        return;
     if (imitem.priority < MAX_PRIORITY) {
         vector<string> phkeys;
         int ret = getPhraseKey(imitem.val, phkeys);
@@ -654,6 +656,8 @@ void PY::sort(IndexList& items)
 
 void PY::addUserPhrase(const string& phrase)
 {
+    if (!Configure::getRefrence().readLearnUserInput())
+        return;
     vector<string> phraseVec;
     m_usrPhrase.trackUsrInput(phrase, phraseVec);
     for (int i = 0; i < phraseVec.size(); i++)
@@ -729,7 +733,7 @@ void PY::addToUsrDB(const string& phrase)
 
 void PY::addUserPhraseAsync(const string& phrase)
 {
-    if (phrase.length() <= USRPH_MAX_SIZE) {
+    if (Configure::getRefrence().readLearnUserInput() && phrase.length() <= USRPH_MAX_SIZE) {
         AddToUserDBTask* tsk = new AddToUserDBTask(this, phrase);
         TaskManager::getInstance()->addTask(tsk);
     }

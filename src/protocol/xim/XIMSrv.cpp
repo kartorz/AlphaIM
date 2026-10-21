@@ -21,6 +21,7 @@
 
 #include "aim.h"
 #include "Application.h"
+#include "Configure.h"
 #include "CharUtil.h"
 #include "XIMSrv.h"
 #include "Log.h"
@@ -123,6 +124,7 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
 XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0),
 m_preModKey(0), m_icManager(new XIMIC(NULL))
 {
+    m_icManager.setMode(Configure::getRefrence().readICMode());
 }
 
 XIMSrv::~XIMSrv()

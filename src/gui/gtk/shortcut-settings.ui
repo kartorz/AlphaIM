@@ -1,60 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <object class="GtkWindow" id="shortcut_window">
+  <object class="GtkWindow" id="settings_window">
     <property name="resizable">False</property>
     <property name="window-position">center</property>
+    <property name="default-width">540</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="settings_header">
+        <property name="show-close-button">True</property>
+      </object>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
-        <property name="spacing">12</property>
-        <property name="border-width">16</property>
+        <property name="spacing">14</property>
+        <property name="border-width">20</property>
         <child>
-          <object class="GtkCheckButton" id="shortcut_enabled"/>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">8</property>
-            <child>
-              <object class="GtkComboBoxText" id="shortcut_modifier">
-                <items>
-                  <item>Shift</item>
-                  <item>Ctrl</item>
-                  <item>Win</item>
-                </items>
+          <object class="GtkFrame">
+            <property name="shadow-type">in</property>
+            <child type="label">
+              <object class="GtkLabel" id="shortcut_section_title">
+                <property name="label">Shortcut key</property>
+                <attributes><attribute name="weight" value="bold"/></attributes>
               </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkLabel">
-                <property name="label">+ Space</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
+                <property name="border-width">12</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">8</property>
+                    <child>
+                      <object class="GtkLabel" id="shortcut_label">
+                        <property name="label">Switch input method</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="onoffkey_modifier">
+                        <property name="active">1</property>
+                        <items>
+                          <item>Shift</item>
+                          <item>Ctrl</item>
+                          <item>Win</item>
+                        </items>
+                        <signal name="changed" handler="onoffkey_changed"/>
+                      </object>
+                    </child>
+                    <child><object class="GtkLabel"><property name="label">+ Space</property></object></child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">8</property>
+                    <child>
+                      <object class="GtkLabel" id="language_label">
+                        <property name="label">Switch language</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="imswitchkey_modifier">
+                        <property name="active">0</property>
+                        <items><item>Ctrl</item><item>Alt</item></items>
+                        <signal name="changed" handler="language_changed"/>
+                      </object>
+                    </child>
+                    <child><object class="GtkLabel"><property name="label">+ Shift</property></object></child>
+                  </object>
+                </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-          </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="shortcut_note">
-            <property name="wrap">True</property>
+          <object class="GtkFrame">
+            <property name="shadow-type">in</property>
+            <child type="label">
+              <object class="GtkLabel" id="ic_mode_section_title">
+                <property name="label">Input context</property>
+                <attributes><attribute name="weight" value="bold"/></attributes>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">8</property>
+                <property name="border-width">12</property>
+                <child>
+                  <object class="GtkRadioButton" id="ic_mode_per_app">
+                    <property name="label">Per application</property>
+                    <signal name="toggled" handler="ic_mode_changed"/>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="ic_mode_global">
+                    <property name="label">Global</property>
+                    <property name="group">ic_mode_per_app</property>
+                    <signal name="toggled" handler="ic_mode_changed"/>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-          </packing>
+        </child>
+        <child>
+          <object class="GtkFrame">
+            <property name="shadow-type">in</property>
+            <child type="label">
+              <object class="GtkLabel" id="features_section_title">
+                <property name="label">Features</property>
+                <attributes><attribute name="weight" value="bold"/></attributes>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="border-width">12</property>
+                <child>
+                  <object class="GtkCheckButton" id="learn_enabled">
+                    <property name="label">Learning</property>
+                    <signal name="toggled" handler="learning_changed"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
         </child>
       </object>
     </child>

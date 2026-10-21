@@ -1,12 +1,36 @@
 #include <gtk/gtk.h>
-#include <string>
 
 #include "HelpWin.h"
 
-G_DEFINE_TYPE(HelpWin, help_win, GTK_TYPE_WINDOW /*GTK_TYPE_APPLICATION_WINDOW*/);
+G_DEFINE_TYPE(HelpWin, help_win, GTK_TYPE_WINDOW);
 
-#define HP_WIN_H  300
-#define HP_WIN_W  240
+#define HP_WIN_H 520
+#define HP_WIN_W 560
+
+static GtkWidget *section(const gchar *title, const gchar *body)
+{
+    GtkWidget *frame = gtk_frame_new(NULL);
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+    GtkWidget *heading = gtk_label_new(NULL);
+    GtkWidget *content = gtk_label_new(body);
+
+    gchar *markup = g_markup_printf_escaped("<b>%s</b>", title);
+    gtk_label_set_markup(GTK_LABEL(heading), markup);
+    g_free(markup);
+    gtk_label_set_xalign(GTK_LABEL(heading), 0.0);
+    gtk_label_set_xalign(GTK_LABEL(content), 0.0);
+    gtk_label_set_line_wrap(GTK_LABEL(content), TRUE);
+    gtk_label_set_selectable(GTK_LABEL(content), TRUE);
+    gtk_label_set_max_width_chars(GTK_LABEL(content), 64);
+    gtk_widget_set_margin_start(box, 14);
+    gtk_widget_set_margin_end(box, 14);
+    gtk_widget_set_margin_top(box, 12);
+    gtk_widget_set_margin_bottom(box, 12);
+    gtk_box_pack_start(GTK_BOX(box), heading, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), content, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(frame), box);
+    return frame;
+}
 
 static void help_win_init(HelpWin *win)
 {
@@ -14,135 +38,88 @@ static void help_win_init(HelpWin *win)
 
 static void help_win_class_init(HelpWinClass *klass)
 {
-
 }
 
 void help_win_hide(HelpWin *win)
 {
-    HelpWinClass *klass = HELP_WIN_GET_CLASS(win);
-    gtk_widget_hide(GTK_WIDGET (win));
+    gtk_widget_hide(GTK_WIDGET(win));
 }
 
 void help_win_show_hide(HelpWin *win)
 {
-    HelpWinClass *klass = HELP_WIN_GET_CLASS(win);
-
-    if (gtk_widget_get_mapped(GTK_WIDGET (win))) {
-        gtk_widget_hide(GTK_WIDGET (win));
-    } else {
-        gtk_widget_show_all(GTK_WIDGET (win));
-
-        GdkWindow *gdk_win = gtk_widget_get_window(GTK_WIDGET (win));
-        gdk_window_move(gdk_win,  klass->x - 50,  klass->y - HP_WIN_H);
+    if (gtk_widget_get_visible(GTK_WIDGET(win))) {
+        gtk_widget_hide(GTK_WIDGET(win));
+        return;
     }
-}
 
+    gtk_widget_show_all(GTK_WIDGET(win));
+    gtk_window_present(GTK_WINDOW(win));
+}
 
 HelpWin *help_win_new(int x, int y)
 {
-    HelpWin* helpwin = (HelpWin *)g_object_new (HELP_WIN_TYPE,
-                                          "type", GTK_WINDOW_POPUP,
-                                          "decorated", FALSE,
-                                          "resizable", FALSE,
-                                          "window-position", GTK_WIN_POS_CENTER,
-                                          "accept-focus", FALSE,
-                                          NULL);
+    HelpWin *helpwin = HELP_WIN(g_object_new(HELP_WIN_TYPE,
+        "type", GTK_WINDOW_TOPLEVEL,
+        "title", "关于阿尔法输入法",
+        "resizable", TRUE,
+        "default-width", HP_WIN_W,
+        "default-height", HP_WIN_H,
+        "window-position", GTK_WIN_POS_CENTER,
+        NULL));
     HelpWinClass *klass = HELP_WIN_GET_CLASS(helpwin);
-    GtkWidget *win = ( GtkWidget *)(GTK_WINDOW(helpwin));
-    gtk_widget_set_size_request(win, HP_WIN_W, HP_WIN_H);
-    GtkWidget *scrollwin = gtk_scrolled_window_new(NULL, NULL);
-    GtkWidget *input_label = gtk_label_new(NULL);
-    std::string markup = "<span foreground=\"blue\" size=\"x-large\">";
-    markup += "版本号: 1.0\n\n";
-    markup += "快捷键\n";
-    markup += "\n";
-    markup += "  - 打开关闭输入法\n";
-    markup += "      . Ctrl + SPACE（默认）\n";
-    markup += "      . 在菜单中设置或关闭\n";
-    markup += "\n";
-    markup += "  - 中英文切换\n";
-    markup += "      . 左(Ctr + Shift)";
-    markup += "\n";
-    markup += "  - 中英文符号切换\n";
-    markup += "      . 右(Ctr + Shift)";
-    markup += "\n";
-    markup += "  - 提交\n";
-    markup += "      . SPACE\n";
-    markup += "      . Enter\n";
-    markup += "\n";
-    markup += "  - 取消\n";
-    markup += "      . Esc\n";
-    markup += "      . Ctr + C\n";
-    markup += "\n";
-    markup += "  - 向前翻页\n";
-    markup += "      . Ctr + F\n";
-    markup += "      . PgUp\n";
-    markup += "      . 左方向键\n";
-    markup += "      . 上方向键\n";
-    markup += "      . '-'键\n";
-    markup += "\n";
-    markup += "  - 向后翻页\n";
-    markup += "      . Ctr + J\n";
-    markup += "      . PgDn\n";
-    markup += "      . 右方向键\n";
-    markup += "      . 下方向键\n";
-    markup += "      . '=' 键\n";
-    markup += "</span>";
-    gtk_label_set_markup (GTK_LABEL (input_label), markup.c_str());
+    GtkWidget *titlebar = gtk_header_bar_new();
+    gtk_header_bar_set_title(GTK_HEADER_BAR(titlebar), "帮助");
+    gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(titlebar), TRUE);
+    gtk_window_set_titlebar(GTK_WINDOW(helpwin), titlebar);
+    GtkWidget *root = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *header = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+    GtkWidget *title = gtk_label_new(NULL);
+    GtkWidget *subtitle = gtk_label_new("简洁、离线、低资源消耗的 Linux 输入法");
+    GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
+    GtkWidget *content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 
-#if 0
-    GtkWidget *text_view = gtk_text_view_new();
-    //gtk_text_view_set_justification((GtkTextView *)text_view, GTK_JUSTIFY_CENTER);
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view));
-    gtk_text_buffer_set_text (buffer, "快捷键\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 打开关闭输入法\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Ctr  + SPACE\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Shift + SPACE\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 中英文切换\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . 左Shift\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 中英文符号切换\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . 右Shift\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 提交\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . SPACE\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Enter\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 取消\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Esc\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Ctr + C\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 向前翻页\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Ctr + F\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . PgUp\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . 左方向键盘\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . '-'键\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "  - 向后翻页\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . Ctr + J\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . PgDn\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . 右方向键盘\n", -1);
-    gtk_text_buffer_insert_at_cursor(buffer, "      . '=' 键\n", -1);
-    gtk_container_add(GTK_CONTAINER(scrollwin), text_view);
-#endif
-    gtk_container_add(GTK_CONTAINER(scrollwin), input_label);
-    gtk_container_add (GTK_CONTAINER (helpwin), scrollwin);
-    //gtk_container_add (GTK_CONTAINER (helpwin), input_label);
+    gtk_container_add(GTK_CONTAINER(helpwin), root);
+    gtk_widget_set_margin_start(header, 22);
+    gtk_widget_set_margin_end(header, 22);
+    gtk_widget_set_margin_top(header, 18);
+    gtk_widget_set_margin_bottom(header, 14);
+    gtk_label_set_markup(GTK_LABEL(title), "<big><b>阿尔法输入法</b></big>");
+    gtk_label_set_xalign(GTK_LABEL(title), 0.0);
+    gtk_label_set_xalign(GTK_LABEL(subtitle), 0.0);
+    gtk_style_context_add_class(gtk_widget_get_style_context(subtitle), "dim-label");
+    gtk_box_pack_start(GTK_BOX(header), title, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(header), subtitle, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(root), header, FALSE, FALSE, 0);
 
-    /* Must after 'gtk_container_add'.
-     * If not call 'gtk_widget_show_all' this time, call this function instead of. 
-     * Or, the app will be blocked when call 'gtk_widget_show_all' in the future.
-     */
-    //gtk_widget_realize(GTK_WIDGET (text_view));
-    //gtk_widget_show_all(GTK_WIDGET (win));
-    //gtk_widget_show(GTK_WIDGET (text_view));
-    //gtk_widget_show_all(GTK_WIDGET (win));
- 
-    //gtk_widget_hide (GTK_WIDGET (win));
-    //klass->text_view = NULL;
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_margin_start(content, 18);
+    gtk_widget_set_margin_end(content, 18);
+    gtk_widget_set_margin_top(content, 4);
+    gtk_widget_set_margin_bottom(content, 18);
+    gtk_box_pack_start(GTK_BOX(content), section("功能特性",
+        "自动学习生成用户词组，只学习汉字；根据输入频度排序；支持模糊拼音，只需输入词组部分拼音字母。"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(content), section("快捷键",
+        "输入法切换：Ctrl + Space\n"
+        "中英文切换：左 Shift\n"
+        "符号切换：右 Shift\n"
+        "提交：Space 或 Enter\n"
+        "取消：Esc\n"
+        "向前翻页：Page Up、左方向键、上方向键、-\n"
+        "向后翻页：Page Down、右方向键、下方向键、="), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(content), section("软件兼容性",
+        "支持 XIM、GTK 和 Qt 输入协议。使用私有 Qt/Gtk 库的应用可能需要单独处理。\n"
+        "Linux 微信使用静态编译的私有 Qt，暂不支持，可使用托盘菜单的“输入并复制”，再粘贴到应用中。"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(content), section("WPS",
+        "WPS 使用私有 Qt。需要下载 Qt 官方 SDK 后编译，详见项目中的 im-private/wps/Qt5.12/README。"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(content), section("关于",
+        "版本：1.5\n"
+        "作者：李力琼 (joni lee)\n"
+        "联系：joni_lee@outlook.com\n"
+        "许可证：GNU GPLv3。"), FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(scroll), content);
+    gtk_box_pack_start(GTK_BOX(root), scroll, TRUE, TRUE, 0);
 
+    g_signal_connect(helpwin, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
     klass->x = x;
     klass->y = y;
     return helpwin;

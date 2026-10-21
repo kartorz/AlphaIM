@@ -21,6 +21,11 @@ using namespace boost::filesystem;
 
 #define CONF_VERSION  1
 
+static inline int validInt(int c, int s, int e, int def)
+{
+    return c >= s && c <= e ? c : def;
+}
+
 Configure& Configure::getRefrence()
 {
     static Configure configure;
@@ -33,7 +38,9 @@ m_configFile(""),
 m_dirty(false),
 m_selcnt(0),
 m_icMode(0),
-m_shortcut(2)
+m_onOffKey(1),
+m_imSwitchKey(0),
+m_learnEn(true)
 {
 }
 
@@ -106,20 +113,24 @@ int Configure::load(const string& xmlpath)
 
     XMLElement* tempElement = rootElement->FirstChildElement("phrase");
     if (!tempElement)
-        return -3;   
+        return -3;
     m_selcnt = tempElement->IntAttribute("selcnt");
 
     tempElement = rootElement->FirstChildElement("inputContext");
-    if (tempElement) {
-        int mode = tempElement->IntAttribute("mode");
-        m_icMode = (mode == 0 || mode == 1) ? mode : 0;
-    }
+    if (tempElement)
+        tempElement->QueryIntAttribute("mode", &m_icMode);
+
+    tempElement = rootElement->FirstChildElement("learnUserInput");
+    if (tempElement)
+        tempElement->QueryBoolAttribute("enabled", &m_learnEn);
 
     tempElement = rootElement->FirstChildElement("shortcut");
     if (tempElement) {
-        int shortcut = 2;
-        tempElement->QueryIntAttribute("mode", &shortcut);
-        m_shortcut = shortcut >= 0 && shortcut <= 3 ? shortcut : 2;
+        tempElement->QueryIntAttribute("activate", &m_onOffKey);
+        m_onOffKey = validInt(m_onOffKey, 0, 2, 1);
+
+        tempElement->QueryIntAttribute("imswitch", &m_imSwitchKey);
+        m_imSwitchKey = validInt(m_imSwitchKey, 0, 2, 0);
     }
 
     //m_doc.SaveFile(xmlpath.c_str());
@@ -151,19 +162,87 @@ int Configure::readICMode()
 
 void Configure::writeICMode(int mode)
 {
-    if (mode != 0 && mode != 1)
+    if ((mode != 0 && mode != 1) || !m_doc.RootElement())
         return;
 
     if (m_icMode != mode) {
         SpinLock lock(m_cs);
         m_icMode = mode;
-        XMLElement* inputContextElement =
-            XMLHandle(m_doc.RootElement()).FirstChildElement("inputContext").ToElement();
-        if (inputContextElement) {
-            inputContextElement->SetAttribute("mode", mode);
-            m_dirty = true;
+        XMLElement *root = m_doc.RootElement();
+        XMLElement *inputContextElement = root->FirstChildElement("inputContext");
+        if (inputContextElement == NULL) {
+            inputContextElement = m_doc.NewElement("inputContext");
+            root->InsertEndChild(inputContextElement);
         }
+        inputContextElement->SetAttribute("mode", mode);
+        m_dirty = true;
     }
+}
+
+int Configure::readIMSwitchKey()
+{
+    SpinLock lock(m_cs);
+    return m_imSwitchKey;
+}
+
+void Configure::writeIMSwitchKey(int mode)
+{
+    if (mode < 0 || mode > 2 || !m_doc.RootElement())
+        return;
+    SpinLock lock(m_cs);
+    XMLElement *root = m_doc.RootElement();
+    XMLElement *element = root->FirstChildElement("shortcut");
+    if (element == NULL) {
+        element = m_doc.NewElement("shortcut");
+        root->InsertEndChild(element);
+    }
+    element->SetAttribute("imswitch", mode);
+    m_imSwitchKey = mode;
+    m_dirty = true;
+}
+
+int Configure::readOnOffKey()
+{
+    SpinLock lock(m_cs);
+    return m_onOffKey;
+}
+
+void Configure::writeOnOffKey(int key)
+{
+    if (key < 0 || key > 2 || !m_doc.RootElement())
+        return;
+    SpinLock lock(m_cs);
+    XMLElement *root = m_doc.RootElement();
+    XMLElement *element = root->FirstChildElement("shortcut");
+    if (element == NULL) {
+        element = m_doc.NewElement("shortcut");
+        root->InsertEndChild(element);
+    }
+    element->SetAttribute("activate", key);
+    m_onOffKey = key;
+    m_dirty = true;
+}
+
+bool Configure::readLearnUserInput()
+{
+    SpinLock lock(m_cs);
+    return m_learnEn;
+}
+
+void Configure::writeLearnUserInput(bool enabled)
+{
+    SpinLock lock(m_cs);
+    XMLElement *root = m_doc.RootElement();
+    if (root == NULL)
+        return;
+    XMLElement *element = root->FirstChildElement("learnUserInput");
+    if (element == NULL) {
+        element = m_doc.NewElement("learnUserInput");
+        root->InsertEndChild(element);
+    }
+    element->SetAttribute("enabled", enabled ? 1 : 0);
+    m_learnEn = enabled;
+    m_dirty = true;
 }
 
 void Configure::writeXml()
@@ -173,28 +252,4 @@ void Configure::writeXml()
        m_dirty = false;
        m_doc.SaveFile(m_configFile.c_str());
     }
-}
-
-int Configure::readShortcut()
-{
-    SpinLock lock(m_cs);
-    return m_shortcut;
-}
-
-void Configure::writeShortcut(int shortcut)
-{
-    if (shortcut < 0 || shortcut > 3)
-        return;
-    SpinLock lock(m_cs);
-    XMLElement *root = m_doc.RootElement();
-    if (root == NULL)
-        return;
-    XMLElement *element = root->FirstChildElement("shortcut");
-    if (element == NULL) {
-        element = m_doc.NewElement("shortcut");
-        root->InsertEndChild(element);
-    }
-    element->SetAttribute("mode", shortcut);
-    m_shortcut = shortcut;
-    m_dirty = true;
 }

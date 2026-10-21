@@ -78,10 +78,8 @@ X11IMPreedit::X11IMPreedit():IMPreedit(),m_preModKey(0),m_preRetKey(0)
 
 void X11IMPreedit::setTriggerKeys()
 {
-    int shortcut = Configure::getRefrence().readShortcut();
-
-    OnOffKeys[0].keysym = shortcut == 0 ? 0 : XK_space;
-    OnOffKeys[0].modifier = shortcut == 1 ? ShiftMask : shortcut == 2 ? ControlMask : Mod4Mask;
+    int onOffKey = Configure::getRefrence().readOnOffKey();
+    OnOffKeys[0].modifier = onOffKey == 0 ? ShiftMask : onOffKey == 2 ? Mod4Mask : ControlMask;
 }
 
 bool X11IMPreedit::isModifier(u32 keysym)

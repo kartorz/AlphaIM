@@ -24,8 +24,12 @@ public:
     int  readICMode();
     void writeICMode(int mode);
 
-    int readShortcut();
-    void writeShortcut(int shortcut);
+    int readOnOffKey();
+    void writeOnOffKey(int key);
+    int readIMSwitchKey();
+    void writeIMSwitchKey(int key);
+    bool readLearnUserInput();
+    void writeLearnUserInput(bool enabled);
     void writeXml();
 
     string m_dataDir;
@@ -38,7 +42,9 @@ private:
     bool m_dirty;
     int m_selcnt;
     int m_icMode;
-    int m_shortcut;
+    int m_onOffKey;
+    int m_imSwitchKey;
+    bool m_learnEn;
     string m_configFile;
     SpinCriticalSection m_cs;
 };

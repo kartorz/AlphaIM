@@ -13,6 +13,50 @@
 static sd_bus *session_bus = NULL;
 static sd_bus_slot *session_bus_slot = NULL;
 
+static int im_read_settings(sd_bus_message *message, void *userdata, sd_bus_error *ret_error)
+{
+    Configure &config = Configure::getRefrence();
+    return sd_bus_reply_method_return(message, "a{sv}", 4,
+        "onOffKey", "i", config.readOnOffKey(),
+        "imSwitchKey", "i", config.readIMSwitchKey(),
+        "icMode", "i", config.readICMode(),
+        "learnEn", "b", config.readLearnUserInput() ? 1 : 0);
+}
+
+static int im_write_int(sd_bus_message *message, void *userdata, sd_bus_error *ret_error)
+{
+    const char *key;
+    int value;
+    int result = sd_bus_message_read(message, "si", &key, &value);
+    if (result < 0)
+        return result;
+
+    Configure &config = Configure::getRefrence();
+    if (strcmp(key, "onOffKey") == 0)
+        config.writeOnOffKey(value);
+    else if (strcmp(key, "imSwitchKey") == 0)
+        config.writeIMSwitchKey(value);
+    else if (strcmp(key, "icMode") == 0)
+        config.writeICMode(value);
+    else if (strcmp(key, "learnEn") == 0)
+        config.writeLearnUserInput(value != 0);
+    else
+        return sd_bus_error_setf(ret_error, SD_BUS_ERROR_INVALID_ARGS,
+            "Unknown integer setting: %s", key);
+    config.writeXml();
+    return sd_bus_reply_method_return(message, "");
+}
+
+static int im_write_string(sd_bus_message *message, void *userdata, sd_bus_error *ret_error)
+{
+    const char *key, *value;
+    int result = sd_bus_message_read(message, "ss", &key, &value);
+    if (result < 0)
+        return result;
+    return sd_bus_error_setf(ret_error, SD_BUS_ERROR_INVALID_ARGS,
+        "Unknown string setting: %s", key);
+}
+
 static int dummy_handler(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     return 1;
@@ -29,10 +73,7 @@ static int im_gui_message(sd_bus_message *m, void *userdata, sd_bus_error *ret_e
     }
 
     PRINTF("gui_message read id %d\n", id);
-    if (id == MSG_UI_GET_SHORTCUT)
-        return sd_bus_reply_method_return(m, "i", Configure::getRefrence().readShortcut());
-
-    if (id >= MSG_UI_LAN || id <= MSG_UI_PUN) {
+    if (id == MSG_UI_LAN || id == MSG_UI_PUN) {
         gApp->xim.handleUIMessage(id, arg);
         gApp->dim.handleUIMessage(id, arg);
     }
@@ -71,6 +112,9 @@ static  sd_bus_vtable im_vtable[] = {
     SD_BUS_VTABLE_START(0),
 
     SD_BUS_METHOD("GuiMessage", "ii", "i", im_gui_message, 0),
+    SD_BUS_METHOD("ReadSettings", "", "a{sv}", im_read_settings, 0),
+    SD_BUS_METHOD("WriteInt", "si", "", im_write_int, 0),
+    SD_BUS_METHOD("WriteString", "ss", "", im_write_string, 0),
     SD_BUS_METHOD("CreateInputContext", "s", "u", im_create_inputcontext, 0),
     SD_BUS_METHOD("Exit", "b", "", im_exit, 0),
     SD_BUS_METHOD("Ping", "v", "v", im_ping, 0),

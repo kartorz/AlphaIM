@@ -426,9 +426,5 @@ void IMPreedit::handleMessage(int msg, int arg)
     case MSG_UI_PUN:
         doSwitchCEPun();
         return;
-    case MSG_UI_SET_SHORTCUT:
-        Configure::getRefrence().writeShortcut(arg);
-        X11IMPreedit::setTriggerKeys();
-        return;
     }
 }
