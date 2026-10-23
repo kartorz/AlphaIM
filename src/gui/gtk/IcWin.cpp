@@ -43,6 +43,7 @@ void ic_win_show_hint(IcWin *win, const gchar *hint)
     gtk_widget_show(klass->hint);
     gtk_widget_show(gtk_widget_get_parent(klass->hint));
     gtk_widget_show(GTK_WIDGET(win));
+    gdk_window_raise(gtk_widget_get_window(GTK_WIDGET(win)));
     klass->hint_timeout = g_timeout_add(1200, ic_win_hide_hint, win);
 }
 
@@ -57,6 +58,10 @@ void ic_win_refresh(IcWin *win,
     GtkWindow *icwin = GTK_WINDOW (win);
     IcWinClass *klass = IC_WIN_GET_CLASS(win);
 
+    if (klass->hint_timeout != 0) {
+        g_source_remove(klass->hint_timeout);
+        klass->hint_timeout = 0;
+    }
     gtk_widget_hide(klass->hint);
 
     std::string markup = "<span foreground=\"blue\" size=\"x-large\">";
@@ -95,6 +100,7 @@ void ic_win_refresh(IcWin *win,
 
     gtk_window_resize(icwin, w, h);
     gtk_window_move(icwin, x, y);
+    gdk_window_raise(gtk_widget_get_window(GTK_WIDGET(icwin)));
 
 }
 
@@ -109,6 +115,8 @@ IcWin *ic_win_new()
                                           NULL);
     IcWinClass *klass = IC_WIN_GET_CLASS(icwin);
     klass->hint_timeout = 0;
+    gtk_window_set_keep_above(GTK_WINDOW(icwin), TRUE);
+    gtk_window_set_focus_on_map(GTK_WINDOW(icwin), FALSE);
 
     GtkWidget *window = ( GtkWidget *)(GTK_WINDOW(icwin));
     //gtk_widget_set_size_request(window, ICWIN_W, ICWIN_H);

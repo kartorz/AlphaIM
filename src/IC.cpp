@@ -154,8 +154,10 @@ void ICManager::focusIn(u32 id)
     if (m_icFocus == id)
         return;
     m_icFocus = id;
+    IC *ic = get(id);
     if (!m_icMode)
-        get(id)->preedit->guiReload();
+        ic->preedit->guiReload();
+    ic->preedit->guiShowCandidate(ic);
 }
 
 /*

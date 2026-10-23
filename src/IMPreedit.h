@@ -86,6 +86,7 @@ public:
     virtual bool imWants(u32 key, u32 modifier) = 0;
 
     void guiReload();
+    void guiShowCandidate(IC *ic);
     bool isActive() const { return m_bTrigger && m_bCN; }
     void clear();
     void close();
@@ -105,7 +106,6 @@ protected:
     void doCommit(int i, IMPreeditCallback *callback);
 
     void guiAction(int id, int flags);
-    void guiShowCandidate(IC* ic);
 
     u32  mapCNPun(char key);
     string  mapCNPunToU8Str(char key);
