@@ -118,22 +118,24 @@ ICManager::ICManager(IC* ic): m_icid(0), m_icFocus(0), m_icMode(0)
      */
     m_ics[0] = ic;
     m_ics[0]->preedit = ic->createPreedit();
-    m_ics[0]->preedit->addRef();
 }
 
 ICManager::~ICManager()
 {
-    std::map<int, IC*>::iterator iter;
-    for (iter = m_ics.begin(); iter != m_ics.end(); iter++) {
-        releasePreedit(iter->second->preedit);
-        delete(iter->second);
+    if (!m_icMode) {
+        std::map<int, IC*>::iterator iter;
+        for (iter = m_ics.begin(); iter != m_ics.end(); iter++) {
+            releasePreedit(iter->second->preedit);
+            delete(iter->second);
+    } else {
+        delete m_ics[0]->preedit;
+        delete m_ics[0];
     }
 }
 
 void ICManager::releasePreedit(IMPreedit *preedit)
 {
-
-    if (!preedit || !preedit->releaseRef()) return;
+    if (m_icMode || !preedit || !preedit->releaseRef()) return;
 
     for (std::map<string, IMPreedit*>::iterator app = m_preedits.begin();
          app != m_preedits.end(); ) {
