@@ -29,7 +29,7 @@
 
 #define KEVBUF_LEN 64
 
-#define DEF_LOCALATE "zh_CN.UTF-8,zh.UTF-8,zh_CN,zh"
+#define DEF_LOCALATE "zh_CN.UTF-8,zh.UTF-8,zh_CN,zh,C,C.UTF-8,C.utf8,POSIX,en_US.UTF-8,en_US.utf8"
 
 /* Supported Inputstyles */
 static XIMStyle supported_styles[] = {
@@ -160,12 +160,17 @@ bool XIMSrv::open()
                             CopyFromParent,
                             0, NULL);
 
-    char *imlocale = getenv("LC_CTYPE");
-    if (!imlocale) {
-        imlocale = (char *)DEF_LOCALATE;
+    string imlocale = DEF_LOCALATE;
+    const char *localeVariables[] = {"LC_ALL", "LC_CTYPE", "LANG"};
+    for (const char *variable : localeVariables) {
+        const char *locale = getenv(variable);
+        if (locale != NULL && *locale != '\0') {
+            imlocale += ",";
+            imlocale += locale;
+        }
     }
 
-    logger.d("imlocale  %s\n", imlocale);
+    logger.d("imlocale  %s\n", imlocale.c_str());
 
     check(input_styles = (XIMStyles *)malloc(sizeof(XIMStyles)));
     input_styles->count_styles = sizeof(supported_styles)/sizeof(XIMStyle) - 1;
@@ -183,7 +188,7 @@ bool XIMSrv::open()
            IMModifiers, "Xi18n",
            IMServerWindow, m_imwin,
            IMServerName, imname,
-           IMLocale, imlocale,
+           IMLocale, imlocale.c_str(),
            IMServerTransport, transport,
            IMInputStyles, input_styles,
            NULL);
@@ -358,13 +363,6 @@ void XIMSrv::onCommit(void *priv, string candidate)
 int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
     m_icManager.focusIn(((IMChangeFocusStruct *)calldata)->icid);
-
-    XIMPriv priv;
-    priv.ims = ims;
-    priv.calldata = calldata;
-    this->opaque = &priv;
-    m_icManager.getFocus()->preedit->guiReload();
-
     return true;
 }
 
