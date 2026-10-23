@@ -138,9 +138,9 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
 
     // Check OnOff
     if (isMatchKeys(key, modifier, OnOffKeys)) {
-        if (!m_bTrigger || !m_bCN) {
+        if (!m_bTrigger) {
             doTriggerOn();
-            guiAction(MSG_IM_ON, GUIACT_SYSTRAY | GUIACT_HINT);
+            guiAction(m_bCN ? MSG_IM_ON : MSG_IM_EN, GUIACT_SYSTRAY | GUIACT_HINT);
             return TRIGGER_ON_KEY;
         }
         doTriggerOff();

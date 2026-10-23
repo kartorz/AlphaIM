@@ -10,8 +10,8 @@
 #include "IMPreedit.h"
 #include "Log.h"
 
-IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(false),
-m_bCNPun(false),m_curPage(0), m_uiStringMax(80)
+IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(true),
+m_bCNPun(true),m_curPage(0), m_uiStringMax(80)
 {
 }
 
@@ -285,16 +285,16 @@ void IMPreedit::page(int pg)
 void IMPreedit::doTriggerOn()
 {
     m_bTrigger = true;
-    m_bCN = true;
-    m_bCNPun = true;
+    //m_bCN = true;
+    //m_bCNPun = true;
     m_bStart = false;
 }
 
 void IMPreedit::doTriggerOff()
 {
     m_bTrigger = false;
-    m_bCN = false;
-    m_bCNPun = false;
+    //m_bCN = false;
+    //m_bCNPun = false;
 }
 
 bool IMPreedit::doSwitchCEPun()
@@ -370,7 +370,7 @@ void IMPreedit::guiAction(int id, int flags)
 
 void IMPreedit::guiShowCandidate(IC* ic)
 {
-    if (m_bStart && m_uiItems.size() > 0) {
+    if (m_bStart && !m_uiItems.empty()) {
         ICRect rect = ic->getRect();
 
         string input = m_ci + m_input;
