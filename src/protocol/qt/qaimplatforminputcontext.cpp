@@ -483,7 +483,7 @@ bool QAimPlatformInputContextPrivate::createBusProxy()
 
     ic = bus->CreateInputContext(QLatin1String(AIM_QT_IC_NAME));
     if (!ic.isValid()) {
-        syslog(LOG_ERR,"[%s]:QAimIC: create IC failed,%s\n", IM_NAME, ic.error());
+        syslog(LOG_ERR,"[%s]:QAimIC: create IC failed\n", IM_NAME);
         goto err_bus;
     }
     icid = ic.value();
