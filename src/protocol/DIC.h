@@ -16,11 +16,6 @@ public:
         m_client = client;
     }
     virtual ~DIC() {}
-
-    virtual IMPreedit *createPreedit() {
-        preedit = new X11IMPreedit();
-        return preedit;
-    }
 private:
     DbusClient m_client;
 };

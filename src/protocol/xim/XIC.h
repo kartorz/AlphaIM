@@ -17,7 +17,6 @@
 #include "Ximd/IMdkit.h"
 #include "Ximd/Xi18n.h"
 #include "IC.h"
-#include "X11IMPreedit.h"
 
 //#define MAX_PY_SLICE  50
 
@@ -56,9 +55,6 @@ class XIMIC : public IC {
 public:
     XIMIC(Display* d);
     virtual ~XIMIC();
-    virtual IMPreedit *createPreedit() {
-        return new X11IMPreedit();
-    }
     virtual ICRect getRect();
 
     void set(IMChangeICStruct *calldata);

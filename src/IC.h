@@ -40,7 +40,6 @@ public:
     virtual void propertyActivate(const char *name, int state);
     virtual void setSurroundingText();
     virtual void close();
-    virtual IMPreedit *createPreedit() = 0;
     virtual ICRect getRect();
 
     u32 id;
@@ -52,18 +51,19 @@ public:
 
 class ICManager {
 public:
-    ICManager(IC *ic);
+    ICManager();
     ~ICManager();
-
+    void init();
     u32 add(IC *ic, const char *app);
     void destroy(u32 id);
     void focusIn(u32 id);
     int focusOut(u32 id);
-    int focusId() {return m_icFocus; }
+    int focusId();
     void setMode(int mode);
-    int mode() const;
+    int mode();
     IC* get(u32 id);
-    IC* getFocus() { return get(m_icFocus); }
+    IC* getFocus();
+    void handleUIMessage(int msg, int arg = 0);
 
     IC* operator[](u32 id) {
         return get(id);
@@ -78,7 +78,7 @@ private:
     u32  m_icid;
     u32  m_icFocus;
     int  m_icMode;
-    //MutexCriticalSection m_cs;
+    MutexCriticalSection m_cs;
 };
 
 #endif

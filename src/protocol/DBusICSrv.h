@@ -17,16 +17,12 @@
 
 class DBusICSrv : public IMPreeditCallback {
 public:
-    DBusICSrv(): icm(new DIC()) {}
+    DBusICSrv() {}
     ~DBusICSrv() {}
     int  procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state);
     u32 createIC(const char *name, const char *sender);
-    void handleUIMessage(int msg, int arg = 0) {
-        return icm.getFocus()->preedit->handleMessage(msg, arg);
-    }
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candidate);
-    ICManager icm;
     static DbusClient getClient(const char *name);
 private:
     int handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback);

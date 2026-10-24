@@ -69,7 +69,7 @@ Application::Application()
 
     getDpySize();
 
-    dim.icm.setMode(Configure::getRefrence().readICMode());
+    icm.init();
 
     X11IMPreedit::setTriggerKeys();
 

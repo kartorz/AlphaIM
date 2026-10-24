@@ -45,6 +45,7 @@ public:
 
     XIMSrv  xim;
     DBusICSrv dim;
+    ICManager icm;
     //Signal  sig;
 
 private:

@@ -43,14 +43,13 @@ public:
     int handlePreeditStartReply(XIMS ims, IMProtocol *calldata);
     int handlePreeditCaretReply(XIMS ims, IMProtocol *calldata);
     int doModifierKeyEvent(XIMS ims, IMProtocol *calldata);
-    void handleUIMessage(int msg, int arg = 0);
     virtual void onIMOff(void* priv);
     virtual void onCommit(void* priv, string candiate);
 
 private:
     void commit(XIMS ims, IMForwardEventStruct* calldata, string candidate);
     ICRect getICWinRect(u32 ic);
-    int handleKey(u32 key, u32 modifier, int evtype);
+    int handleKey(IC* ic, u32 key, u32 modifier, int evtype);
 
     XIMS m_ims;
     Window   m_imwin;
@@ -59,9 +58,6 @@ private:
     bool m_bDynamicEvent;
     int m_preModKey;
     int m_preRetKey;
-
-    ICManager m_icManager;
-    MutexCriticalSection m_cs;
 };
 
 #endif

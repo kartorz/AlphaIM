@@ -6,6 +6,8 @@
   */
 #include "IC.h"
 #include "Log.h"
+#include "X11IMPreedit.h"
+#include "Configure.h"
 
 vector<ScreenRect> IC::screens;
 
@@ -106,7 +108,7 @@ ICRect IC::getRect()
     return ret;
 }
 
-ICManager::ICManager(IC* ic): m_icid(0), m_icFocus(0), m_icMode(0)
+ICManager::ICManager(): m_icid(0), m_icFocus(0), m_icMode(0)
 {
     /* m_icMode :
      * ----------
@@ -116,27 +118,31 @@ ICManager::ICManager(IC* ic): m_icid(0), m_icFocus(0), m_icMode(0)
      *     existing ics
      *  1: The global IC.
      */
-    m_ics[0] = ic;
-    m_ics[0]->preedit = ic->createPreedit();
+    m_ics[0] = new IC();
+    m_ics[0]->preedit = new X11IMPreedit();
 }
 
 ICManager::~ICManager()
 {
-    if (!m_icMode) {
-        std::map<int, IC*>::iterator iter;
-        for (iter = m_ics.begin(); iter != m_ics.end(); iter++) {
-            releasePreedit(iter->second->preedit);
-            delete(iter->second);
-    } else {
-        delete m_ics[0]->preedit;
-        delete m_ics[0];
+    for (const auto& entry : m_ics) {
+        if (entry.first == 0)
+            continue;
+        releasePreedit(entry.second->preedit);
+        delete entry.second;
     }
+    delete m_ics[0]->preedit;
+    delete m_ics[0];
+}
+
+void ICManager::init()
+{
+    setMode(Configure::getRefrence().readICMode());
 }
 
 void ICManager::releasePreedit(IMPreedit *preedit)
 {
-    if (m_icMode || !preedit || !preedit->releaseRef()) return;
-
+    if (!preedit || preedit == m_ics[0]->preedit || !preedit->releaseRef()) return;
+	PRINTF("releasePreedit: %px\n", preedit);
     for (std::map<string, IMPreedit*>::iterator app = m_preedits.begin();
          app != m_preedits.end(); ) {
         if (app->second == preedit) {
@@ -146,20 +152,19 @@ void ICManager::releasePreedit(IMPreedit *preedit)
         ++app;
     }
     delete preedit;
-	PRINTF("releasePreedit: %px\n", preedit);
 }
 
 void ICManager::focusIn(u32 id)
 {
-    //PRINTF("focusIn %d, %d\n", id, m_icFocus);
     /* There are many foucus event */
     if (m_icFocus == id)
         return;
-    m_icFocus = id;
+	PRINTF("focusIn %d\n", id);
     IC *ic = get(id);
     if (!m_icMode)
-        ic->preedit->guiReload();
+      ic->preedit->guiReload();
     ic->preedit->guiShowCandidate(ic);
+    m_icFocus = id;
 }
 
 /*
@@ -181,8 +186,7 @@ void ICManager::setMode(int mode)
     m_icMode = mode == 1 ? 1 : 0;
 }
 
-/**/
-int ICManager::mode() const
+int ICManager::mode()
 {
     return m_icMode;
 }
@@ -198,10 +202,11 @@ u32 ICManager::add(IC *ic)
 /* '*app' must not be NULL */
 u32 ICManager::add(IC *ic, const char *app)
 {
+    MutexLock lock(m_cs);
     if (!m_icMode) {
         std::map<std::string, IMPreedit*>::iterator iter = m_preedits.find(app);
         if (iter == m_preedits.end()) {
-            ic->preedit = ic->createPreedit();
+            ic->preedit = new X11IMPreedit();
             m_preedits[app] = ic->preedit;
         } else {
             ic->preedit = iter->second;
@@ -217,10 +222,11 @@ u32 ICManager::add(IC *ic, const char *app)
 
 void ICManager::destroy(u32 id)
 {
+    MutexLock lock(m_cs);
     if (id > 0) {
         std::map<int, IC*>::iterator iter = m_ics.find(id);
         if(iter != m_ics.end()) {
-            printf("destroy id:%d, ref: %d\n", id, iter->second->preedit->refs);
+            //printf("destroy id:%d, ref: %d\n", id, iter->second->preedit->refs);
             releasePreedit(iter->second->preedit);
             delete(iter->second);
             m_ics.erase(iter);
@@ -228,8 +234,12 @@ void ICManager::destroy(u32 id)
     }
 }
 
+/* !!!! Reentry lock
+ * Caller can't do 'MutexLock lock(m_cs)'
+*/
 IC* ICManager::get(u32 id)
 {
+    MutexLock lock(m_cs);
     //PRINTF("ICManager::get id: %d\n", icid);
     std::map<int, IC*>::iterator iter = m_ics.find(id);
     if(iter != m_ics.end()) {
@@ -238,4 +248,19 @@ IC* ICManager::get(u32 id)
     /* Error, eg: alphad crash, using the defaut IC. */
     logger.e("ICManager:: return the default IC\n");
     return m_ics[0];
+}
+
+int ICManager::focusId()
+{
+    return m_icFocus;
+}
+
+IC* ICManager::getFocus()
+{
+    return get(m_icFocus);
+}
+
+void ICManager::handleUIMessage(int msg, int arg)
+{
+    getFocus()->preedit->handleMessage(msg, arg);
 }

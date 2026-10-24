@@ -122,9 +122,8 @@ int aim_proto_handler(XIMS ims, IMProtocol *call_data)
 }
 
 XIMSrv::XIMSrv():m_ims((XIMS)NULL), m_bDynamicEvent(false), m_imwin(0),
-m_preModKey(0), m_icManager(new XIMIC(NULL))
+m_preModKey(0)
 {
-    m_icManager.setMode(Configure::getRefrence().readICMode());
 }
 
 XIMSrv::~XIMSrv()
@@ -214,7 +213,6 @@ bool XIMSrv::open()
     }
 
     m_ims = ims;
-    ((XIMIC *)m_icManager.get(0))->dpy = m_dpy;
     //XSelectInput(dpy, imwin, StructureNotifyMask);
     //XSetErrorHandler(aim_err_handler);
    logger.d("xim open\n");
@@ -258,22 +256,24 @@ int XIMSrv::handleIMCreateIC(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
     XIMIC *ic = new XIMIC(m_dpy);
-    caller->icid = m_icManager.add(ic, Util::intToString(ic->client_win).c_str());
-    PRINTF("caller id:%d, ic id:%d, clinet_win:%d\n", caller->icid, ic->id, ic->client_win);
     ic->set(caller);
+    caller->icid = gApp->icm.add(ic, Util::intToString(ic->client_win).c_str());
+    PRINTF("caller id:%d, ic id:%d, clinet_win:%d\n", caller->icid, ic->id, ic->client_win);
     return true;
 }
 
 int XIMSrv::handleIMDestroyIC(XIMS ims, IMProtocol *calldata)
 {
-    m_icManager.destroy(((IMChangeICStruct *)calldata)->icid);
+    gApp->icm.destroy(((IMChangeICStruct *)calldata)->icid);
     return true;
 }
 
 int XIMSrv::handleIMSetICValues(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
-    XIMIC *ic = (XIMIC *)m_icManager.get(caller->icid);
+    XIMIC *ic = dynamic_cast<XIMIC*>(gApp->icm.get(caller->icid));
+    if (!ic)
+        return false;
     ic->set(caller);
     return true;
 }
@@ -281,14 +281,15 @@ int XIMSrv::handleIMSetICValues(XIMS ims, IMProtocol *calldata)
 int XIMSrv::handleGetICValues(XIMS ims, IMProtocol *calldata)
 {
     IMChangeICStruct *caller = (IMChangeICStruct *)calldata;
-    XIMIC *ic = (XIMIC *)m_icManager.get(caller->icid);
+    XIMIC *ic = dynamic_cast<XIMIC*>(gApp->icm.get(caller->icid));
+    if (!ic)
+        return false;
     ic->get(caller);
     return true;
 }
 
 int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
 {
-    MutexLock lock(m_cs);  //Exclude handleUIMessage
     static  CARD32 last_kevtime = 0;
 
     /* Lookup KeyPress Events only */
@@ -321,11 +322,17 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
         return false;
     }
 
+    XIMIC* ic = dynamic_cast<XIMIC*>(gApp->icm.get(calldata->forwardevent.icid));
+    if (!ic) {
+        IMForwardEvent(ims, (XPointer)calldata);
+        return false;
+    }
+
     XIMPriv priv;
     priv.ims = ims;
     priv.calldata = calldata;
     this->opaque = &priv;
-    int ret = handleKey(keysym, kev->state, evtype);
+    int ret = handleKey(ic, keysym, kev->state, evtype);
     if (ret == FORWARD_KEY) {
         /* Be careful, IMForwardEvent may be hanlded by this function again
            -- a infinite loop */
@@ -333,14 +340,6 @@ int XIMSrv::handleForwardEvent(XIMS ims, IMProtocol *calldata)
         return false;
     }
     return true;
-}
-
-void XIMSrv::handleUIMessage(int msg, int arg)
-{
-    if (m_imwin) {
-        MutexLock lock(m_cs);
-        m_icManager.getFocus()->preedit->handleMessage(msg, arg);
-    }
 }
 
 int XIMSrv::doModifierKeyEvent(XIMS ims, IMProtocol *calldata)
@@ -362,27 +361,34 @@ void XIMSrv::onCommit(void *priv, string candidate)
 
 int XIMSrv::handleSetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
-    m_icManager.focusIn(((IMChangeFocusStruct *)calldata)->icid);
+    u32 id = ((IMChangeFocusStruct *)calldata)->icid;
+    if (!dynamic_cast<XIMIC*>(gApp->icm.get(id)))
+        return false;
+    gApp->icm.focusIn(id);
     return true;
 }
 
 int XIMSrv::handleUnsetICFocusEvent(XIMS ims, IMProtocol *calldata)
 {
-    //focusOut((IMChangeFocusStruct *)calldata->icid);
-    m_icManager.focusOut(m_icManager.focusId());
+    gApp->icm.focusOut(((IMChangeFocusStruct *)calldata)->icid);
     return true;
 }
 
 int XIMSrv::handleResetICEvent(XIMS ims, IMProtocol *calldata)
 {
-    //((IMChangeFocusStruct *)calldata)->icid
-    m_icManager.getFocus()->reset();
+    XIMIC* ic = dynamic_cast<XIMIC*>(gApp->icm.get(((IMResetICStruct *)calldata)->icid));
+    if (!ic)
+        return false;
+    ic->reset();
     return true;
 }
 
 int XIMSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
 {
     IMTriggerNotifyStruct *notify = (IMTriggerNotifyStruct *)calldata;
+    XIMIC* ic = dynamic_cast<XIMIC*>(gApp->icm.get(notify->icid));
+    if (!ic)
+        return false;
     if (notify->flag == 0) {    /* on key */
     /* Here, the start of preediting is notified from IMlibrary, which
        is the only way to start preediting in case of Dynamic Event
@@ -397,7 +403,7 @@ int XIMSrv::handleTriggerNotify(XIMS ims, IMProtocol *calldata)
        has been registered by IMOpenIM or IMSetIMValues, otherwise,
        the end of preediting must be notified from the IMserver to the
        IMlibrary. */
-        m_icManager.getFocus()->close();
+        ic->close();
         return 1;
     }
 
@@ -455,10 +461,9 @@ void XIMSrv::commit(XIMS ims, IMForwardEventStruct* calldata, string candidate)
  * Tested by xterm, urxvt
  *
  */
-int XIMSrv::handleKey(u32 key, u32 modifier, int evtype)
+int XIMSrv::handleKey(IC* ic, u32 key, u32 modifier, int evtype)
 {
     if (evtype == KeyPress) {
-        IC* ic = m_icManager.getFocus();
         m_preRetKey = ic->preedit->doHandleKey(ic, key, modifier, this);
     }
     PRINTF("XIMSrv::handleKey, evtype:%d return %d\n", evtype, m_preRetKey);
