@@ -34,7 +34,7 @@ public:
 
     // Add phrase to user db.
     virtual void addUserPhrase(const string& phrase) = 0;
-    virtual void addUserPhraseAsync(const string& phrase) = 0;
+    virtual void addUserPhraseAsync(const vector<string>& phrase) = 0;
 
     // Disable IC.
     virtual void close() = 0;

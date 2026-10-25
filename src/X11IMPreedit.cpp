@@ -1,6 +1,7 @@
 
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#include <cctype>
 
 #include "Application.h"
 #include "Configure.h"
@@ -129,7 +130,6 @@ bool X11IMPreedit::imWants(u32 key, u32 modifier)
  */
 int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback)
 {
-
     PRINTF("%d,doHandleKey,key(%x,%x), start:%d, triger:%d, cn:%d, CNPun:%d\n",
            ic->id, key, modifier, m_bStart, m_bTrigger, m_bCN, m_bCNPun);
 
@@ -186,11 +186,14 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
                 return COMMIT_KEY;
             }
         }
+
         return FORWARD_KEY;
     }
 
     // After this section, without modifier key.
-    if (modifier > 0) return FORWARD_KEY;
+    if (modifier > 0 &&
+        (modifier != ShiftMask || key >= 128 || !std::ispunct(key)))
+        return FORWARD_KEY;
 
     if (isMatchKeys(key, modifier, CommitKeys)) {
         if (m_bStart) {
@@ -231,6 +234,18 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
         doInput(key);
         guiShowCandidate(ic);
         return COMMIT_KEY;
+    }
+
+    if (key < 128 && std::ispunct(key)) {
+        doCommit(1, callback);
+        if (m_bCNPun) {
+            string punctuation = mapCNPunToU8Str(key);
+            if (!punctuation.empty()) {
+                callback->onCommit(callback->opaque, punctuation);
+                return COMMIT_KEY;
+            }
+        }
+        return FORWARD_KEY;
     }
 
     /* Must at the end.*/

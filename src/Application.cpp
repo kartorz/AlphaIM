@@ -64,7 +64,7 @@ Application::Application()
     TaskManager::getInstance()->start(MAX_WORK_THREAD);
     m_sysMsgr->start();
 
-    TaskManager::getInstance()->addTask(new SlowJob(this), 0);
+    TaskManager::getInstance()->addTask(new SlowJob(this), 1000);
     py.initialization();
 
     getDpySize();
@@ -88,6 +88,7 @@ MessageQueue* Application::getMessageQ()
 
 void Application::slowJob()
 {
+    py.syncUserPhrases();
     Configure::getRefrence().writeXml();
 }
 

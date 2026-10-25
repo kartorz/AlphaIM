@@ -295,6 +295,7 @@ void IMPreedit::doTriggerOff()
     m_bTrigger = false;
     //m_bCN = false;
     //m_bCNPun = false;
+    flushUsrInput();
 }
 
 bool IMPreedit::doSwitchCEPun()
@@ -311,8 +312,10 @@ bool IMPreedit::doSwitchCE()
 {
     m_bCN = !m_bCN;
 
-    if (!m_bCN)
+    if (!m_bCN) {
         doClose();
+        flushUsrInput();
+	}
 
     m_bCNPun = m_bCN;
     return m_bCN;
@@ -352,13 +355,12 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
     if (i>=1 && i<=9 && commit(i)) {
         // commit candidte string.
         string candidate = m_ci + m_candidate;
-        //PRINTF("commit %s, %d\n", candidate.c_str(), i);
+        PRINTF("commit %s, %d\n", candidate.c_str(), i);
         callback->onCommit(callback->opaque, candidate);
+        if (Configure::getRefrence().readLearnUserInput())
+            m_usrPhrase.trackUsrInput(candidate);
 
         doClose();
-
-        if (i > 1)
-            gApp->curIM()->addUserPhraseAsync(candidate);
     }
 }
 
@@ -414,6 +416,15 @@ void IMPreedit::guiReload()
         guiAction(MSG_IM_CN, GUIACT_SYSTRAY);
     else
         guiAction(MSG_IM_EN, GUIACT_SYSTRAY);
+}
+
+void IMPreedit::flushUsrInput()
+{
+    if (Configure::getRefrence().readLearnUserInput()) {
+        vector<string> phrases;
+        m_usrPhrase.flush(phrases);
+        gApp->curIM()->addUserPhraseAsync(phrases);
+    }
 }
 
 /* Message from gui */

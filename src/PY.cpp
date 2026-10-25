@@ -84,10 +84,17 @@ int PY::initialization()
 
 PY::~PY()
 {
-    logger(LOG_INFO, "~PY write userphd\n");
-    if (m_addCnt > 0) {
+    if (m_addCnt > 0)
+        syncUserPhrases();
+}
+
+void PY::syncUserPhrases()
+{
+    MutexLock lock(m_phraseCS);
+    if (m_addCnt > 0)
+        m_usrPhDB.sync();
+        m_usrPhDB.write())
         m_addCnt = 0;
-        m_usrPhDB.write();
     }
 }
 
@@ -101,6 +108,7 @@ void PY::reset()
 
 string PY::lookup(const string& input, deque<IMItem>& items)
 {
+    MutexLock lock(m_phraseCS);
     return lookup(input, items, true);
 }
 
@@ -456,8 +464,7 @@ void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
 
 void PY::onCommit(const IMItem& imitem)
 {
-    if (!Configure::getRefrence().readLearnUserInput())
-        return;
+    MutexLock lock(m_phraseCS);
     if (imitem.priority < MAX_PRIORITY) {
         vector<string> phkeys;
         int ret = getPhraseKey(imitem.val, phkeys);
@@ -656,14 +663,10 @@ void PY::sort(IndexList& items)
 
 void PY::addUserPhrase(const string& phrase)
 {
-    if (!Configure::getRefrence().readLearnUserInput())
-        return;
-    vector<string> phraseVec;
-    m_usrPhrase.trackUsrInput(phrase, phraseVec);
-    for (int i = 0; i < phraseVec.size(); i++)
-        addToUsrDB(phraseVec[i]);
-
+    MutexLock lock(m_phraseCS);
     addToUsrDB(phrase);
+    m_InputMap.clear();
+    m_PyMap.clear();
 }
 
 void PY::addToUsrDB(const string& phrase)
@@ -679,7 +682,7 @@ void PY::addToUsrDB(const string& phrase)
         }
 
         if (len == phrase.length()) {
-            //printf("only one phrase\n");
+            IndexTree::freeItems(pyitems);
             return;
         }
 
@@ -708,43 +711,46 @@ void PY::addToUsrDB(const string& phrase)
         for (int i = 0; i < pyitems.size(); i++) {
             HanItem hani(pyitems[i].ptr);
             string key = hani.py + SEP_CHAR + phrase;
-            for (int i = 0; i < m_phDBsLen; i++) {
-                if (m_phDBs[i]->isExist(key))
-                    return;
+            vector<inxtree_dataitem> existing;
+            m_usrPhDB.lookup(key, existing);
+            if (!existing.empty()) {
+                u8 priority = existing.front().buf[0];
+                if (priority < MAX_PRIORITY) {
+                    ++priority;
+                    m_usrPhDB.update(key, &priority, 1);
+                }
+                IndexTree::freeItems(existing);
+                continue;
             }
+            if (m_phDB.isExist(key))
+                continue;
 
-            //printf("addUserPhrase %s\n", key.c_str());
             u8 priority = DEFAULT_PRIORITY;
             u32* keyPtr = NULL;
             int keyLen = CharUtil::utf8StrToUcs4Str(key.c_str(), &keyPtr);
             if (keyLen > 0) {
-                m_usrPhDB.add(keyPtr, keyLen, (void *)&priority, 1);
+                if (m_usrPhDB.add(keyPtr, keyLen, (void *)&priority, 1))
+                    ++m_addCnt;
                 free(keyPtr);
-                if (++m_addCnt > WRITE_USERDB_TH) {
-                    m_addCnt = 0;
-                    m_usrPhDB.write();
-                }
             }
         }
-    } else {
-        logger(LOG_ERROR, "addUserPhrase: got a invalid phrase(%s).\n",phrase.c_str());
+        IndexTree::freeItems(pyitems);
     }
 }
 
-void PY::addUserPhraseAsync(const string& phrase)
+void PY::addUserPhraseAsync(const vector<string>& phrases)
 {
-    if (Configure::getRefrence().readLearnUserInput() && phrase.length() <= USRPH_MAX_SIZE) {
-        AddToUserDBTask* tsk = new AddToUserDBTask(this, phrase);
-        TaskManager::getInstance()->addTask(tsk);
-    }
+    AddToUserDBTask* tsk = new AddToUserDBTask(this, phrases);
+    TaskManager::getInstance()->addTask(tsk);
 }
 
-AddToUserDBTask::AddToUserDBTask(PY* owner, string phrase):
-Task(0, false), m_owner(owner), m_phrase(phrase)
+AddToUserDBTask::AddToUserDBTask(PY* owner, const vector<string>& phrases):
+Task(0, false), m_owner(owner), m_phrases(phrases)
 {
 }
 
 void AddToUserDBTask::doWork()
 {
-    m_owner->addUserPhrase(m_phrase);
+    for (const string& phrase : m_phrases)
+        m_owner->addUserPhrase(phrase);
 }

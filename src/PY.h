@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <string>
+#include <vector>
 
 #include "MutexLock.h"
 #include "iIM.h"
@@ -10,14 +11,12 @@
 #include "indextree/IndexTreeWriter.h"
 #include "TDFParser.h"
 #include "TaskManager.h"
-#include "UsrPhrase.h"
 
 using namespace std;
 
 #define CACHE_ITEMS_MAX 100
 
 #define SEP_CHAR '-'
-#define WRITE_USERDB_TH  50
 #define UPDATE_USERDB_TH 50
 #define DEFAULT_PRIORITY  20
 #define REFRESH_PRIORITY_TH  4000
@@ -50,11 +49,12 @@ public:
     virtual void onCommit(const IMItem& imitem);
 
     virtual void addUserPhrase(const string& phrase);
-    virtual void addUserPhraseAsync(const string& phrase);
+    virtual void addUserPhraseAsync(const vector<string>& phrase);
     virtual void close();
     virtual void reset();
 
     int initialization();
+    void syncUserPhrases();
 
 private:
     string lookup(const string& input, deque<IMItem>& items,  bool firstRound);
@@ -70,8 +70,6 @@ private:
     void sort(IndexList& items);
     void sortByOff(deque<IMItem>& items);
     void addToPhDB(const string& phrase, u8 priority);
-    void trackUsrInput(const string phrase);
-    void parseUsrInput(vector<string> &phrases);
     void addToUsrDB(const string& phrase);
 
     // 0: no pinyin, 1: only one han, 2: got it
@@ -81,7 +79,7 @@ private:
     void refreshPhrasePriority(IndexTreeWriter& phDB);
 
 
-    //MutexCriticalSection m_phdbCS;
+    MutexCriticalSection m_phraseCS;
 
     IndexTree m_pyDB;
     IndexTreeWriter  m_phDB;
@@ -95,23 +93,18 @@ private:
 
     IndexTree* m_phDBs[2];
     int  m_phDBsLen;
-    string m_pendingPhrase;
-    string m_usrPhraseTmp;
-    FILE  *m_usrPhraseFile;
-
-    UsrPhrase m_usrPhrase;
 };
 
 class AddToUserDBTask: public Task
 {
 public:
-    AddToUserDBTask(PY* owner, string phrase);
+    AddToUserDBTask(PY* owner, const vector<string>& phrases);
     virtual ~AddToUserDBTask() {}
     virtual void doWork();
 
 private:
     PY *m_owner;
-    string m_phrase;
+    vector<string> m_phrases;
 };
 
 #endif

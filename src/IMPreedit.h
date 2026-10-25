@@ -9,6 +9,7 @@
 #include "iIM.h"
 #include "MessageQueue.h"
 #include "CharUtil.h"
+#include "UsrPhrase.h"
 
 /*
  * Situation:
@@ -104,6 +105,7 @@ protected:
     bool doInput(char key);
     void doClose();
     void doCommit(int i, IMPreeditCallback *callback);
+    void flushUsrInput();
 
     void guiAction(int id, int flags);
 
@@ -134,6 +136,7 @@ private:
     }
 
     MutexCriticalSection m_cs;
+    UsrPhrase m_usrPhrase;
 
     int m_curPage; // Start from 1.
     deque<int> m_pageWin;

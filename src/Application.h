@@ -25,7 +25,7 @@ class Application;
 class SlowJob: public Task
 {
 public:
-    SlowJob(Application *owner):m_owner(owner),Task(1000*60*30, true, NULL) {}
+    SlowJob(Application *owner):m_owner(owner),Task(1000*60, true, NULL) {}
     virtual void doWork();
     virtual ~SlowJob(){}
 private:
