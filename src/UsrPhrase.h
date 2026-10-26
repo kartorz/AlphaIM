@@ -5,13 +5,14 @@
 #include <string>
 #include <vector>
 
-#define USRPH_MAX_SIZE 1024
+#define USRPH_MAX_SIZE 18
 
 using namespace std;
 
 class UsrPhrase
 {
 public:
+    void parseUsrInput(const string& text);
     void trackUsrInput(const string& text);
     void flush(vector<string>& phrases);
     void clear();

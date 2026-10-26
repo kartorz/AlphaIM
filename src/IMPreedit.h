@@ -130,11 +130,6 @@ private:
     void del();
     void page(int pg);
     bool commit(int i);
-    bool showCandiStr(int page) const
-    {
-        return !m_candidate.empty() &&
-            (page != 1 || m_items.empty() || m_candidate != m_items.front().val);
-    }
 
     MutexCriticalSection m_cs;
     UsrPhrase m_usrPhrase;

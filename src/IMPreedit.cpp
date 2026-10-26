@@ -11,7 +11,8 @@
 #include "Log.h"
 
 IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(true),
-m_bCNPun(true), m_bPreQuo(true), m_bPreSingleQuo(true), m_curPage(0), m_uiStringMax(80)
+m_bCNPun(true), m_bPreQuo(true), m_bPreSingleQuo(true), m_curPage(0),
+m_uiStringMax(72)
 {
 }
 
@@ -26,17 +27,16 @@ IMPreedit::~IMPreedit()
 bool IMPreedit::commit(int i)
 {
     int start = m_curPage > 1 ? m_pageWin[m_curPage - 2] : 0;
-    bool candistr = showCandiStr(m_curPage);
-    if (candistr && i == 1) // commit candidate string.
+    if (i == 1) // commit candidate string.
     {
-        //printf("commit candidate %s\n", m_items[i].val.c_str());
         if (m_items.size() > 0)
             gApp->curIM()->onCommit(m_items.front());
         return true;
     }
 
-    i = start + i - 1 - candistr;
-    //printf("commit: i: %d, size: %d\n", i, m_items.size());
+    /* -1: start from 1
+       -1: candidate string at the front */
+    i = start + i - 1 - 1;
     if (i < 0 || i > m_items.size()) {
         logger.e("commit: error number i: %d,\n", i);
         return false;
@@ -48,7 +48,7 @@ bool IMPreedit::commit(int i)
     int key_pos = m_input.find(item.key, 0);
     if (key_pos != string::npos) {
         int next_pos = key_pos + item.key.length();
-        //printf("next pos: %d\n", next_pos);
+        //printf("next pos: %d -- %d\n", next_pos, m_input.length());
         if (next_pos < m_input.length()) {
             m_ci += m_input.substr(0, key_pos); // invalid PY before the 'key'.
             m_ci += item.val; // key --> val;
@@ -164,19 +164,8 @@ string IMPreedit::mapCNPunToU8Str(char key)
 
 void IMPreedit::add(char key)
 {
-    m_bStart = true;
     if (m_input.length() < IM_INPUT_MAX) {
-        if (m_bCNPun) {
-            string strCNPun = mapCNPunToU8Str(key);
-            if (strCNPun != "") {
-                m_input += strCNPun;
-            } else {
-                m_input += key;
-            }
-        } else {
-            m_input += key;
-        }
-
+        m_input += key;
         m_candidate = lookup(m_input);
         page(1);
     }
@@ -260,13 +249,12 @@ void IMPreedit::page(int pg)
 {
     const int padding = 6;
     IMItem candiItem;
+    candiItem.key = "";
+    candiItem.val = m_candidate;
 
     if (m_items.empty()) {
         m_curPage = 0;
         m_pageWin.clear();
-        m_uiItems.clear();
-        candiItem.key = "";
-        candiItem.val = m_candidate;
         m_uiItems.push_front(candiItem);
         return;
     }
@@ -277,16 +265,15 @@ void IMPreedit::page(int pg)
         return;
 
     // The range is [start, end).
-    bool hasCandiStr = showCandiStr(pg);
+    int start = pg == 1 ? 0 : m_pageWin[pg - 2];
+    if (start + 1 > m_items.size())
+        return;
+
     if (pg == m_pageWin.size() + 1) {
         int end = m_pageWin.empty() ? 0 : m_pageWin.back();
-        bool firstPage = m_pageWin.empty();
-        int maxItems = IM_PAGE_MAX_ITEMS - (firstPage && hasCandiStr);
-        int length = padding;
-        if (firstPage && hasCandiStr)
-            length += m_candidate.length();
+        int length = padding + m_candidate.length();
 
-        for (int count = 0; count < maxItems && end < m_items.size(); ++count) {
+        for (int c = 0; c < IM_PAGE_MAX_ITEMS && end < m_items.size(); ++c) {
             length += m_items[end++].val.length() + padding;
             if (length > m_uiStringMax)
                 break;
@@ -294,14 +281,9 @@ void IMPreedit::page(int pg)
         m_pageWin.push_back(end);
     }
 
-    int start = pg == 1 ? 0 : m_pageWin[pg - 2];
     int end = m_pageWin[pg - 1];
     m_uiItems.assign(m_items.begin() + start, m_items.begin() + end);
-    if (hasCandiStr) {
-        candiItem.key = "";
-        candiItem.val = m_candidate;
-        m_uiItems.push_front(candiItem);
-    }
+    m_uiItems.push_front(candiItem);
     m_curPage = pg;
     PRINTF("pg:%d, [%d, %d)\n", pg, start, end);
 }
@@ -379,7 +361,7 @@ void IMPreedit::doCommit(int i, IMPreeditCallback *callback)
     if (i>=1 && i<=9 && commit(i)) {
         // commit candidte string.
         string candidate = m_ci + m_candidate;
-        PRINTF("commit %s, %d\n", candidate.c_str(), i);
+        PRINTF("commit %s-> %s, %d\n", m_ci.c_str(), candidate.c_str(), i);
         callback->onCommit(callback->opaque, candidate);
         if (Configure::getRefrence().readLearnUserInput())
             m_usrPhrase.trackUsrInput(candidate);
@@ -400,7 +382,6 @@ void IMPreedit::guiShowCandidate(IC* ic)
         ICRect rect = ic->getRect();
 
         string input = m_ci + m_input;
-        string candidate = m_ci + m_candidate;
         string items = "";
 
         for (int i=0; i < m_uiItems.size(); i++) {

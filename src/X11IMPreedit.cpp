@@ -127,6 +127,11 @@ bool X11IMPreedit::imWants(u32 key, u32 modifier)
  * --------------------------------------
  * XK_0 .. XK_9: '0' .. '9'
  * XK_a .. XK_z: 'a' .. 'z'
+ * XK_Page_Up：0xFF55
+ * XK_Page_Down：0xFF56
+ * -----------------------------------
+ * press compose keybord (8*) + shift
+ *  * key(0x2a, shift);
  */
 int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback)
 {
@@ -175,6 +180,7 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
     // Check if start
     if (!m_bStart) {
         if (!modifier && (key >= 'a' && key <= 'z')) {
+            m_bStart = true;
             doInput(key);
             guiShowCandidate(ic);
             return CONVERT_KEY;
@@ -189,11 +195,6 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
 
         return FORWARD_KEY;
     }
-
-    // After this section, without modifier key.
-    if (modifier > 0 &&
-        (modifier != ShiftMask || key >= 128 || !std::ispunct(key)))
-        return FORWARD_KEY;
 
     if (isMatchKeys(key, modifier, CommitKeys)) {
         if (m_bStart) {
@@ -222,30 +223,37 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
         return CANCEL_KEY;
     }
 
+    if ((key & 0xff) == (XK_BackSpace & 0xff)) {
+        if (m_input.empty()) return  FORWARD_KEY;
+        m_bStart = doInput(key);
+        guiShowCandidate(ic);
+        return COMMIT_KEY;
+    }
+
+    if (key > 128) return FORWARD_KEY;
+
+    if (std::ispunct(key)) {
+        string commit;
+        doCommit(1, callback);
+        if (m_bCNPun) {
+            string commit = mapCNPunToU8Str(key);
+            if (!commit.empty()) {
+                callback->onCommit(callback->opaque, commit);
+                return COMMIT_KEY;
+            }
+        }
+        commit = key;
+        callback->onCommit(callback->opaque, commit);
+        return COMMIT_KEY;
+    }
+
+    if (modifier > 0)  return FORWARD_KEY;
+
     if (key >= '0' && key <= '9') {
         int i = key - 0x30;
         doCommit(i, callback);
         guiShowCandidate(ic);
         return COMMIT_KEY;
-    }
-
-    if ((key & 0xff) == (XK_BackSpace & 0xff)) {
-        if (m_input.empty()) return  FORWARD_KEY;
-        doInput(key);
-        guiShowCandidate(ic);
-        return COMMIT_KEY;
-    }
-
-    if (key < 128 && std::ispunct(key)) {
-        doCommit(1, callback);
-        if (m_bCNPun) {
-            string punctuation = mapCNPunToU8Str(key);
-            if (!punctuation.empty()) {
-                callback->onCommit(callback->opaque, punctuation);
-                return COMMIT_KEY;
-            }
-        }
-        return FORWARD_KEY;
     }
 
     /* Must at the end.*/
