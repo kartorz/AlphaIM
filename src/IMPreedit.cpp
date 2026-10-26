@@ -11,7 +11,7 @@
 #include "Log.h"
 
 IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(true),
-m_bCNPun(true),m_curPage(0), m_uiStringMax(80)
+m_bCNPun(true), m_bPreQuo(true), m_bPreSingleQuo(true), m_curPage(0), m_uiStringMax(80)
 {
 }
 
@@ -74,7 +74,7 @@ bool IMPreedit::commit(int i)
     return true; //Something wrong, just commit, don't lose user input.
 }
 
-u32 IMPreedit::mapCNPun(char key)
+u32 IMPreedit::mapCNPun(char key) const
 {
     switch (key) {
     case '.':
@@ -92,13 +92,9 @@ u32 IMPreedit::mapCNPun(char key)
     case ':':
         return 0xFF1A;
     case '\"':
-        if (m_bPreQuo) {
-            m_bPreQuo = false;
-            return 0x201C;
-        } else {
-            m_bPreQuo = true;
-            return 0x201D;
-        }
+        return m_bPreQuo ? 0x201C : 0x201D;
+    case '\'':
+        return m_bPreSingleQuo ? 0x2018 : 0x2019;
     case  '(':
         return 0xFF08;
     case ')':
@@ -119,6 +115,32 @@ u32 IMPreedit::mapCNPun(char key)
         return 0xFF5B;
     case '}':
         return 0xFF5D;
+    case '\\':
+        return 0x3001;
+    case '/':
+        return 0xFF0F;
+    case '$':
+        return 0xFFE5;
+    case '^':
+        return 0x2026;
+    case '~':
+        return 0xFF5E;
+    case '@':
+        return 0xFF20;
+    case '#':
+        return 0xFF03;
+    case '%':
+        return 0xFF05;
+    case '&':
+        return 0xFF06;
+    case '*':
+        return 0xFF0A;
+    case '+':
+        return 0xFF0B;
+    case '=':
+        return 0xFF1D;
+    case '|':
+        return 0xFF5C;
     }
     return 0;
 }
@@ -128,11 +150,13 @@ string IMPreedit::mapCNPunToU8Str(char key)
     string ret = "";
     u32 CNPunUnicode = mapCNPun(key);
     if (CNPunUnicode) {
-        char* ub = (char *)malloc(6);
+        char ub[6];
         int len = CharUtil::ucs4CharToUTF8Byte(CNPunUnicode, ub);
-        ub[len] = '\0';
-        ret += ub;
-        free(ub);
+        ret.assign(ub, len);
+        if (key == '\"')
+            m_bPreQuo = !m_bPreQuo;
+        else if (key == '\'')
+            m_bPreSingleQuo = !m_bPreSingleQuo;
     }
     //PRINTF("mapCNPunToU8Str, %c --> %s\n", key, ret.c_str());
     return ret;

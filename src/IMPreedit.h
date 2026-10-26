@@ -109,7 +109,7 @@ protected:
 
     void guiAction(int id, int flags);
 
-    u32  mapCNPun(char key);
+    u32  mapCNPun(char key) const;
     string  mapCNPunToU8Str(char key);
     string  lookup(string input);
 
@@ -123,6 +123,7 @@ protected:
     bool   m_bCN;
     bool   m_bCNPun;  //Chinese punctuation
     bool   m_bPreQuo;
+    bool   m_bPreSingleQuo;
 
 private:
     void add(char key);
