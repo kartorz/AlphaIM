@@ -75,8 +75,8 @@ private:
     // 0: no pinyin, 1: only one han, 2: got it
     int getPhraseKey(const string& phrase, vector<string>& phkeys);
 
-    void refreshHanPriority(IndexTreeWriter& hanDB);
-    void refreshPhrasePriority(IndexTreeWriter& phDB);
+    void decreaseHanPriority(IndexTreeWriter& hanDB);
+    void decreasePhrasePriority(IndexTreeWriter& phDB);
 
 
     MutexCriticalSection m_phraseCS;
@@ -85,7 +85,6 @@ private:
     IndexTreeWriter  m_phDB;
     IndexTreeWriter  m_usrPhDB;
     IndexTreeWriter  m_hanDB;
-    int m_addCnt;
     int m_selCnt;
 
     map<string, deque<IMItem> > m_InputMap;

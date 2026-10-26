@@ -1,5 +1,5 @@
 /**
- *    @Copyright (c) 2016 joni <joni.kartorz.lee@gmail.com>
+ *    @Copyright (c) 2016 joni <joni_lee@outlook.com>
  *
  * Distributed under the GNU GENERAL PUBLIC LICENSE, version 3 (GPLv3)
  * (See accompanying file LICENSE.txt or copy at
@@ -55,6 +55,7 @@ private:
     bool m_duplicateIndexFlag;
     bool m_bOnLineRW;
     bool m_bDuplicateIndex;
+    bool m_bDirty;
 
     int m_strinxWordsMax;
     int m_strinxDepthMax;

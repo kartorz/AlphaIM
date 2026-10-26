@@ -12,8 +12,7 @@
 
 using namespace boost::filesystem;
 
-PY::PY(): m_addCnt(0), m_selCnt(0),
-m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
+PY::PY(): m_selCnt(0),m_usrPhDB(1, INXTREE_NOT_HAS_DUPINX)
 {
 }
 
@@ -84,18 +83,14 @@ int PY::initialization()
 
 PY::~PY()
 {
-    if (m_addCnt > 0)
-        syncUserPhrases();
+    syncUserPhrases();
 }
 
 void PY::syncUserPhrases()
 {
     MutexLock lock(m_phraseCS);
-    if (m_addCnt > 0)
-        m_usrPhDB.sync();
-        m_usrPhDB.write())
-        m_addCnt = 0;
-    }
+    m_usrPhDB.sync();
+    m_usrPhDB.write();
 }
 
 void PY::close()
@@ -405,6 +400,7 @@ int PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
         }
 
         if (len == phrase.length()) {
+            IndexTree::freeItems(pyitems);
             return 1;
         }
 
@@ -413,13 +409,14 @@ int PY::getPhraseKey(const string& phrase, vector<string>& phkeys)
             string key = hani.py + SEP_CHAR + phrase;
             phkeys.push_back(key);
         }
-        return 1;
+        IndexTree::freeItems(pyitems);
+        return 2;
     }
     return 0;
 }
 
 // Reresh prprity by decreasing -1.
-void PY::refreshHanPriority(IndexTreeWriter& hanDB)
+void PY::decreaseHanPriority(IndexTreeWriter& hanDB)
 {
     u8 *buf = NULL;
     int size = hanDB.readData(&buf);
@@ -443,8 +440,8 @@ void PY::refreshHanPriority(IndexTreeWriter& hanDB)
     logger(LOG_INFO, "refreshHanPriority\n");
 }
 
-// Reresh prprity by decreasing -1.
-void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
+// Reresh pripority by decreasing -1.
+void PY::decreasePhrasePriority(IndexTreeWriter& phDB)
 {
     u8 *buf = NULL;
     int size = phDB.readData(&buf);
@@ -459,19 +456,19 @@ void PY::refreshPhrasePriority(IndexTreeWriter& phDB)
     if (buf != NULL)
         free(buf);
 
-    logger(LOG_INFO, "refreshPhrasePriority\n");
+    logger(LOG_INFO, "decreasePhrasePriority\n");
 }
 
 void PY::onCommit(const IMItem& imitem)
 {
     MutexLock lock(m_phraseCS);
-    if (imitem.priority < MAX_PRIORITY) {
+    if (imitem.priority <= MAX_PRIORITY) {
         vector<string> phkeys;
         int ret = getPhraseKey(imitem.val, phkeys);
         if (ret > 0) {
             bool update = false;
             u8 p[1];
-            p[0] = imitem.priority + 1;
+            p[0] = imitem.priority < MAX_PRIORITY ? imitem.priority + 1 : MAX_PRIORITY;
 
             if (ret == 1) {
                 if (m_hanDB.update(imitem.val, p, 1, 0))
@@ -494,9 +491,9 @@ void PY::onCommit(const IMItem& imitem)
                 m_PyMap.clear();
 
                 if (++m_selCnt > REFRESH_PRIORITY_TH) {
-                    refreshPhrasePriority(m_usrPhDB);
-                    refreshPhrasePriority(m_phDB);
-                    refreshHanPriority(m_hanDB);
+                    decreasePhrasePriority(m_usrPhDB);
+                    decreasePhrasePriority(m_phDB);
+                    decreaseHanPriority(m_hanDB);
                     m_selCnt = 0;
                 }
                 Configure::getRefrence().writeSelcnt(m_selCnt);
@@ -703,8 +700,6 @@ void PY::addToUsrDB(const string& phrase)
             m_usrPhDB.write();
             IndexTree::freeItems(indexList);
 
-            m_addCnt = 0;
-
             logger(LOG_INFO, "addToUsrDB: > MAX_USRDB_ENTRY, clean up user db. \n");
         }
 
@@ -729,8 +724,7 @@ void PY::addToUsrDB(const string& phrase)
             u32* keyPtr = NULL;
             int keyLen = CharUtil::utf8StrToUcs4Str(key.c_str(), &keyPtr);
             if (keyLen > 0) {
-                if (m_usrPhDB.add(keyPtr, keyLen, (void *)&priority, 1))
-                    ++m_addCnt;
+                m_usrPhDB.add(keyPtr, keyLen, (void *)&priority, 1);
                 free(keyPtr);
             }
         }

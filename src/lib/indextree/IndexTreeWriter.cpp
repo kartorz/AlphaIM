@@ -23,7 +23,8 @@ m_totalChrindex(0),
 m_strinxWordsMax(STRINX_WORDS_MAX),
 m_strinxDepthMax(STRINX_DEPTH_MAX),
 m_bOnLineRW(online),
-m_bDuplicateIndex(duplicateIndex)
+m_bDuplicateIndex(duplicateIndex),
+m_bDirty(false)
 {
     m_dataItemSize = dataItemSize;
 }
@@ -111,6 +112,7 @@ bool IndexTreeWriter::add(u32 *key, int keylen, void *dataPtr, int dataLen)
     fwrite(dataPtr, dataLen, 1, m_dataTmpFile);
     //printf("IndexTreeWriter::add, base:0x%x loc 0x%x, dataLen %d\n", m_inxDataLen, start, dataLen);
     addToIndextree(m_indexTree->root(), start, key, key + keylen);
+    m_bDirty = true;
     return true;
 }
 
@@ -121,6 +123,7 @@ void IndexTreeWriter::add(string key)
     if (keylen > 0) {
         addToIndextree(m_indexTree->root(), 0, keyPtr, keyPtr + keylen);
         free(keyPtr);
+        m_bDirty = true;
     }
 }
 
@@ -238,6 +241,7 @@ bool IndexTreeWriter::write(string output)
     FILE *strinxTmpFile = fopen("inxtree_tmp2", "w+bTD");
 #endif
     if (output == "") {
+        if (!m_bDirty) return true;
         output = "/tmp/inxtreewriter_output_tmp";
     }
     printf("write %s\n", output.c_str());
@@ -302,19 +306,17 @@ bool IndexTreeWriter::write(string output)
     if (m_bOnLineRW) {
         try {
             copy_file(output, m_inxFilePath, copy_options::overwrite_existing);
+            m_bDirty = false;
         } catch (const filesystem_error& ex) {
             printf("%s", ex.what());
         }
 
-        load(m_inxFilePath, 0xB4B3, true);
-        // for add other words.
-        //fseek(m_inxFile, 0L, SEEK_END);
-    } else {
-        printf("write dict file, done: \n");
-        printf("    entries: %d\n", m_totalEntry);
-        printf("    char index: %d\n", m_totalChrindex);
-        //printf("    costs: (%u)s\n", Util::getTimeMS()/1000);
+        return load(m_inxFilePath, 0xB4B3, true);
     }
+    printf("write dict file, done: \n");
+    printf("    entries: %d\n", m_totalEntry);
+    printf("    char index: %d\n", m_totalChrindex);
+    //printf("    costs: (%u)s\n", Util::getTimeMS()/1000);
     return true;
 }
 
