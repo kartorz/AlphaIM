@@ -24,6 +24,8 @@ override_dh_auto_install:
 	install -d $(CURDIR)/debian/alphaim/usr/share/alphaim/theme 
 	cp -a system/theme/. $(CURDIR)/debian/alphaim/usr/share/alphaim/theme/
 	find $(CURDIR)/debian/alphaim/usr/share/alphaim/theme -type f -exec chmod 0644 {} +
+	install -d $(CURDIR)/debian/alphaim/usr/share/alphaim/im-modules
+	cp -a system/im-modules/. $(CURDIR)/debian/alphaim/usr/share/alphaim/im-modules/
 	install -d $(CURDIR)/debian/alphaim/usr/share/im-config/data
 	install -m 0644 system/im-config/*  $(CURDIR)/debian/alphaim/usr/share/im-config/data
 	mkdir -p $(CURDIR)/debian/alphaim/usr/share/alphaim/im-private/wps/Qt5.12

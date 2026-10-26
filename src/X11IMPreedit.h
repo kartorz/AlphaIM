@@ -16,7 +16,6 @@ protected:
     bool isModifier(u32 keysym);
 
     int m_preModKey;
-    int m_preRetKey;
 };
 
 extern TriggerKey ForwardKeys[];

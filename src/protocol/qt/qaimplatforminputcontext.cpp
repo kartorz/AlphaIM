@@ -135,12 +135,12 @@ QAimPlatformInputContext::~QAimPlatformInputContext (void)
 
 bool QAimPlatformInputContext::isTriggerKey(const QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Shift) return true;
-    if (event->key() == Qt::Key_Space || event->key() == Qt::Key_Control)  {
-        Qt::KeyboardModifiers mods = event->modifiers();
-        return (mods == Qt::ShiftModifier) ||
-            (mods == Qt::ControlModifier) ||
-            (mods == Qt::MetaModifier/*super*/);
+    Qt::KeyboardModifiers mods = event->modifiers();
+    if (event->key() == Qt::Key_Shift || mods.testFlag(Qt::ShiftModifier))
+        return true;
+    if (event->key() == Qt::Key_Space || event->key() == Qt::Key_Control) {
+        return (mods.testFlag(Qt::ControlModifier)) ||
+            (mods.testFlag(Qt::MetaModifier/*super*/));
     }
     return false;
 }

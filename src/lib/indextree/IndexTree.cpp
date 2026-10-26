@@ -112,7 +112,7 @@ void IndexTree::loadIndexTree(tree_node<inxtree_chrindex>::treeNodePtr parent,
     address_t loc = inxtree_read_u32(parInx.location);
     u16 len = inxtree_read_u16(parInx.len_content);
 
-    if (len > 5000) {
+    if (len > 10000) {
         printf("w:{loadIndexTree (%s)} more than 5000 child need to be loaded, someting wrong?\n", m_header.d_identi);
     }
 

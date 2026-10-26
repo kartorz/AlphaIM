@@ -88,7 +88,7 @@ public:
 
     void guiReload();
     void guiShowCandidate(IC *ic);
-    bool isActive() const { return m_bTrigger && m_bCN; }
+    bool isActCN() const { return m_bTrigger && m_bCN; }
     void clear();
     void close();
     void reset();

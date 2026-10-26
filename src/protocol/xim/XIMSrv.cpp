@@ -53,8 +53,8 @@ static XIMStyle supported_styles[] = {
 };
 
 static XIMTriggerKey trigger_keys[] = {
-    {XK_space, ShiftMask, ShiftMask},
     {XK_space, ControlMask, ControlMask},
+    {XK_Shift_L, ControlMask, ControlMask},
     {0L, 0L, 0L}
 };
 
@@ -72,7 +72,7 @@ struct XIMPriv {
 
 int aim_err_handler(Display *d, XErrorEvent *e)
 {
-    printf("aim_err_handler, type:%d, err_code:%d, req_code:%d\n", e->type, e->error_code, e->request_code);
+    PRINTF("aim_err_handler, type:%d, err_code:%d, req_code:%d\n", e->type, e->error_code, e->request_code);
     return 0;
 }
 
@@ -193,7 +193,6 @@ bool XIMSrv::open()
            NULL);
 
     if (ims == (XIMS)NULL) {
-        fprintf(stderr, "{XIMSrv} Can't Open Input Method Service:\n");
         logger.e("{XIMSrv} Can't Open Input Method Service:\n\n");
         close();
         return false;

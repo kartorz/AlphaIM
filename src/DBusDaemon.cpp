@@ -68,7 +68,7 @@ static int im_gui_message(sd_bus_message *m, void *userdata, sd_bus_error *ret_e
     /* Read the parameters */
     r = sd_bus_message_read(m, "ii", &id, &arg);
     if (r < 0) {
-        printf("gui message read arg, error code: %s\n", strerror(-r));
+        logger.e("gui message read arg, error code: %s\n", strerror(-r));
         return r;
     }
 
@@ -231,7 +231,7 @@ int DBusDaemon::callGuiMessage(int id)
     int r = sd_bus_call_method_async(session_bus, NULL, AIM_SRV_NAME, AIM_SRV_PATH, AIM_SRV_INTF,
                                      "GuiMessage", dummy_handler, NULL, "ii", id, 0);
     if (r < 0)
-        printf("callGuiMessage, error code: %s\n", strerror(-r));
+        logger.e("callGuiMessage, error code: %s\n", strerror(-r));
 
     return r;
 }

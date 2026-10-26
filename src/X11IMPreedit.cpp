@@ -32,6 +32,7 @@ TriggerKey ForwardKeys[] = {
 
 static TriggerKey OnOffKeys[] = {
     {XK_space, ControlMask, ShiftMask | ControlMask  | Mod4Mask},
+    {XK_Shift_L, ControlMask, ControlMask},
     {0L, 0L, 0L}
 };
 
@@ -73,7 +74,7 @@ static TriggerKey CEPSwitchKeys[] = {
     {0L, 0L, 0L}
 };
 
-X11IMPreedit::X11IMPreedit():IMPreedit(),m_preModKey(0),m_preRetKey(0)
+X11IMPreedit::X11IMPreedit():IMPreedit(),m_preModKey(0)
 {
 }
 
@@ -83,6 +84,8 @@ void X11IMPreedit::setTriggerKeys()
     OnOffKeys[0].modifier = onOffKey == 0 ? ShiftMask : onOffKey == 2 ? Mod4Mask : ControlMask;
 }
 
+/* XK_Shift_L  0xFFE1
+   XK_Hyper_R  0xFFEE */
 bool X11IMPreedit::isModifier(u32 keysym)
 {
     if (keysym >= XK_Shift_L  && keysym <= XK_Hyper_R)
@@ -108,7 +111,7 @@ bool X11IMPreedit::isMatchKeys(int key, int modifier, TriggerKey *trigger)
 
 bool X11IMPreedit::imWants(u32 key, u32 modifier)
 {
-    if (!isActive()) return false;
+    if (!isActCN()) return false;
     if (m_bCNPun && mapCNPun(key)) return true;
     if (modifier) return false;
     if (m_bStart) return true;
@@ -130,8 +133,8 @@ bool X11IMPreedit::imWants(u32 key, u32 modifier)
  * XK_Page_Up：0xFF55
  * XK_Page_Down：0xFF56
  * -----------------------------------
- * press compose keybord (8*) + shift
- *  * key(0x2a, shift);
+ * (8*) + shift key: (0x2a, shift);
+ * Shitf_L:(0xffe1,1), gtk too, qt no mask
  */
 int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *callback)
 {
@@ -158,6 +161,15 @@ int X11IMPreedit::doHandleKey(IC* ic, u32 key, u32 modifier, IMPreeditCallback *
     if (!m_bTrigger)
         return FORWARD_KEY;
 
+    /* Fix: for CN/EN: mismatch shift + componse key */
+    if (key == XK_Shift_L || key == XK_Shift_R) {
+        if (m_preModKey == modifier) {
+            m_preModKey = 0;
+            return FORWARD_KEY;
+        }
+    } else {
+        m_preModKey = modifier;
+    }
     // Check language
     if (isMatchKeys(key, modifier, CESwitchKeys)) {
         if (m_input != "")

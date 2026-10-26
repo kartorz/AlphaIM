@@ -92,9 +92,10 @@ static gboolean is_key_release(
 // Sync with OnOffKeys within X11Preedit
 static gboolean is_trigger_key(guint keyval, guint state)
 {
-    if (keyval == GDK_KEY_Shift_L) return TRUE;
+    if ((state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) return TRUE;
 
-    return (keyval == GDK_KEY_space || keyval == GDK_KEY_Control_L)  &&
+    return (keyval == GDK_KEY_space || keyval == GDK_KEY_Control_L
+            || keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R)  &&
            (((state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) ||
             ((state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) ||
             ((state & GDK_SUPER_MASK) == GDK_SUPER_MASK));

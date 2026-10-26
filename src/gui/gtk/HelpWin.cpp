@@ -99,7 +99,7 @@ HelpWin *help_win_new(int x, int y)
     gtk_box_pack_start(GTK_BOX(content), section("功能特性",
         "自动学习生成用户词组，只学习汉字；根据输入频度排序；支持模糊拼音，只需输入词组部分拼音字母。"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(content), section("快捷键",
-        "输入法切换：Ctrl + Space\n"
+        "输入法切换：Ctrl + Space、Ctrl + Shift\n"
         "中英文切换：左 Shift\n"
         "符号切换：右 Shift\n"
         "提交：Space 或 Enter\n"

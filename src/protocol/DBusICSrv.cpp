@@ -43,7 +43,7 @@ int ic_focusin(sd_bus_message *m, void *userdata, sd_bus_error *ret_error)
 {
     u32 u;
     sd_bus_message_read(m, "u", &u);
-    int active = gApp->icm[u]->preedit->isActive();
+    int active = gApp->icm[u]->preedit->isActCN();
     gApp->icm.focusIn(u);
     PRINTF("%u: ic_focusin\n", u);
     return sd_bus_reply_method_return(m, "i", active);
@@ -171,7 +171,7 @@ int DBusICSrv::procKeyEvent(u32 id, u32 keyval, u32 keycode, u32 state)
            id, keyval, keycode, state, ret);
     if (ret == FORWARD_KEY)
         return 0;
-    return ic->preedit->isActive() + 1; // must>0
+    return ic->preedit->isActCN() + 1; // must>0
 }
 
 /*  ---------------  Qt  -----------------
@@ -218,6 +218,6 @@ int DBusICSrv::handleKey(IC* ic, u32 key, u32 state, IMPreeditCallback *callback
     if (ic->preedit->imWants(key,mask))
         return PREEDIT_KEY;
 
-    PRINTF("DBusICSrv::handleKey, forward key event\n");
+    PRINTF("DBusICSrv::handleKey, forward, 0x%x,0x%x\n", key, mask);
     return FORWARD_KEY;
 }
