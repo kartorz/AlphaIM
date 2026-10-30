@@ -8,8 +8,16 @@
 #include "Log.h"
 #include "X11IMPreedit.h"
 #include "Configure.h"
+#include <algorithm>
 
 vector<ScreenRect> IC::screens;
+int IC::screenScale = 1;
+
+int IC::nativeToLogical(int position)
+{
+    const int scale = std::max(1, screenScale);
+    return position / scale - (position < 0 && position % scale != 0 ? 1 : 0);
+}
 
 IC::IC(): id(0),cursor{0,0,0,32}
 {
@@ -66,7 +74,7 @@ void IC::setSurroundingText()
 
 ICRect IC::getRect()
 {
-    #define margin 48
+    const int margin = 48;
 
     ICRect ret = {cursor.x, cursor.y+margin, ICWIN_W,ICWIN_H};
 
@@ -90,17 +98,12 @@ ICRect IC::getRect()
     }
 
     PRINTF("getICWin before: (%d, %d) -- (%d,%d,%d,%d)\n",
-           ret.x, ret.y, sc.x, sc.y, sc.w, sc.h);
+           ret.x, ret.y,ab sc.x, sc.y, sc.w, sc.h);
 
-    if (ret.x + ret.w + margin > sc.x + sc.w)
-        ret.x = sc.x + sc.w - ret.w - margin;
-    if (ret.x < sc.x + margin)
-        ret.x = sc.x + margin;
-
-    if (ret.y + ret.h + 4*margin > sc.y + sc.h)
-        ret.y = sc.y + sc.h - 4*ret.h - 4*margin;
-    if (ret.y < sc.y + margin)
-        ret.y = sc.y + margin;
+    ret.x = std::max(sc.x + margin,
+                    std::min(ret.x, sc.x + sc.w - ret.w - margin));
+    ret.y = std::max(sc.y + margin,
+                    std::min(ret.y, sc.y + sc.h - ret.h - 4*margin));
 
     PRINTF("getICWin after: (%d, %d) -- (%d,%d,%d,%d)\n",
            ret.x, ret.y, sc.x, sc.y, sc.w, sc.h);
@@ -159,7 +162,7 @@ void ICManager::focusIn(u32 id)
     /* There are many foucus event */
     if (m_icFocus == id)
         return;
-	PRINTF("focusIn %d\n", id);
+    PRINTF("focusIn %d\n", id);
     IC *ic = get(id);
     if (!m_icMode)
       ic->preedit->guiReload();

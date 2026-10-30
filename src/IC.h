@@ -16,7 +16,7 @@
 
 #include "IMPreedit.h"
 
-#define ICWIN_W  720
+#define ICWIN_W  656
 #define ICWIN_H  48
 
 using namespace  std;
@@ -47,6 +47,8 @@ public:
     IMPreedit *preedit;
 
     static vector<ScreenRect> screens;
+    static int screenScale;
+    static int nativeToLogical(int position);
 };
 
 class ICManager {

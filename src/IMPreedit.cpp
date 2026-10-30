@@ -12,7 +12,7 @@
 
 IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(true),
 m_bCNPun(true), m_bPreQuo(true), m_bPreSingleQuo(true), m_curPage(0),
-m_uiStringMax(72)
+m_uiStringMax(64)
 {
 }
 

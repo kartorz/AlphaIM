@@ -16,6 +16,7 @@
 #include "DBusDaemon.h"
 #include <boost/filesystem.hpp>
 #include <X11/extensions/Xinerama.h>
+#include <gdk/gdk.h>
 using namespace boost::filesystem;
 
 Application*  gApp = NULL;
@@ -29,19 +30,40 @@ void SlowJob::doWork()
 
 void Application::getDpySize()
 {
+    IC::screens.clear();
+    IC::screenScale = 1;
+    gdk_set_allowed_backends("x11");
+    if (gdk_init_check(NULL, NULL)) {
+        GdkDisplay *display = gdk_display_get_default();
+        GdkScreen *screen = gdk_display_get_default_screen(display);
+        IC::screenScale = gdk_window_get_scale_factor(gdk_screen_get_root_window(screen));
+        for (int index = 0; index < gdk_display_get_n_monitors(display); ++index) {
+            GdkRectangle workarea;
+            GdkMonitor *monitor = gdk_display_get_monitor(display, index);
+            gdk_monitor_get_workarea(monitor, &workarea);
+            IC::screens.push_back({workarea.x, workarea.y, workarea.width, workarea.height});
+            logger.i("DpySize: logical workarea=(%d,%d,%d,%d), scale=%d\n",
+                     workarea.x, workarea.y, workarea.width, workarea.height,
+                     IC::screenScale);
+        }
+        if (!IC::screens.empty())
+            return;
+    }
+
     Display* dpy;
     if ((dpy = XOpenDisplay(NULL)) == NULL) {
         logger.e("getDpySize: Can't Open Display:\n");
         return;
     }
     int defscrn = DefaultScreen(dpy);
-    IC::screens.clear();
     if (XineramaIsActive(dpy)) {
         int count = 0;
         XineramaScreenInfo *info = XineramaQueryScreens(dpy, &count);
         for (int i = 0; i < count; i++) {
-            IC::screens.push_back({info[i].x_org, info[i].y_org,
-                                   info[i].width, info[i].height});
+            IC::screens.push_back({IC::nativeToLogical(info[i].x_org),
+                                   IC::nativeToLogical(info[i].y_org),
+                                   info[i].width / IC::screenScale,
+                                   info[i].height / IC::screenScale});
             logger.i("DpySize: multi-screen, (%d,%d,%d,%d)\n",
                      info[i].x_org, info[i].y_org, info[i].width, info[i].height);
         }
@@ -49,11 +71,12 @@ void Application::getDpySize()
             XFree(info);
     }
     if (IC::screens.empty()) {
-        int w  = DisplayWidth(dpy, defscrn);
-        int h  = DisplayHeight(dpy, defscrn);
+        int w  = DisplayWidth(dpy, defscrn) / IC::screenScale;
+        int h  = DisplayHeight(dpy, defscrn) / IC::screenScale;
         IC::screens.push_back({0, 0, w, h});
         logger.i("DpySize: (%d, %d)\n", w, h);
     }
+    XCloseDisplay(dpy);
 }
 
 Application::Application()

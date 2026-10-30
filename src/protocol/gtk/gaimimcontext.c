@@ -420,6 +420,9 @@ static void gaim_ic_set_cursor_location(GtkIMContext *im_context,
                                            &origin_x,
                                            &origin_y,
                                            &child);
+                    const gint scale = gdk_surface_get_scale_factor(surface);
+                    origin_x = origin_x / scale - (origin_x < 0 && origin_x % scale != 0);
+                    origin_y = origin_y / scale - (origin_y < 0 && origin_y % scale != 0);
                     PRINTF("SetCursor:fallback x11, (%d,%d)\n", origin_x, origin_y);
                 }
             }
