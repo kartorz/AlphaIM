@@ -112,9 +112,14 @@ void IndexTree::loadIndexTree(tree_node<inxtree_chrindex>::treeNodePtr parent,
     address_t loc = inxtree_read_u32(parInx.location);
     u16 len = inxtree_read_u16(parInx.len_content);
 
-    if (len > 10000) {
-        printf("w:{loadIndexTree (%s)} more than 5000 child need to be loaded, someting wrong?\n", m_header.d_identi);
-    }
+    /* No sanity threshold on 'len'. It is read from the 2-byte 'len_content'
+     * field, so a node holds at most 65535 children: four orders of magnitude
+     * below INT_MAX, and loading that many costs only a few milliseconds
+     * (one 'new' + 'push_back' per child). Tables keyed by a single character
+     * legitimately have tens of thousands of root children, e.g. han-utf8.imdb
+     * holds 27105 of them. A bogus 'len' that overruns the char index block is
+     * reported by the bound check below.
+     */
 
     //g_sysLog.d("{loadIndexTree} parent loc: (%u-->0x%x), len:(%d)\n", loc, loc, len);
     if ((loc & F_LOCSTRINX) == 0 && len > 0) { /* non-leaf */
