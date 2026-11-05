@@ -17,7 +17,7 @@
 #include "IMPreedit.h"
 
 #define ICWIN_W  656
-#define ICWIN_H  48
+#define ICWIN_H  64
 
 using namespace  std;
 

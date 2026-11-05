@@ -58,12 +58,12 @@ static gboolean aim_app_on_show_hint(gpointer user_data)
 
     if (monitor != NULL) {
         GdkRectangle workarea;
-        GtkAllocation allocation;
+        GtkRequisition req;
         gdk_monitor_get_workarea(monitor, &workarea);
-        gtk_widget_get_allocation(GTK_WIDGET(klass->icwin), &allocation);
+        gtk_widget_get_preferred_size(GTK_WIDGET(klass->icwin), NULL, &req);
         gtk_window_move(GTK_WINDOW(klass->icwin),
-                        workarea.x + (workarea.width - allocation.width) / 2,
-                        workarea.y + workarea.height - allocation.height - 60);
+                        workarea.x + (workarea.width - req.width) / 2,
+                        workarea.y + workarea.height - req.height - 60);
     }
 
     return G_SOURCE_REMOVE;

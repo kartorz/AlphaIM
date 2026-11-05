@@ -2,6 +2,7 @@
 #define _UTIL_H_
 
 #include <string>
+#include <vector>
 #include <stdlib.h>
 
 using namespace std;

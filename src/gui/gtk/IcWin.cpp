@@ -7,6 +7,27 @@
 
 G_DEFINE_TYPE(IcWin, ic_win, GTK_TYPE_WINDOW /*GTK_TYPE_APPLICATION_WINDOW*/);
 
+static void ic_win_place(GtkWindow *win, int x, int y, int maxW, int maxH)
+{
+    GtkRequisition req;
+    gtk_widget_get_preferred_size(GTK_WIDGET(win), NULL, &req);
+    int w = req.width;
+    int h = req.height;
+    if (maxW > 0 && w > maxW)
+        w = maxW;
+    if (maxH > 0 && h > maxH)
+        h = maxH;
+    gtk_window_resize(win, w > 0 ? w : 1, h > 0 ? h : 1);
+    gtk_window_move(win, x, y);
+}
+
+static void ic_win_fit(GtkWindow *win)
+{
+    GtkRequisition req;
+    gtk_widget_get_preferred_size(GTK_WIDGET(win), NULL, &req);
+    gtk_window_resize(win, req.width, req.height);
+}
+
 static void ic_win_init(IcWin *win)
 {
 }
@@ -42,6 +63,7 @@ void ic_win_show_hint(IcWin *win, const gchar *hint)
         gtk_widget_hide(klass->preedit_label[i]);
     gtk_widget_show(klass->hint);
     gtk_widget_show(gtk_widget_get_parent(klass->hint));
+    ic_win_fit(GTK_WINDOW(win));
     gtk_widget_show(GTK_WIDGET(win));
     gdk_window_raise(gtk_widget_get_window(GTK_WIDGET(win)));
     klass->hint_timeout = g_timeout_add(1200, ic_win_hide_hint, win);
@@ -98,8 +120,7 @@ void ic_win_refresh(IcWin *win,
 
     gtk_widget_show_all(GTK_WIDGET (icwin));
 
-    gtk_window_resize(icwin, w, h);
-    gtk_window_move(icwin, x, y);
+    ic_win_place(icwin, x, y, w, h);
     gdk_window_raise(gtk_widget_get_window(GTK_WIDGET(icwin)));
 
 }
@@ -109,8 +130,7 @@ IcWin *ic_win_new()
     IcWin* icwin = (IcWin *)g_object_new (IC_WIN_TYPE,
                                           "type", GTK_WINDOW_POPUP,
                                           "decorated", FALSE,
-                                          "resizable", FALSE,
-                                          "window-position", GTK_WIN_POS_CENTER,
+                                          "resizable", TRUE,
                                           "accept-focus", FALSE,
                                           NULL);
     IcWinClass *klass = IC_WIN_GET_CLASS(icwin);

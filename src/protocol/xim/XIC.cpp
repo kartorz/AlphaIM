@@ -82,7 +82,7 @@ void StatusAttributes::get(XICAttribute *xattr, int num)
             setxattr(xattr[i], XRectangle, area);
         else if (!strncmp(XNAreaNeeded, xattr[i].name, xattr[i].name_length)) {
             if (area_needed.width == 0) area_needed.width =  ICWIN_W;
-            if (area_needed.width == 0) area_needed.height = ICWIN_H;
+            if (area_needed.height == 0) area_needed.height = ICWIN_H;
             setxattr(xattr[i], XRectangle, area_needed);
         } else if (!strncmp(XNColormap, xattr[i].name, xattr[i].name_length))
             setxattr(xattr[i], Colormap, cmap);
@@ -229,8 +229,7 @@ ICRect XIMIC::getRect()
           client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);*/
 
         const int sf = IC::screenScaleAt(x, y);
-        cursor.x = IC::nativeToLogical(x, sf) +
-                   (IC::nativeToLogical(clientwin_attr.width, sf) - ICWIN_W) / 2;
+        cursor.x = IC::nativeToLogical(x, sf);
         cursor.y = IC::nativeToLogical(y, sf);
         //y += clientwin_attr.height;
     }

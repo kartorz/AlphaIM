@@ -10,6 +10,7 @@
 #include <dirent.h>
 # endif
 #include <iostream>
+#include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>

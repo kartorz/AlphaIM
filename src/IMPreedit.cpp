@@ -12,7 +12,7 @@
 
 IMPreedit::IMPreedit():refs(0), m_bTrigger(false), m_bCN(true),
 m_bCNPun(true), m_bPreQuo(true), m_bPreSingleQuo(true), m_curPage(0),
-m_uiStringMax(64)
+m_uiStringMax(ICWIN_W/10)
 {
 }
 
@@ -247,7 +247,7 @@ void IMPreedit::close()
  */
 void IMPreedit::page(int pg)
 {
-    const int padding = 6;
+    const int padding = 5;   // index prefix "1: " plus spacing, in columns
     IMItem candiItem;
     candiItem.key = "";
     candiItem.val = m_candidate;

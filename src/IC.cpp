@@ -113,7 +113,7 @@ ICRect IC::getRect()
     ret.x = std::max(sc.x + margin,
                     std::min(ret.x, sc.x + sc.w - ret.w - margin));
     ret.y = std::max(sc.y + margin,
-                    std::min(ret.y, sc.y + sc.h - ret.h - 4*margin));
+                    std::min(ret.y, sc.y + sc.h - ret.h - 3*margin));
 
     PRINTF("getICWin after: (%d, %d) -- (%d,%d,%d,%d)\n",
            ret.x, ret.y, sc.x, sc.y, sc.w, sc.h);
