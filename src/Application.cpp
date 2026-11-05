@@ -41,10 +41,11 @@ void Application::getDpySize()
             GdkRectangle workarea;
             GdkMonitor *monitor = gdk_display_get_monitor(display, index);
             gdk_monitor_get_workarea(monitor, &workarea);
-            IC::screens.push_back({workarea.x, workarea.y, workarea.width, workarea.height});
+            const int scale = gdk_monitor_get_scale_factor(monitor);
+            IC::screens.push_back({workarea.x, workarea.y, workarea.width, workarea.height,
+                                   scale});
             logger.i("DpySize: logical workarea=(%d,%d,%d,%d), scale=%d\n",
-                     workarea.x, workarea.y, workarea.width, workarea.height,
-                     IC::screenScale);
+                     workarea.x, workarea.y, workarea.width, workarea.height, scale);
         }
         if (!IC::screens.empty())
             return;
@@ -57,13 +58,15 @@ void Application::getDpySize()
     }
     int defscrn = DefaultScreen(dpy);
     if (XineramaIsActive(dpy)) {
+        const int sf = IC::screenScale;
         int count = 0;
         XineramaScreenInfo *info = XineramaQueryScreens(dpy, &count);
         for (int i = 0; i < count; i++) {
-            IC::screens.push_back({IC::nativeToLogical(info[i].x_org),
-                                   IC::nativeToLogical(info[i].y_org),
-                                   info[i].width / IC::screenScale,
-                                   info[i].height / IC::screenScale});
+            IC::screens.push_back({IC::nativeToLogical(info[i].x_org, sf),
+                                   IC::nativeToLogical(info[i].y_org, sf),
+                                   info[i].width / sf,
+                                   info[i].height / sf,
+                                   sf});
             logger.i("DpySize: multi-screen, (%d,%d,%d,%d)\n",
                      info[i].x_org, info[i].y_org, info[i].width, info[i].height);
         }
@@ -71,9 +74,10 @@ void Application::getDpySize()
             XFree(info);
     }
     if (IC::screens.empty()) {
-        int w  = DisplayWidth(dpy, defscrn) / IC::screenScale;
-        int h  = DisplayHeight(dpy, defscrn) / IC::screenScale;
-        IC::screens.push_back({0, 0, w, h});
+        const int sf = IC::screenScale;
+        int w  = DisplayWidth(dpy, defscrn) / sf;
+        int h  = DisplayHeight(dpy, defscrn) / sf;
+        IC::screens.push_back({0, 0, w, h, sf});
         logger.i("DpySize: (%d, %d)\n", w, h);
     }
     XCloseDisplay(dpy);

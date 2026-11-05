@@ -23,6 +23,7 @@ using namespace  std;
 
 struct ScreenRect {
     int x, y, w, h;
+    int scale = 1;
 };
 
 class IC {
@@ -48,7 +49,8 @@ public:
 
     static vector<ScreenRect> screens;
     static int screenScale;
-    static int nativeToLogical(int position);
+    static int nativeToLogical(int position, int scale);
+    static int screenScaleAt(int nativeX, int nativeY);
 };
 
 class ICManager {

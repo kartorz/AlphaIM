@@ -13,10 +13,20 @@
 vector<ScreenRect> IC::screens;
 int IC::screenScale = 1;
 
-int IC::nativeToLogical(int position)
+int IC::nativeToLogical(int position, int scale)
 {
-    const int scale = std::max(1, screenScale);
     return position / scale - (position < 0 && position % scale != 0 ? 1 : 0);
+}
+
+int IC::screenScaleAt(int nativeX, int nativeY)
+{
+    for (const ScreenRect &s : screens) {
+        if (nativeX >= s.x * s.scale && nativeX < (s.x + s.w) * s.scale &&
+            nativeY >= s.y * s.scale && nativeY < (s.y + s.h) * s.scale) {
+            return s.scale;
+        }
+    }
+    return screenScale;
 }
 
 IC::IC(): id(0),cursor{0,0,0,32}
@@ -98,7 +108,7 @@ ICRect IC::getRect()
     }
 
     PRINTF("getICWin before: (%d, %d) -- (%d,%d,%d,%d)\n",
-           ret.x, ret.y,ab sc.x, sc.y, sc.w, sc.h);
+           ret.x, ret.y, sc.x, sc.y, sc.w, sc.h);
 
     ret.x = std::max(sc.x + margin,
                     std::min(ret.x, sc.x + sc.w - ret.w - margin));

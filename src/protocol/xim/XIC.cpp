@@ -211,8 +211,9 @@ ICRect XIMIC::getRect()
         //cursor.h = pre_attr.area.height == 0 ? ICWIN_H : pre_attr.area.height;
 
         //When the monitor is left of the primary screen, x|y < 0 is valid.
-        cursor.x = IC::nativeToLogical(x);
-        cursor.y = IC::nativeToLogical(y);
+        const int sf = IC::screenScaleAt(x, y);
+        cursor.x = IC::nativeToLogical(x, sf);
+        cursor.y = IC::nativeToLogical(y, sf);
 
         /*PRINTF("getICWin spot location [%d] (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
         client_win, x, y, w, h, m_dpyW, m_dpyH);*/
@@ -227,9 +228,10 @@ ICRect XIMIC::getRect()
         /*PRINTF("getICWin client win[%d]  (%d, %d, %d ,%d), dpy_w: %d, dpyH, %d\n",
           client_win, x, y, clientwin_attr.width, clientwin_attr.height, m_dpyW, m_dpyH);*/
 
-        cursor.x = IC::nativeToLogical(x) +
-                   (IC::nativeToLogical(clientwin_attr.width) - ICWIN_W) / 2;
-        cursor.y = IC::nativeToLogical(y);
+        const int sf = IC::screenScaleAt(x, y);
+        cursor.x = IC::nativeToLogical(x, sf) +
+                   (IC::nativeToLogical(clientwin_attr.width, sf) - ICWIN_W) / 2;
+        cursor.y = IC::nativeToLogical(y, sf);
         //y += clientwin_attr.height;
     }
     return IC::getRect();
