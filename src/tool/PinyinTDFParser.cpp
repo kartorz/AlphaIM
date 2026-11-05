@@ -18,9 +18,8 @@
 #include "CharUtil.h"
 #include "PinyinTDFParser.h"
 
-PinyinTDFParser::PinyinTDFParser()
+PinyinTDFParser::PinyinTDFParser(int dataItemSize) : m_writer(dataItemSize)
 {
-    printf("PinyinTDFParser()\n");
     m_writer.open();
     m_writer.setStrinxThreshold(0, 8);
 }
@@ -71,6 +70,11 @@ void PinyinTDFParser::parseInxtreeHeader(vector<string>& columns)
 
 void PinyinTDFParser::parseInxtreeHeaderEnd()
 {
+    /* The writer's data item width.
+     * Declaring exactly that keeps readers and writers in agreement.
+     * Variable-size tables get 0, fixed-size gets 1.
+     */
+    inxtree_write_u16(m_writer.m_header.i_size, m_writer.getDataItemSize());
 }
 
 unsigned int PinyinTDFParser::getTotalEntry()

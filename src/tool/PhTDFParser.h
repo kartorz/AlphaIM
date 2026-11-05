@@ -25,7 +25,6 @@ public:
 
 protected:
     virtual void parseRow(int row, string& str, vector<string>& columns);
-    virtual void parseInxtreeHeaderEnd();
 };
 
 #endif

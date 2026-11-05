@@ -25,6 +25,12 @@ public:
     ~IndexTreeWriter();
 
     void setStrinxThreshold(int wordsMax, int depthMax);
+    /* the constructor argument.
+     * 0 means variable size (2-bytes lengtah).
+     * The file header's i_size must declare this same value, otherwise the
+     * written and read layouts disagree.
+     */
+    int  getDataItemSize() const { return m_dataItemSize; }
     void open();
     void close();
 

@@ -20,17 +20,18 @@
 #include "PhTDFParser.h"
 #include "indextree_item.h"
 
-PhTDFParser::PhTDFParser()
+/* A phrase entry's data is its priority: exactly 1 byte. Passing 1 here makes
+ * IndexTreeWriter::add() store fixed 1-byte items with no length prefix, and
+ * PinyinTDFParser::parseInxtreeHeaderEnd() declares the same width in the
+ * header, which is what readers use (IndexTree::load -> m_dataItemSize, then
+ * PY.cpp: "imitem.priority = item->d.buf[0]").
+ */
+PhTDFParser::PhTDFParser() : PinyinTDFParser(1)
 {
 }
 
 PhTDFParser::~PhTDFParser()
 {
-}
-
-void PhTDFParser::parseInxtreeHeaderEnd()
-{
-    inxtree_write_u16(m_writer.m_header.i_size, 1);
 }
 
 void PhTDFParser::parseRow(int row, string& str, vector<string>& columns)

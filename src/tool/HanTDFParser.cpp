@@ -20,7 +20,7 @@
 #include "HanTDFParser.h"
 #include "indextree_item.h"
 
-HanTDFParser::HanTDFParser()
+HanTDFParser::HanTDFParser(): PinyinTDFParser(0)
 {
 }
 

@@ -20,7 +20,9 @@
 class PinyinTDFParser : public TDFParser
 {
 public:
-    PinyinTDFParser();
+    /* dataItemSize: (0 = variable size; 1 = fixed size).
+     Subclasses pass the width their rows produce.*/
+    explicit PinyinTDFParser(int dataItemSize = 0);
     virtual ~PinyinTDFParser();
 
     void write(const string& dbpath);
