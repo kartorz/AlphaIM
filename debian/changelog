@@ -1,3 +1,9 @@
+alphaim (1.6) unstable; urgency=medium
+
+  * Bug fixed: ui scale, indextree, qt module
+
+ -- Li Liqiong <joni_lee@outlook.com>  Sun, 10 Nov 2026 10:42:03 +0800
+
 alphaim (1.5) unstable; urgency=medium
 
   * Refine learnning user input, finish systray menu and window.
