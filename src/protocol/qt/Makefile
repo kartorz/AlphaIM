@@ -141,7 +141,7 @@ $(QT5_BUILDDIR)/%.o: %.cpp $(QT5_BUILDDIR)/main.moc | $(QT5_BUILDDIR)
 $(QT5_BUILDDIR)/%.o: $(QT5_BUILDDIR)/%.cpp | $(QT5_BUILDDIR)
     $(CXX) $(QT5_INCLUDES) -I$(QT5_BUILDDIR) $(QT_CXXFLAGS) -c $< -o $@
 $(QT5_PLUGIN): $(QT5_OBJS)
-    $(CXX) $(QT5_OBJS) $(QT5LIBS) -shared -o $@
+    $(CXX) $(QT5_OBJS) $(QT5_LIBS) -shared -o $@
 
 $(QT6_BUILDDIR)/main.moc: main.cpp | $(QT6_BUILDDIR)
     $(QT6_MOC) $(QT6_INCLUDES) main.cpp -o $@
@@ -156,7 +156,7 @@ $(QT6_BUILDDIR)/%.o: %.cpp $(QT6_BUILDDIR)/main.moc | $(QT6_BUILDDIR)
 $(QT6_BUILDDIR)/%.o: $(QT6_BUILDDIR)/%.cpp | $(QT6_BUILDDIR)
     $(CXX) $(QT6_INCLUDES) -I$(QT6_BUILDDIR) $(QT_CXXFLAGS) -c $< -o $@
 $(QT6_PLUGIN): $(QT6_OBJS)
-    $(CXX) $(QT6_OBJS) $(QT6LIBS) -shared -o $@
+    $(CXX) $(QT6_OBJS) $(QT6_LIBS) -shared -o $@
 
 clean:
     -@rm -rf build
