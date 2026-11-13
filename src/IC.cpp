@@ -13,20 +13,10 @@
 vector<ScreenRect> IC::screens;
 int IC::screenScale = 1;
 
-int IC::nativeToLogical(int position, int scale)
+int IC::nativeToLogical(int position)
 {
+    int scale = IC::screenScale;
     return position / scale - (position < 0 && position % scale != 0 ? 1 : 0);
-}
-
-int IC::screenScaleAt(int nativeX, int nativeY)
-{
-    for (const ScreenRect &s : screens) {
-        if (nativeX >= s.x * s.scale && nativeX < (s.x + s.w) * s.scale &&
-            nativeY >= s.y * s.scale && nativeY < (s.y + s.h) * s.scale) {
-            return s.scale;
-        }
-    }
-    return screenScale;
 }
 
 IC::IC(): id(0),cursor{0,0,0,32}

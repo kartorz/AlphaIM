@@ -49,8 +49,7 @@ public:
 
     static vector<ScreenRect> screens;
     static int screenScale;
-    static int nativeToLogical(int position, int scale);
-    static int screenScaleAt(int nativeX, int nativeY);
+    static int nativeToLogical(int position);
 };
 
 class ICManager {

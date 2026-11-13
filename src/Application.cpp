@@ -28,6 +28,14 @@ void SlowJob::doWork()
     m_owner->slowJob();
 }
 
+/*
+ *  2560 x 1600, DPI scale 200%
+ *  IC::Screen: {0,0,1280,744, 2}, {(1280,0,960,540),2}
+ *  IC::screenScale:2
+ *  Cursor --
+ *    GTK/QT:  1280 x 800
+ *    XIM: 2560 x 1600
+ */
 void Application::getDpySize()
 {
     IC::screens.clear();
@@ -57,28 +65,27 @@ void Application::getDpySize()
         return;
     }
     int defscrn = DefaultScreen(dpy);
+    const int sf = IC::screenScale;
     if (XineramaIsActive(dpy)) {
-        const int sf = IC::screenScale;
         int count = 0;
         XineramaScreenInfo *info = XineramaQueryScreens(dpy, &count);
         for (int i = 0; i < count; i++) {
-            IC::screens.push_back({IC::nativeToLogical(info[i].x_org, sf),
-                                   IC::nativeToLogical(info[i].y_org, sf),
+            IC::screens.push_back({IC::nativeToLogical(info[i].x_org),
+                                   IC::nativeToLogical(info[i].y_org),
                                    info[i].width / sf,
                                    info[i].height / sf,
                                    sf});
-            logger.i("DpySize: multi-screen, (%d,%d,%d,%d)\n",
+            logger.i("xinerama, (%d,%d,%d,%d)\n",
                      info[i].x_org, info[i].y_org, info[i].width, info[i].height);
         }
         if (info != NULL)
             XFree(info);
     }
     if (IC::screens.empty()) {
-        const int sf = IC::screenScale;
         int w  = DisplayWidth(dpy, defscrn) / sf;
         int h  = DisplayHeight(dpy, defscrn) / sf;
         IC::screens.push_back({0, 0, w, h, sf});
-        logger.i("DpySize: (%d, %d)\n", w, h);
+        logger.i("Default: (%d, %d)\n", w, h);
     }
     XCloseDisplay(dpy);
 }
