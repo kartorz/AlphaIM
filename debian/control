@@ -13,6 +13,7 @@ Build-Depends:
  libgtk-3-dev,
  libayatana-appindicator3-dev,
  libsystemd-dev,
+ qtbase5-private-dev,
  qt6-base-dev,
  qt6-base-private-dev,
  qt6-base-dev-tools

@@ -111,6 +111,10 @@ HelpWin *help_win_new(int x, int y)
         "Linux 微信使用静态编译的私有 Qt，暂不支持，可使用托盘菜单的“输入并复制”，再粘贴到应用中。"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(content), section("WPS",
         "WPS 使用私有 Qt。需要下载 Qt 官方 SDK 后编译，详见项目中的 im-private/wps/Qt5.12/README。"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(content), section("词组备份",
+        "用户词组：~/.config/alphaim/user_phrase-utf8.imdb\n"
+        "系统词组：~/.config/alphaim/phrase-utf8.imdb\n"
+        "备份这两个文件即可。恢复时先退出 alphaimd，覆盖后再启动。"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(content), section("关于",
         "版本：1.5\n"
         "作者：李力琼 (joni lee)\n"
